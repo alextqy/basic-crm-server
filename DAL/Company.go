@@ -62,7 +62,7 @@ func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	return Page, PageSize, TotalPage, Data
 }
 
-func CompanyAll(db *xorm.Session, Page int, PageSize int, Order int, Stext string) []entity.Company {
+func CompanyAll(db *xorm.Session, Order int, Stext string) []entity.Company {
 	Data := []entity.Company{}
 	engine := db.Where("1=1")
 	if Stext != "" {

@@ -74,7 +74,7 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 	return Page, PageSize, TotalPage, Data
 }
 
-func AdminAll(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64) []entity.Admin {
+func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64) []entity.Admin {
 	Data := []entity.Admin{}
 	engine := db.Where("1=1")
 	if Stext != "" {
