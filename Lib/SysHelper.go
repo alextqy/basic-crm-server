@@ -317,7 +317,7 @@ func SendEmail(account, password, sender, host, to, subject, body string) (bool,
 }
 
 func LogDir() string {
-	return "../Log/" + strings.Split(TimeNowStr(), " ")[0] + "/"
+	return "./Log/" + strings.Split(TimeNowStr(), " ")[0] + "/"
 }
 
 func WriteLog(fileName, content string) (bool, string) {
