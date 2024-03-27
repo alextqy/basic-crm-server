@@ -1,6 +1,7 @@
 package lib
 
 import (
+	mod "basic-crm-server/MOD"
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
@@ -8,6 +9,7 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"net"
@@ -339,9 +341,9 @@ func WriteLog(fileName, content string) (bool, string) {
 	return true, ""
 }
 
-// func CheckConf() entity.ConfEntity {
-// 	var confEntity entity.ConfEntity
-// 	_, byteData := FileRead("./Conf.json")
-// 	json.Unmarshal([]byte(byteData), &confEntity)
-// 	return confEntity
-// }
+func CheckConf() mod.Conf {
+	var conf mod.Conf
+	_, byteData := FileRead("./Conf.json")
+	json.Unmarshal([]byte(byteData), &conf)
+	return conf
+}
