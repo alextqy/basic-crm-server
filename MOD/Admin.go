@@ -1,4 +1,4 @@
-package entity
+package mod
 
 type Admin struct {
 	ID           int64

@@ -1,8 +1,8 @@
 package dal
 
 import (
-	entity "basic-crm-server/Entity"
 	lib "basic-crm-server/LIB"
+	mod "basic-crm-server/MOD"
 	"math"
 	"strings"
 
@@ -10,7 +10,7 @@ import (
 )
 
 func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) (int64, error) {
-	Data := entity.Customer{}
+	Data := mod.Customer{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
@@ -31,24 +31,24 @@ func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64,
 	return r, e
 }
 
-func CustomerAdd(db *xorm.Session, Data entity.Customer) (int64, error) {
+func CustomerAdd(db *xorm.Session, Data mod.Customer) (int64, error) {
 	r, e := db.Insert(&Data)
 	return r, e
 }
 
-func CustomerUpdate(db *xorm.Session, Data entity.Customer) (int64, error) {
+func CustomerUpdate(db *xorm.Session, Data mod.Customer) (int64, error) {
 	r, e := db.ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func CustomerData(db *xorm.Session, ID int64) (entity.Customer, error) {
-	Data := entity.Customer{}
+func CustomerData(db *xorm.Session, ID int64) (mod.Customer, error) {
+	Data := mod.Customer{}
 	_, err := db.ID(ID).Get(&Data)
 	return Data, err
 }
 
-func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) (int, int, int, []entity.Customer) {
-	Data := []entity.Customer{}
+func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) (int, int, int, []mod.Customer) {
+	Data := []mod.Customer{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
@@ -86,8 +86,8 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 	return Page, PageSize, TotalPage, Data
 }
 
-func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) []entity.Customer {
-	Data := []entity.Customer{}
+func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) []mod.Customer {
+	Data := []mod.Customer{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
@@ -115,7 +115,7 @@ func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priori
 }
 
 func CustomerDel(db *xorm.Session, ID string) (int64, error) {
-	Data := entity.Customer{}
+	Data := mod.Customer{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}

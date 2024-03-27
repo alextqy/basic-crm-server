@@ -1,4 +1,4 @@
-package entity
+package mod
 
 type Result struct {
 	State   bool        `json:"State"`

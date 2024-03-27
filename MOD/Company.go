@@ -1,8 +1,8 @@
-package entity
+package mod
 
-type ManagerGroup struct {
+type Company struct {
 	ID           int64
-	GroupName    string `xorm:"'GroupName'"`
+	CompanyName  string `xorm:"'CompanyName'"`
 	CreationTime int64  `xorm:"'CreationTime'"`
 	Remark       string `xorm:"'Remark'"`
 }

@@ -1,8 +1,8 @@
 package dal
 
 import (
-	entity "basic-crm-server/Entity"
 	lib "basic-crm-server/LIB"
+	mod "basic-crm-server/MOD"
 	"math"
 	"strings"
 
@@ -10,7 +10,7 @@ import (
 )
 
 func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64) (int64, error) {
-	Data := entity.Admin{}
+	Data := mod.Admin{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
@@ -25,24 +25,24 @@ func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64) (int6
 	return r, e
 }
 
-func AdminAdd(db *xorm.Session, Data entity.Admin) (int64, error) {
+func AdminAdd(db *xorm.Session, Data mod.Admin) (int64, error) {
 	r, e := db.Insert(&Data)
 	return r, e
 }
 
-func AdminUpdate(db *xorm.Session, Data entity.Admin) (int64, error) {
+func AdminUpdate(db *xorm.Session, Data mod.Admin) (int64, error) {
 	r, e := db.ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func AdminData(db *xorm.Session, ID int64) (entity.Admin, error) {
-	Data := entity.Admin{}
+func AdminData(db *xorm.Session, ID int64) (mod.Admin, error) {
+	Data := mod.Admin{}
 	_, err := db.ID(ID).Get(&Data)
 	return Data, err
 }
 
-func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64) (int, int, int, []entity.Admin) {
-	Data := []entity.Admin{}
+func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64) (int, int, int, []mod.Admin) {
+	Data := []mod.Admin{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
@@ -74,8 +74,8 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 	return Page, PageSize, TotalPage, Data
 }
 
-func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64) []entity.Admin {
-	Data := []entity.Admin{}
+func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64) []mod.Admin {
+	Data := []mod.Admin{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
@@ -97,7 +97,7 @@ func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int
 }
 
 func AdminDel(db *xorm.Session, ID string) (int64, error) {
-	Data := entity.Admin{}
+	Data := mod.Admin{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}

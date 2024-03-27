@@ -1,4 +1,4 @@
-package entity
+package mod
 
 type Manager struct {
 	ID           int64

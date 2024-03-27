@@ -1,8 +1,8 @@
 package dal
 
 import (
-	entity "basic-crm-server/Entity"
 	lib "basic-crm-server/LIB"
+	mod "basic-crm-server/MOD"
 	"math"
 	"strings"
 
@@ -10,7 +10,7 @@ import (
 )
 
 func CompanyCount(db *xorm.Session, Stext string) (int64, error) {
-	Data := entity.Company{}
+	Data := mod.Company{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("CompanyName LIKE ?", "%"+Stext+"%")
@@ -19,24 +19,24 @@ func CompanyCount(db *xorm.Session, Stext string) (int64, error) {
 	return r, e
 }
 
-func CompanyAdd(db *xorm.Session, Data entity.Company) (int64, error) {
+func CompanyAdd(db *xorm.Session, Data mod.Company) (int64, error) {
 	r, e := db.Insert(&Data)
 	return r, e
 }
 
-func CompanyUpdate(db *xorm.Session, Data entity.Company) (int64, error) {
+func CompanyUpdate(db *xorm.Session, Data mod.Company) (int64, error) {
 	r, e := db.ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func CompanyData(db *xorm.Session, ID int64) (entity.Company, error) {
-	Data := entity.Company{}
+func CompanyData(db *xorm.Session, ID int64) (mod.Company, error) {
+	Data := mod.Company{}
 	_, err := db.ID(ID).Get(&Data)
 	return Data, err
 }
 
-func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext string) (int, int, int, []entity.Company) {
-	Data := []entity.Company{}
+func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext string) (int, int, int, []mod.Company) {
+	Data := []mod.Company{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("CompanyName LIKE ?", "%"+Stext+"%")
@@ -62,8 +62,8 @@ func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	return Page, PageSize, TotalPage, Data
 }
 
-func CompanyAll(db *xorm.Session, Order int, Stext string) []entity.Company {
-	Data := []entity.Company{}
+func CompanyAll(db *xorm.Session, Order int, Stext string) []mod.Company {
+	Data := []mod.Company{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("CompanyName LIKE ?", "%"+Stext+"%")
@@ -79,7 +79,7 @@ func CompanyAll(db *xorm.Session, Order int, Stext string) []entity.Company {
 }
 
 func CompanyDel(db *xorm.Session, ID string) (int64, error) {
-	Data := entity.Company{}
+	Data := mod.Company{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}

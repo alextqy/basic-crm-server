@@ -1,8 +1,8 @@
 package dal
 
 import (
-	entity "basic-crm-server/Entity"
 	lib "basic-crm-server/LIB"
+	mod "basic-crm-server/MOD"
 	"math"
 	"strings"
 
@@ -10,7 +10,7 @@ import (
 )
 
 func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, GroupID int64) (int64, error) {
-	Data := entity.Manager{}
+	Data := mod.Manager{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
@@ -28,24 +28,24 @@ func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, Gro
 	return r, e
 }
 
-func ManagerAdd(db *xorm.Session, Data entity.Manager) (int64, error) {
+func ManagerAdd(db *xorm.Session, Data mod.Manager) (int64, error) {
 	r, e := db.Insert(&Data)
 	return r, e
 }
 
-func ManagerUpdate(db *xorm.Session, Data entity.Manager) (int64, error) {
+func ManagerUpdate(db *xorm.Session, Data mod.Manager) (int64, error) {
 	r, e := db.ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func ManagerData(db *xorm.Session, ID int64) (entity.Manager, error) {
-	Data := entity.Manager{}
+func ManagerData(db *xorm.Session, ID int64) (mod.Manager, error) {
+	Data := mod.Manager{}
 	_, err := db.ID(ID).Get(&Data)
 	return Data, err
 }
 
-func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64) (int, int, int, []entity.Manager) {
-	Data := []entity.Manager{}
+func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64) (int, int, int, []mod.Manager) {
+	Data := []mod.Manager{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
@@ -80,8 +80,8 @@ func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	return Page, PageSize, TotalPage, Data
 }
 
-func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, GroupID int64) []entity.Manager {
-	Data := []entity.Manager{}
+func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, GroupID int64) []mod.Manager {
+	Data := []mod.Manager{}
 	engine := db.Where("1=1")
 	if Stext != "" {
 		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
@@ -106,7 +106,7 @@ func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status i
 }
 
 func ManagerDel(db *xorm.Session, ID string) (int64, error) {
-	Data := entity.Manager{}
+	Data := mod.Manager{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}

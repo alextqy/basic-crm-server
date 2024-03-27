@@ -1,4 +1,4 @@
-package entity
+package mod
 
 type SalesTarget struct {
 	ID              int64

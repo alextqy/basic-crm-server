@@ -1,4 +1,4 @@
-package entity
+package mod
 
 type Customer struct {
 	ID           int64
