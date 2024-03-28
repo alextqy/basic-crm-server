@@ -13,13 +13,13 @@ func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64) (int6
 	Data := mod.Admin{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
 	if Level > 0 {
-		engine = engine.And("Level = ?", Level)
+		engine = engine.And("`Level` = ?", Level)
 	}
 	if Status > 0 {
-		engine = engine.And("Status = ?", Status)
+		engine = engine.And("`Status` = ?", Status)
 	}
 	r, e := engine.Count(&Data)
 	return r, e
@@ -45,13 +45,13 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 	Data := []mod.Admin{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
 	if Level > 0 {
-		engine = engine.And("Level = ?", Level)
+		engine = engine.And("`Level` = ?", Level)
 	}
 	if Status > 0 {
-		engine = engine.And("Status = ?", Status)
+		engine = engine.And("`Status` = ?", Status)
 	}
 	if Page <= 1 {
 		Page = 1
@@ -78,13 +78,13 @@ func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int
 	Data := []mod.Admin{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
 	if Level > 0 {
-		engine = engine.And("Level = ?", Level)
+		engine = engine.And("`Level` = ?", Level)
 	}
 	if Status > 0 {
-		engine = engine.And("Status = ?", Status)
+		engine = engine.And("`Status` = ?", Status)
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -92,7 +92,7 @@ func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.OrderBy("ID " + OrderBy).Find(&Data)
+	engine.OrderBy("`ID` " + OrderBy).Find(&Data)
 	return Data
 }
 
@@ -105,7 +105,7 @@ func AdminDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("ID", intArr).Delete(Data)
+		r, e := db.In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
 		r, e := db.ID(ID).Delete(Data)

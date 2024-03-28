@@ -13,7 +13,7 @@ func ManagerGroupCount(db *xorm.Session, Stext string) (int64, error) {
 	Data := mod.ManagerGroup{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("GroupName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`GroupName` LIKE ?", "%"+Stext+"%")
 	}
 	r, e := engine.Count(&Data)
 	return r, e
@@ -39,7 +39,7 @@ func ManagerGroupList(db *xorm.Session, Page int, PageSize int, Order int, Stext
 	Data := []mod.ManagerGroup{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("GroupName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`GroupName` LIKE ?", "%"+Stext+"%")
 	}
 	if Page <= 1 {
 		Page = 1
@@ -66,7 +66,7 @@ func ManagerGroupAll(db *xorm.Session, Order int, Stext string) []mod.ManagerGro
 	Data := []mod.ManagerGroup{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("GroupName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`GroupName` LIKE ?", "%"+Stext+"%")
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -74,7 +74,7 @@ func ManagerGroupAll(db *xorm.Session, Order int, Stext string) []mod.ManagerGro
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.OrderBy("ID " + OrderBy).Find(&Data)
+	engine.OrderBy("`ID` " + OrderBy).Find(&Data)
 	return Data
 }
 
@@ -87,7 +87,7 @@ func ManagerGroupDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("ID", intArr).Delete(Data)
+		r, e := db.In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
 		r, e := db.ID(ID).Delete(Data)

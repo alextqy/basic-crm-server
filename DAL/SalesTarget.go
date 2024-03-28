@@ -13,10 +13,10 @@ func SalesTargetCount(db *xorm.Session, Stext string, CustomerID int64) (int64, 
 	Data := mod.SalesTarget{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("TargetName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`TargetName` LIKE ?", "%"+Stext+"%")
 	}
 	if CustomerID > 0 {
-		engine = engine.And("CustomerID = ?", CustomerID)
+		engine = engine.And("`CustomerID` = ?", CustomerID)
 	}
 	r, e := engine.Count(&Data)
 	return r, e
@@ -42,10 +42,10 @@ func SalesTargetList(db *xorm.Session, Page int, PageSize int, Order int, Stext 
 	Data := []mod.SalesTarget{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("TargetName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`TargetName` LIKE ?", "%"+Stext+"%")
 	}
 	if CustomerID > 0 {
-		engine = engine.And("CustomerID = ?", CustomerID)
+		engine = engine.And("`CustomerID` = ?", CustomerID)
 	}
 	if Page <= 1 {
 		Page = 1
@@ -64,7 +64,7 @@ func SalesTargetList(db *xorm.Session, Page int, PageSize int, Order int, Stext 
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
 	}
-	engine.OrderBy("ID "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+	engine.OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
 	return Page, PageSize, TotalPage, Data
 }
 
@@ -72,10 +72,10 @@ func SalesTargetAll(db *xorm.Session, Order int, Stext string, CustomerID int64)
 	Data := []mod.SalesTarget{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("TargetName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`TargetName` LIKE ?", "%"+Stext+"%")
 	}
 	if CustomerID > 0 {
-		engine = engine.And("CustomerID = ?", CustomerID)
+		engine = engine.And("`CustomerID` = ?", CustomerID)
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -96,7 +96,7 @@ func SalesTargetDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("ID", intArr).Delete(Data)
+		r, e := db.In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
 		r, e := db.ID(ID).Delete(Data)

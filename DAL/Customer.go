@@ -13,19 +13,19 @@ func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64,
 	Data := mod.Customer{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
 	if Gender > 0 {
-		engine = engine.And("Gender = ?", Gender)
+		engine = engine.And("`Gender` = ?", Gender)
 	}
 	if Priority > 0 {
-		engine = engine.And("Priority = ?", Priority)
+		engine = engine.And("`Priority` = ?", Priority)
 	}
 	if CompanyID > 0 {
-		engine = engine.And("CompanyID = ?", CompanyID)
+		engine = engine.And("`CompanyID` = ?", CompanyID)
 	}
 	if ManagerID > 0 {
-		engine = engine.And("ManagerID = ?", ManagerID)
+		engine = engine.And("`ManagerID` = ?", ManagerID)
 	}
 	r, e := engine.Count(&Data)
 	return r, e
@@ -51,19 +51,19 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 	Data := []mod.Customer{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
 	if Gender > 0 {
-		engine = engine.And("Gender = ?", Gender)
+		engine = engine.And("`Gender` = ?", Gender)
 	}
 	if Priority > 0 {
-		engine = engine.And("Priority = ?", Priority)
+		engine = engine.And("`Priority` = ?", Priority)
 	}
 	if CompanyID > 0 {
-		engine = engine.And("CompanyID = ?", CompanyID)
+		engine = engine.And("`CompanyID` = ?", CompanyID)
 	}
 	if ManagerID > 0 {
-		engine = engine.And("ManagerID = ?", ManagerID)
+		engine = engine.And("`ManagerID` = ?", ManagerID)
 	}
 	if Page <= 1 {
 		Page = 1
@@ -82,7 +82,7 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
 	}
-	engine.OrderBy("ID "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+	engine.OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
 	return Page, PageSize, TotalPage, Data
 }
 
@@ -90,19 +90,19 @@ func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priori
 	Data := []mod.Customer{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
 	if Gender > 0 {
-		engine = engine.And("Gender = ?", Gender)
+		engine = engine.And("`Gender` = ?", Gender)
 	}
 	if Priority > 0 {
-		engine = engine.And("Priority = ?", Priority)
+		engine = engine.And("`Priority` = ?", Priority)
 	}
 	if CompanyID > 0 {
-		engine = engine.And("CompanyID = ?", CompanyID)
+		engine = engine.And("`CompanyID` = ?", CompanyID)
 	}
 	if ManagerID > 0 {
-		engine = engine.And("ManagerID = ?", ManagerID)
+		engine = engine.And("`ManagerID` = ?", ManagerID)
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -110,7 +110,7 @@ func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priori
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.OrderBy("ID " + OrderBy).Find(&Data)
+	engine.OrderBy("`ID` " + OrderBy).Find(&Data)
 	return Data
 }
 
@@ -123,7 +123,7 @@ func CustomerDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("ID", intArr).Delete(Data)
+		r, e := db.In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
 		r, e := db.ID(ID).Delete(Data)

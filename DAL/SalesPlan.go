@@ -13,13 +13,13 @@ func SalesPlanCount(db *xorm.Session, Stext string, TargetID int64, Status int64
 	Data := mod.SalesPlan{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("PlanName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.And("TargetID = ?", TargetID)
+		engine = engine.And("`TargetID` = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.And("Status = ?", Status)
+		engine = engine.And("`Status` = ?", Status)
 	}
 	r, e := engine.Count(&Data)
 	return r, e
@@ -45,13 +45,13 @@ func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext st
 	Data := []mod.SalesPlan{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("PlanName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.And("TargetID = ?", TargetID)
+		engine = engine.And("`TargetID` = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.And("Status = ?", Status)
+		engine = engine.And("`Status` = ?", Status)
 	}
 	if Page <= 1 {
 		Page = 1
@@ -70,7 +70,7 @@ func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext st
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
 	}
-	engine.OrderBy("ID "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+	engine.OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
 	return Page, PageSize, TotalPage, Data
 }
 
@@ -78,13 +78,13 @@ func SalesPlanAll(db *xorm.Session, Order int, Stext string, TargetID int64, Sta
 	Data := []mod.SalesPlan{}
 	engine := db.Where("1=1")
 	if Stext != "" {
-		engine = engine.And("PlanName LIKE ?", "%"+Stext+"%")
+		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.And("TargetID = ?", TargetID)
+		engine = engine.And("`TargetID` = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.And("Status = ?", Status)
+		engine = engine.And("`Status` = ?", Status)
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -92,7 +92,7 @@ func SalesPlanAll(db *xorm.Session, Order int, Stext string, TargetID int64, Sta
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.OrderBy("ID " + OrderBy).Find(&Data)
+	engine.OrderBy("`ID` " + OrderBy).Find(&Data)
 	return Data
 }
 
@@ -105,7 +105,7 @@ func SalesPlanDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("ID", intArr).Delete(Data)
+		r, e := db.In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
 		r, e := db.ID(ID).Delete(Data)
