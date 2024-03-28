@@ -9,9 +9,10 @@ import (
 	"xorm.io/xorm"
 )
 
-func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64) (int64, error) {
+func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64, Outfit string) (int64, error) {
+	TableName := AdminTable + Outfit
 	Data := mod.Admin{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -25,25 +26,29 @@ func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64) (int6
 	return r, e
 }
 
-func AdminAdd(db *xorm.Session, Data mod.Admin) (int64, error) {
-	r, e := db.Insert(&Data)
+func AdminAdd(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
+	TableName := AdminTable + Outfit
+	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func AdminUpdate(db *xorm.Session, Data mod.Admin) (int64, error) {
-	r, e := db.ID(Data.ID).Update(&Data)
+func AdminUpdate(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
+	TableName := AdminTable + Outfit
+	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func AdminData(db *xorm.Session, ID int64) (mod.Admin, error) {
+func AdminData(db *xorm.Session, ID int64, Outfit string) (mod.Admin, error) {
+	TableName := AdminTable + Outfit
 	Data := mod.Admin{}
-	_, err := db.ID(ID).Get(&Data)
+	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64) (int, int, int, []mod.Admin) {
+func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
+	TableName := AdminTable + Outfit
 	Data := []mod.Admin{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -65,7 +70,7 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := AdminCount(db, Stext, Level, Status)
+	Count, _ := AdminCount(db, Stext, Level, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -74,9 +79,10 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 	return Page, PageSize, TotalPage, Data
 }
 
-func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64) []mod.Admin {
+func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
+	TableName := AdminTable + Outfit
 	Data := []mod.Admin{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -96,7 +102,8 @@ func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int
 	return Data
 }
 
-func AdminDel(db *xorm.Session, ID string) (int64, error) {
+func AdminDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+	TableName := AdminTable + Outfit
 	Data := mod.Admin{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -105,16 +112,17 @@ func AdminDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("`ID`", intArr).Delete(Data)
+		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
-		r, e := db.ID(ID).Delete(Data)
+		r, e := db.Table(TableName).ID(ID).Delete(Data)
 		return r, e
 	}
 }
 
-func AdminCheck(db *xorm.Session, Account, Password string) (mod.Admin, error) {
+func AdminCheck(db *xorm.Session, Account, Password string, Outfit string) (mod.Admin, error) {
+	TableName := AdminTable + Outfit
 	Data := mod.Admin{}
-	_, err := db.Table("Admin").Where("`Account` = ?", Account).Where("`Password` = ?", Password).Get(&Data)
+	_, err := db.Table(TableName).Where("`Account` = ?", Account).Where("`Password` = ?", Password).Get(&Data)
 	return Data, err
 }

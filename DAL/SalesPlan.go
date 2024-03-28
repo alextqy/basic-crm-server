@@ -9,9 +9,10 @@ import (
 	"xorm.io/xorm"
 )
 
-func SalesPlanCount(db *xorm.Session, Stext string, TargetID int64, Status int64) (int64, error) {
+func SalesPlanCount(db *xorm.Session, Stext string, TargetID int64, Status int64, Outfit string) (int64, error) {
+	TableName := SalesPlanTable + Outfit
 	Data := mod.SalesPlan{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
@@ -25,25 +26,29 @@ func SalesPlanCount(db *xorm.Session, Stext string, TargetID int64, Status int64
 	return r, e
 }
 
-func SalesPlanAdd(db *xorm.Session, Data mod.SalesPlan) (int64, error) {
-	r, e := db.Insert(&Data)
+func SalesPlanAdd(db *xorm.Session, Data mod.SalesPlan, Outfit string) (int64, error) {
+	TableName := SalesPlanTable + Outfit
+	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func SalesPlanUpdate(db *xorm.Session, Data mod.SalesPlan) (int64, error) {
-	r, e := db.ID(Data.ID).Update(&Data)
+func SalesPlanUpdate(db *xorm.Session, Data mod.SalesPlan, Outfit string) (int64, error) {
+	TableName := SalesPlanTable + Outfit
+	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func SalesPlanData(db *xorm.Session, ID int64) (mod.SalesPlan, error) {
+func SalesPlanData(db *xorm.Session, ID int64, Outfit string) (mod.SalesPlan, error) {
+	TableName := SalesPlanTable + Outfit
 	Data := mod.SalesPlan{}
-	_, err := db.ID(ID).Get(&Data)
+	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64) (int, int, int, []mod.SalesPlan) {
+func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, Outfit string) (int, int, int, []mod.SalesPlan) {
+	TableName := SalesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
@@ -65,7 +70,7 @@ func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext st
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := SalesPlanCount(db, Stext, TargetID, Status)
+	Count, _ := SalesPlanCount(db, Stext, TargetID, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -74,9 +79,10 @@ func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext st
 	return Page, PageSize, TotalPage, Data
 }
 
-func SalesPlanAll(db *xorm.Session, Order int, Stext string, TargetID int64, Status int64) []mod.SalesPlan {
+func SalesPlanAll(db *xorm.Session, Order int, Stext string, TargetID int64, Status int64, Outfit string) []mod.SalesPlan {
+	TableName := SalesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
@@ -96,7 +102,8 @@ func SalesPlanAll(db *xorm.Session, Order int, Stext string, TargetID int64, Sta
 	return Data
 }
 
-func SalesPlanDel(db *xorm.Session, ID string) (int64, error) {
+func SalesPlanDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+	TableName := SalesPlanTable + Outfit
 	Data := mod.SalesPlan{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -105,10 +112,10 @@ func SalesPlanDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("`ID`", intArr).Delete(Data)
+		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
-		r, e := db.ID(ID).Delete(Data)
+		r, e := db.Table(TableName).ID(ID).Delete(Data)
 		return r, e
 	}
 }

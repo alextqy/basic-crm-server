@@ -9,9 +9,10 @@ import (
 	"xorm.io/xorm"
 )
 
-func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) (int64, error) {
+func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int64, error) {
+	TableName := CustomerTable + Outfit
 	Data := mod.Customer{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
@@ -31,25 +32,29 @@ func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64,
 	return r, e
 }
 
-func CustomerAdd(db *xorm.Session, Data mod.Customer) (int64, error) {
-	r, e := db.Insert(&Data)
+func CustomerAdd(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
+	TableName := CustomerTable + Outfit
+	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func CustomerUpdate(db *xorm.Session, Data mod.Customer) (int64, error) {
-	r, e := db.ID(Data.ID).Update(&Data)
+func CustomerUpdate(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
+	TableName := CustomerTable + Outfit
+	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func CustomerData(db *xorm.Session, ID int64) (mod.Customer, error) {
+func CustomerData(db *xorm.Session, ID int64, Outfit string) (mod.Customer, error) {
+	TableName := CustomerTable + Outfit
 	Data := mod.Customer{}
-	_, err := db.ID(ID).Get(&Data)
+	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) (int, int, int, []mod.Customer) {
+func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
+	TableName := CustomerTable + Outfit
 	Data := []mod.Customer{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
@@ -77,7 +82,7 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := CustomerCount(db, Stext, Gender, Priority, CompanyID, ManagerID)
+	Count, _ := CustomerCount(db, Stext, Gender, Priority, CompanyID, ManagerID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -86,9 +91,10 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 	return Page, PageSize, TotalPage, Data
 }
 
-func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64) []mod.Customer {
+func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
+	TableName := CustomerTable + Outfit
 	Data := []mod.Customer{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
@@ -114,7 +120,8 @@ func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priori
 	return Data
 }
 
-func CustomerDel(db *xorm.Session, ID string) (int64, error) {
+func CustomerDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+	TableName := CustomerTable + Outfit
 	Data := mod.Customer{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -123,10 +130,10 @@ func CustomerDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("`ID`", intArr).Delete(Data)
+		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
-		r, e := db.ID(ID).Delete(Data)
+		r, e := db.Table(TableName).ID(ID).Delete(Data)
 		return r, e
 	}
 }

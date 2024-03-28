@@ -9,9 +9,10 @@ import (
 	"xorm.io/xorm"
 )
 
-func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, GroupID int64) (int64, error) {
+func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int64, error) {
+	TableName := ManagerTable + Outfit
 	Data := mod.Manager{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -28,25 +29,29 @@ func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, Gro
 	return r, e
 }
 
-func ManagerAdd(db *xorm.Session, Data mod.Manager) (int64, error) {
-	r, e := db.Insert(&Data)
+func ManagerAdd(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
+	TableName := ManagerTable + Outfit
+	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func ManagerUpdate(db *xorm.Session, Data mod.Manager) (int64, error) {
-	r, e := db.ID(Data.ID).Update(&Data)
+func ManagerUpdate(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
+	TableName := ManagerTable + Outfit
+	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func ManagerData(db *xorm.Session, ID int64) (mod.Manager, error) {
+func ManagerData(db *xorm.Session, ID int64, Outfit string) (mod.Manager, error) {
+	TableName := ManagerTable + Outfit
 	Data := mod.Manager{}
-	_, err := db.ID(ID).Get(&Data)
+	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64) (int, int, int, []mod.Manager) {
+func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.Manager) {
+	TableName := ManagerTable + Outfit
 	Data := []mod.Manager{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -71,7 +76,7 @@ func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := ManagerCount(db, Stext, Level, Status, GroupID)
+	Count, _ := ManagerCount(db, Stext, Level, Status, GroupID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -80,9 +85,10 @@ func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	return Page, PageSize, TotalPage, Data
 }
 
-func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, GroupID int64) []mod.Manager {
+func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.Manager {
+	TableName := ManagerTable + Outfit
 	Data := []mod.Manager{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -105,7 +111,8 @@ func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status i
 	return Data
 }
 
-func ManagerDel(db *xorm.Session, ID string) (int64, error) {
+func ManagerDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+	TableName := ManagerTable + Outfit
 	Data := mod.Manager{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -114,10 +121,10 @@ func ManagerDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("`ID`", intArr).Delete(Data)
+		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
-		r, e := db.ID(ID).Delete(Data)
+		r, e := db.Table(TableName).ID(ID).Delete(Data)
 		return r, e
 	}
 }

@@ -9,9 +9,10 @@ import (
 	"xorm.io/xorm"
 )
 
-func CompanyCount(db *xorm.Session, Stext string) (int64, error) {
+func CompanyCount(db *xorm.Session, Stext string, Outfit string) (int64, error) {
+	TableName := CompanyTable + Outfit
 	Data := mod.Company{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`CompanyName` LIKE ?", "%"+Stext+"%")
 	}
@@ -19,25 +20,29 @@ func CompanyCount(db *xorm.Session, Stext string) (int64, error) {
 	return r, e
 }
 
-func CompanyAdd(db *xorm.Session, Data mod.Company) (int64, error) {
-	r, e := db.Insert(&Data)
+func CompanyAdd(db *xorm.Session, Data mod.Company, Outfit string) (int64, error) {
+	TableName := CompanyTable + Outfit
+	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func CompanyUpdate(db *xorm.Session, Data mod.Company) (int64, error) {
-	r, e := db.ID(Data.ID).Update(&Data)
+func CompanyUpdate(db *xorm.Session, Data mod.Company, Outfit string) (int64, error) {
+	TableName := CompanyTable + Outfit
+	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func CompanyData(db *xorm.Session, ID int64) (mod.Company, error) {
+func CompanyData(db *xorm.Session, ID int64, Outfit string) (mod.Company, error) {
+	TableName := CompanyTable + Outfit
 	Data := mod.Company{}
-	_, err := db.ID(ID).Get(&Data)
+	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext string) (int, int, int, []mod.Company) {
+func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.Company) {
+	TableName := CompanyTable + Outfit
 	Data := []mod.Company{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`CompanyName` LIKE ?", "%"+Stext+"%")
 	}
@@ -53,7 +58,7 @@ func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := CompanyCount(db, Stext)
+	Count, _ := CompanyCount(db, Stext, TableName)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -62,9 +67,10 @@ func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	return Page, PageSize, TotalPage, Data
 }
 
-func CompanyAll(db *xorm.Session, Order int, Stext string) []mod.Company {
+func CompanyAll(db *xorm.Session, Order int, Stext string, Outfit string) []mod.Company {
+	TableName := CompanyTable + Outfit
 	Data := []mod.Company{}
-	engine := db.Where("1=1")
+	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
 		engine = engine.And("`CompanyName` LIKE ?", "%"+Stext+"%")
 	}
@@ -78,7 +84,8 @@ func CompanyAll(db *xorm.Session, Order int, Stext string) []mod.Company {
 	return Data
 }
 
-func CompanyDel(db *xorm.Session, ID string) (int64, error) {
+func CompanyDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+	TableName := CompanyTable + Outfit
 	Data := mod.Company{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -87,10 +94,10 @@ func CompanyDel(db *xorm.Session, ID string) (int64, error) {
 			_, _, n := lib.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.In("`ID`", intArr).Delete(Data)
+		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
 		return r, e
 	} else {
-		r, e := db.ID(ID).Delete(Data)
+		r, e := db.Table(TableName).ID(ID).Delete(Data)
 		return r, e
 	}
 }
