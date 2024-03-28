@@ -87,7 +87,7 @@ func FileReadBlock(filePath string, buffer int, start int) (bool, string, []byte
 }
 
 // 文件写入
-func FileWrite(filePath, content string) (bool, string) {
+func FileWrite(filePath, content string) (bool, error) {
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, 0600)
 
 	defer func(f io.Closer) {
@@ -97,14 +97,13 @@ func FileWrite(filePath, content string) (bool, string) {
 	}(f)
 
 	if err != nil {
-		return false, err.Error()
+		return false, err
 	} else {
 		_, writeErr := f.Write([]byte(content))
 		if writeErr != nil {
-			return false, err.Error()
-		} else {
-			return true, ""
+			return false, err
 		}
+		return true, nil
 	}
 }
 

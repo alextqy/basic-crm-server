@@ -2,13 +2,20 @@ package dal
 
 import (
 	"log"
+	"time"
 
+	_ "github.com/lib/pq"
 	"xorm.io/xorm"
 )
 
-func InitDB() (bool, string, *xorm.Session, *xorm.Engine) {
-	engine, err := xorm.NewEngine("postgres", "postgres://postgres:123456@localhost:5432/BasicCrm?sslmode=disable")
-
+func InitDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
+	conns := []string{
+		"postgres://postgres:123456@localhost:5432/BasicCrm?sslmode=disable",
+	}
+	engine, err := xorm.NewEngineGroup("postgres", conns)
+	engine.TZLocation, _ = time.LoadLocation("Asia/Shanghai")
+	engine.Ping()
+	engine.ShowSQL()
 	if err != nil {
 		engine.Close()
 		log.Fatal(err.Error())

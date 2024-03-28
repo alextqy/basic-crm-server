@@ -1,6 +1,7 @@
 package main
 
 import (
+	api "basic-crm-server/API"
 	lib "basic-crm-server/LIB"
 	"fmt"
 	"log"
@@ -56,4 +57,6 @@ func main() {
 	log.Fatal(server.ListenAndServe())
 }
 
-func routes(mux *http.ServeMux) {}
+func routes(mux *http.ServeMux) {
+	mux.HandleFunc("/sign/in", api.SignIn)
+}

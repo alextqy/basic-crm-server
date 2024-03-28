@@ -112,3 +112,9 @@ func AdminDel(db *xorm.Session, ID string) (int64, error) {
 		return r, e
 	}
 }
+
+func AdminCheck(db *xorm.Session, Account, Password string) (mod.Admin, error) {
+	Data := mod.Admin{}
+	_, err := db.Table("Admin").Where("`Account` = ?", Account).Where("`Password` = ?", Password).Get(&Data)
+	return Data, err
+}

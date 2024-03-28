@@ -315,7 +315,7 @@ func HExpire(key string, field string, expiration time.Duration) (success bool) 
 }
 
 // Set Key value with expiration and expiration callback function
-func Set(key string, value interface{}, expiration time.Duration, expirationFunc func(key string, value interface{})) (success bool) {
+func CacheSet(key string, value interface{}, expiration time.Duration, expirationFunc func(key string, value interface{})) (success bool) {
 	if key == "" {
 		return false
 	}
@@ -333,7 +333,7 @@ func Set(key string, value interface{}, expiration time.Duration, expirationFunc
 }
 
 // Get the vlaue of given key , if exist return true, or return false
-func Get(key string) (value interface{}, found bool) {
+func CacheGet(key string) (value interface{}, found bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	if _, ok := c.items[key]; ok {
