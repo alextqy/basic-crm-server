@@ -10,7 +10,7 @@ import (
 )
 
 func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int64, error) {
-	TableName := ManagerTable + Outfit
+	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -30,26 +30,26 @@ func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, Gro
 }
 
 func ManagerAdd(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
-	TableName := ManagerTable + Outfit
+	TableName := managerTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
 func ManagerUpdate(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
-	TableName := ManagerTable + Outfit
+	TableName := managerTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
 func ManagerData(db *xorm.Session, ID int64, Outfit string) (mod.Manager, error) {
-	TableName := ManagerTable + Outfit
+	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
 func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.Manager) {
-	TableName := ManagerTable + Outfit
+	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -86,7 +86,7 @@ func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 }
 
 func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.Manager {
-	TableName := ManagerTable + Outfit
+	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -112,7 +112,7 @@ func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status i
 }
 
 func ManagerDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
-	TableName := ManagerTable + Outfit
+	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

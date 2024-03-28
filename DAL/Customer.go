@@ -10,7 +10,7 @@ import (
 )
 
 func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int64, error) {
-	TableName := CustomerTable + Outfit
+	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -33,26 +33,26 @@ func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64,
 }
 
 func CustomerAdd(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
-	TableName := CustomerTable + Outfit
+	TableName := customerTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
 func CustomerUpdate(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
-	TableName := CustomerTable + Outfit
+	TableName := customerTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
 func CustomerData(db *xorm.Session, ID int64, Outfit string) (mod.Customer, error) {
-	TableName := CustomerTable + Outfit
+	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
 func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
-	TableName := CustomerTable + Outfit
+	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -92,7 +92,7 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 }
 
 func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
-	TableName := CustomerTable + Outfit
+	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -121,7 +121,7 @@ func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priori
 }
 
 func CustomerDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
-	TableName := CustomerTable + Outfit
+	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

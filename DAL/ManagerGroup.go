@@ -10,7 +10,7 @@ import (
 )
 
 func ManagerGroupCount(db *xorm.Session, Stext string, Outfit string) (int64, error) {
-	TableName := ManagerGroupTable + Outfit
+	TableName := managerGroupTable + Outfit
 	Data := mod.ManagerGroup{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -21,26 +21,26 @@ func ManagerGroupCount(db *xorm.Session, Stext string, Outfit string) (int64, er
 }
 
 func ManagerGroupAdd(db *xorm.Session, Data mod.ManagerGroup, Outfit string) (int64, error) {
-	TableName := ManagerGroupTable + Outfit
+	TableName := managerGroupTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
 func ManagerGroupUpdate(db *xorm.Session, Data mod.ManagerGroup, Outfit string) (int64, error) {
-	TableName := ManagerGroupTable + Outfit
+	TableName := managerGroupTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
 func ManagerGroupData(db *xorm.Session, ID int64, Outfit string) (mod.ManagerGroup, error) {
-	TableName := ManagerGroupTable + Outfit
+	TableName := managerGroupTable + Outfit
 	Data := mod.ManagerGroup{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
 func ManagerGroupList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.ManagerGroup) {
-	TableName := ManagerGroupTable + Outfit
+	TableName := managerGroupTable + Outfit
 	Data := []mod.ManagerGroup{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -68,7 +68,7 @@ func ManagerGroupList(db *xorm.Session, Page int, PageSize int, Order int, Stext
 }
 
 func ManagerGroupAll(db *xorm.Session, Order int, Stext string, Outfit string) []mod.ManagerGroup {
-	TableName := ManagerGroupTable + Outfit
+	TableName := managerGroupTable + Outfit
 	Data := []mod.ManagerGroup{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -85,7 +85,7 @@ func ManagerGroupAll(db *xorm.Session, Order int, Stext string, Outfit string) [
 }
 
 func ManagerGroupDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
-	TableName := ManagerGroupTable + Outfit
+	TableName := managerGroupTable + Outfit
 	Data := mod.ManagerGroup{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

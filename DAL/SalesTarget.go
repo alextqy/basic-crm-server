@@ -10,7 +10,7 @@ import (
 )
 
 func SalesTargetCount(db *xorm.Session, Stext string, CustomerID int64, Outfit string) (int64, error) {
-	TableName := SalesTargetTable + Outfit
+	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTarget{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -24,26 +24,26 @@ func SalesTargetCount(db *xorm.Session, Stext string, CustomerID int64, Outfit s
 }
 
 func SalesTargetAdd(db *xorm.Session, Data mod.SalesTarget, Outfit string) (int64, error) {
-	TableName := SalesTargetTable + Outfit
+	TableName := salesTargetTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
 func SalesTargetUpdate(db *xorm.Session, Data mod.SalesTarget, Outfit string) (int64, error) {
-	TableName := SalesTargetTable + Outfit
+	TableName := salesTargetTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
 func SalesTargetData(db *xorm.Session, ID int64, Outfit string) (mod.SalesTarget, error) {
-	TableName := SalesTargetTable + Outfit
+	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTarget{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
 func SalesTargetList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, CustomerID int64, Outfit string) (int, int, int, []mod.SalesTarget) {
-	TableName := SalesTargetTable + Outfit
+	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -74,7 +74,7 @@ func SalesTargetList(db *xorm.Session, Page int, PageSize int, Order int, Stext 
 }
 
 func SalesTargetAll(db *xorm.Session, Order int, Stext string, CustomerID int64, Outfit string) []mod.SalesTarget {
-	TableName := SalesTargetTable + Outfit
+	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -94,7 +94,7 @@ func SalesTargetAll(db *xorm.Session, Order int, Stext string, CustomerID int64,
 }
 
 func SalesTargetDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
-	TableName := SalesTargetTable + Outfit
+	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTarget{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

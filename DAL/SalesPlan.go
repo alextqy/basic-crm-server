@@ -10,7 +10,7 @@ import (
 )
 
 func SalesPlanCount(db *xorm.Session, Stext string, TargetID int64, Status int64, Outfit string) (int64, error) {
-	TableName := SalesPlanTable + Outfit
+	TableName := salesPlanTable + Outfit
 	Data := mod.SalesPlan{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -27,26 +27,26 @@ func SalesPlanCount(db *xorm.Session, Stext string, TargetID int64, Status int64
 }
 
 func SalesPlanAdd(db *xorm.Session, Data mod.SalesPlan, Outfit string) (int64, error) {
-	TableName := SalesPlanTable + Outfit
+	TableName := salesPlanTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
 func SalesPlanUpdate(db *xorm.Session, Data mod.SalesPlan, Outfit string) (int64, error) {
-	TableName := SalesPlanTable + Outfit
+	TableName := salesPlanTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
 func SalesPlanData(db *xorm.Session, ID int64, Outfit string) (mod.SalesPlan, error) {
-	TableName := SalesPlanTable + Outfit
+	TableName := salesPlanTable + Outfit
 	Data := mod.SalesPlan{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
 func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, Outfit string) (int, int, int, []mod.SalesPlan) {
-	TableName := SalesPlanTable + Outfit
+	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -80,7 +80,7 @@ func SalesPlanList(db *xorm.Session, Page int, PageSize int, Order int, Stext st
 }
 
 func SalesPlanAll(db *xorm.Session, Order int, Stext string, TargetID int64, Status int64, Outfit string) []mod.SalesPlan {
-	TableName := SalesPlanTable + Outfit
+	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -103,7 +103,7 @@ func SalesPlanAll(db *xorm.Session, Order int, Stext string, TargetID int64, Sta
 }
 
 func SalesPlanDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
-	TableName := SalesPlanTable + Outfit
+	TableName := salesPlanTable + Outfit
 	Data := mod.SalesPlan{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

@@ -10,7 +10,7 @@ import (
 )
 
 func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64, Outfit string) (int64, error) {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -27,26 +27,26 @@ func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64, Outfi
 }
 
 func AdminAdd(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
 func AdminUpdate(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
 func AdminData(db *xorm.Session, ID int64, Outfit string) (mod.Admin, error) {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
 func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -80,7 +80,7 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 }
 
 func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -103,7 +103,7 @@ func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int
 }
 
 func AdminDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -121,7 +121,7 @@ func AdminDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
 }
 
 func AdminCheck(db *xorm.Session, Account, Password string, Outfit string) (mod.Admin, error) {
-	TableName := AdminTable + Outfit
+	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	_, err := db.Table(TableName).Where("`Account` = ?", Account).Where("`Password` = ?", Password).Get(&Data)
 	return Data, err

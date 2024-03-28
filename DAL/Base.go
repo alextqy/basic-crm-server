@@ -2,21 +2,26 @@ package dal
 
 import (
 	"log"
+	"sync"
 	"time"
 
 	_ "github.com/lib/pq"
 	"xorm.io/xorm"
 )
 
-var AdminTable = "Admin"
-var CompanyTable = "Company"
-var CustomerTable = "Customer"
-var ManagerTable = "Manager"
-var ManagerGroupTable = "ManagerGroup"
-var SalesPlanTable = "SalesPlan"
-var SalesTargetTable = "SalesTarget"
+var adminTable = "Admin"
+var companyTable = "Company"
+var customerTable = "Customer"
+var managerTable = "Manager"
+var managerGroupTable = "ManagerGroup"
+var salesPlanTable = "SalesPlan"
+var salesTargetTable = "SalesTarget"
 
-func InitDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
+// var mu sync.Mutex
+var xOnce sync.Once
+var xSession *xorm.Session
+
+func initDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
 	conns := []string{
 		"postgres://postgres:123456@localhost:5432/BasicCrm?sslmode=disable",
 	}
@@ -33,4 +38,22 @@ func InitDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
 		defer session.Close()
 		return true, "", session, engine
 	}
+}
+
+// func ConnDB() *xorm.Session {
+// 	if xSession == nil {
+// 		mu.Lock()
+// 		defer mu.Unlock()
+// 		if xSession == nil {
+// 			_, _, xSession, _ = initDB()
+// 		}
+// 	}
+// 	return xSessions
+// }
+
+func ConnDB() *xorm.Session {
+	xOnce.Do(func() {
+		_, _, xSession, _ = initDB()
+	})
+	return xSession
 }

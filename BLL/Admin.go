@@ -7,7 +7,7 @@ import (
 
 func SignIn(Account, Password string) mod.Result {
 	result := mod.Result{}
-	_, _, db, _ := dal.InitDB()
+	db := dal.ConnDB()
 	r, e := dal.AdminCheck(db, Account, Password, "")
 	if e != nil {
 		result.Message = e.Error()

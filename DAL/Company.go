@@ -10,7 +10,7 @@ import (
 )
 
 func CompanyCount(db *xorm.Session, Stext string, Outfit string) (int64, error) {
-	TableName := CompanyTable + Outfit
+	TableName := companyTable + Outfit
 	Data := mod.Company{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -21,26 +21,26 @@ func CompanyCount(db *xorm.Session, Stext string, Outfit string) (int64, error) 
 }
 
 func CompanyAdd(db *xorm.Session, Data mod.Company, Outfit string) (int64, error) {
-	TableName := CompanyTable + Outfit
+	TableName := companyTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
 func CompanyUpdate(db *xorm.Session, Data mod.Company, Outfit string) (int64, error) {
-	TableName := CompanyTable + Outfit
+	TableName := companyTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
 func CompanyData(db *xorm.Session, ID int64, Outfit string) (mod.Company, error) {
-	TableName := CompanyTable + Outfit
+	TableName := companyTable + Outfit
 	Data := mod.Company{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
 func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.Company) {
-	TableName := CompanyTable + Outfit
+	TableName := companyTable + Outfit
 	Data := []mod.Company{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -68,7 +68,7 @@ func CompanyList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 }
 
 func CompanyAll(db *xorm.Session, Order int, Stext string, Outfit string) []mod.Company {
-	TableName := CompanyTable + Outfit
+	TableName := companyTable + Outfit
 	Data := []mod.Company{}
 	engine := db.Table(TableName).Where("1=1")
 	if Stext != "" {
@@ -85,7 +85,7 @@ func CompanyAll(db *xorm.Session, Order int, Stext string, Outfit string) []mod.
 }
 
 func CompanyDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
-	TableName := CompanyTable + Outfit
+	TableName := companyTable + Outfit
 	Data := mod.Company{}
 	if lib.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
