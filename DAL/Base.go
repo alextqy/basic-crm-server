@@ -3,6 +3,7 @@ package dal
 import (
 	mtd "basic-crm-server/MTD"
 	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -22,16 +23,16 @@ var salesTargetTable = "SalesTarget"
 var xOnce sync.Once
 var xSession *xorm.Session
 
-func initDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
+func initDB() (bool, *xorm.Session, *xorm.EngineGroup) {
 	conf := mtd.CheckConf()
 	conns := []string{
 		"postgres://" + conf.DbUser + ":" + conf.DbPwd + "@" + conf.DbHost + ":" + conf.DbPort + "/BasicCrm?sslmode=disable",
 	}
 	engine, err := xorm.NewEngineGroup("postgres", conns)
 	if err != nil {
-		engine.Close()
 		log.Panic(err.Error())
-		return false, err.Error(), nil, nil
+		engine.Close()
+		return false, nil, nil
 	} else {
 		engine.SetMaxOpenConns(100) // 连接池中最大连接数
 		engine.SetMaxIdleConns(5)   // 连接池中最大空闲连接数
@@ -41,7 +42,7 @@ func initDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
 
 		session := engine.NewSession()
 		defer session.Close()
-		return true, "", session, engine
+		return true, session, engine
 	}
 }
 
@@ -50,15 +51,19 @@ func initDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
 // 		mu.Lock()
 // 		defer mu.Unlock()
 // 		if xSession == nil {
-// 			_, _, xSession, _ = initDB()
+// 			_, xSession, _ = initDB()
 // 		}
 // 	}
 // 	return xSessions
 // }
 
 func ConnDB() *xorm.Session {
+	var b bool
 	xOnce.Do(func() {
-		_, _, xSession, _ = initDB()
+		b, xSession, _ = initDB()
+		if !b {
+			os.Exit(0)
+		}
 	})
 	return xSession
 }
