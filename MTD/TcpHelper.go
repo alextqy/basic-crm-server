@@ -10,8 +10,10 @@ import (
 	"time"
 )
 
+type TcpHelper struct{}
+
 // tcp socket 服务器端
-func TcpServer(ip, port, content string) {
+func (t *TcpHelper) TcpServer(ip, port, content string) {
 	addr, err := net.ResolveTCPAddr("tcp", ip+":"+port)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -27,12 +29,13 @@ func TcpServer(ip, port, content string) {
 			fmt.Println("abnormal network monitoring", err.Error())
 			continue
 		}
-		clientMessage(conn)
+		t.clientMessage(conn)
 		conn.Close()
 		fmt.Println(conn.RemoteAddr(), ": actively disconnect")
 	}
 }
-func clientMessage(conn net.Conn) {
+
+func (t *TcpHelper) clientMessage(conn net.Conn) {
 	buf := [...]byte{}
 	for {
 		readSize, err1 := conn.Read(buf[0:])
@@ -48,7 +51,7 @@ func clientMessage(conn net.Conn) {
 	}
 }
 
-func TcpServerPlus(ip, port string) {
+func (t *TcpHelper) TcpServerPlus(ip, port string) {
 	addr, err := net.ResolveTCPAddr("tcp", ip+":"+port)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -64,11 +67,11 @@ func TcpServerPlus(ip, port string) {
 			continue
 		}
 		// 编程高性能并发服务器端
-		go handlerConn(conn)
+		go t.handlerConn(conn)
 	}
 }
 
-func handlerConn(conn net.Conn) {
+func (t *TcpHelper) handlerConn(conn net.Conn) {
 	defer fmt.Println("The client " + conn.RemoteAddr().String() + " actively disconnects")
 	defer conn.Close() // 正常链接情况下，handlerConn不会释放出来到这里 当客户端强制断开，才会return到这里关闭当前conn
 	fmt.Println("New client " + conn.RemoteAddr().String())
@@ -82,7 +85,7 @@ func handlerConn(conn net.Conn) {
 			log.Fatal(err.Error())
 		}
 		remoteAddr := conn.RemoteAddr()
-		gorid := GetGoroutineID()
+		gorid := t.GetGoroutineID()
 		fmt.Println("协程id: "+strconv.FormatUint(gorid, 10)+" 来自远程ip:", remoteAddr, " 的消息:", string(buf[0:readSize]))
 		_, err2 := conn.Write([]byte(string(buf[0:readSize]) + " " + time.Now().String()))
 		// 一定要执行下面的return 才能监听到客户端主动断开，服务器端对本次conn进行close处理 dealErrorWithReturn不能达到这个效果。
@@ -91,7 +94,7 @@ func handlerConn(conn net.Conn) {
 		}
 	}
 }
-func GetGoroutineID() uint64 {
+func (t *TcpHelper) GetGoroutineID() uint64 {
 	b := make([]byte, 64)
 	runtime.Stack(b, false)
 	b = bytes.TrimPrefix(b, []byte("goroutine "))

@@ -22,11 +22,13 @@ import (
 	"time"
 )
 
-func GetEnv(key string) string {
+type SysHelper struct{}
+
+func (s *SysHelper) GetEnv(key string) string {
 	return os.Getenv(key)
 }
 
-func LocalIP() (bool, string, []string) {
+func (s *SysHelper) LocalIP() (bool, string, []string) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		return false, err.Error(), nil
@@ -43,15 +45,15 @@ func LocalIP() (bool, string, []string) {
 	}
 }
 
-func StringToByte(data string) []byte {
+func (s *SysHelper) StringToByte(data string) []byte {
 	return []byte(data)
 }
 
-func ByteToString(data []byte) string {
+func (s *SysHelper) ByteToString(data []byte) string {
 	return string(data)
 }
 
-func StringToInt(data string) (bool, string, int) {
+func (s *SysHelper) StringToInt(data string) (bool, string, int) {
 	res, err := strconv.Atoi(data)
 	if err != nil {
 		return false, err.Error(), 0
@@ -60,7 +62,7 @@ func StringToInt(data string) (bool, string, int) {
 	}
 }
 
-func StringToInt64(data string) (bool, string, int64) {
+func (s *SysHelper) StringToInt64(data string) (bool, string, int64) {
 	res, err := strconv.ParseInt(data, 10, 64)
 	if err != nil {
 		return false, err.Error(), 0
@@ -69,72 +71,72 @@ func StringToInt64(data string) (bool, string, int64) {
 	}
 }
 
-func IntToString(data int) string {
+func (s *SysHelper) IntToString(data int) string {
 	return strconv.Itoa(data)
 }
 
-func Int64ToString(data int64) string {
+func (s *SysHelper) Int64ToString(data int64) string {
 	return strconv.FormatInt(data, 10)
 }
 
-func StringToFloat64(data string) (bool, string, float64) {
-	s, err := strconv.ParseFloat(data, 64)
+func (s *SysHelper) StringToFloat64(data string) (bool, string, float64) {
+	r, err := strconv.ParseFloat(data, 64)
 	if err != nil {
 		return false, err.Error(), 0
 	} else {
-		return true, "", s
+		return true, "", r
 	}
 }
 
-func Float64ToString(data float64) string {
+func (s *SysHelper) Float64ToString(data float64) string {
 	return strconv.FormatFloat(data, 'E', -1, 32)
 }
 
-func IntToBytes(data int) []byte {
+func (s *SysHelper) IntToBytes(data int) []byte {
 	dataInt := int32(data)
 	bytesBuffer := bytes.NewBuffer([]byte{})
 	binary.Write(bytesBuffer, binary.BigEndian, dataInt)
 	return bytesBuffer.Bytes()
 }
 
-func BytesToInt(data []byte) int {
+func (s *SysHelper) BytesToInt(data []byte) int {
 	bytesBuffer := bytes.NewBuffer(data)
 	var dataInt int32
 	binary.Read(bytesBuffer, binary.BigEndian, &dataInt)
 	return int(dataInt)
 }
 
-func TimeNow() time.Time {
+func (s *SysHelper) TimeNow() time.Time {
 	return time.Now()
 }
 
-func TimeNowStr() string {
+func (s *SysHelper) TimeNowStr() string {
 	return time.Now().Format("2006-01-02 15:04:05") // 2006-01-02 15:04:05 golang立项时间
 }
 
-func TimeStamp() int64 {
+func (s *SysHelper) TimeStamp() int64 {
 	return time.Now().Unix()
 }
 
-func TimeStampMS() int64 {
+func (s *SysHelper) TimeStampMS() int64 {
 	return time.Now().UnixNano()
 }
 
-func TimeStampToStr(t int64) string {
+func (s *SysHelper) TimeStampToStr(t int64) string {
 	return time.Unix(t, 0).Format("2006-01-02 15:04:05")
 }
 
-func MD5(s string) string {
+func (s *SysHelper) MD5(p string) string {
 	hasher := md5.New()
-	hasher.Write([]byte(s))
+	hasher.Write([]byte(p))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func EnBase64(s string) string {
-	return base64.StdEncoding.EncodeToString([]byte(s))
+func (s *SysHelper) EnBase64(p string) string {
+	return base64.StdEncoding.EncodeToString([]byte(p))
 }
 
-func DeBase64(s64 string) (bool, string, string) {
+func (s *SysHelper) DeBase64(s64 string) (bool, string, string) {
 	decoded, err := base64.StdEncoding.DecodeString(s64)
 	if err != nil {
 		return false, err.Error(), ""
@@ -142,12 +144,12 @@ func DeBase64(s64 string) (bool, string, string) {
 	return true, "", string(decoded)
 }
 
-func StringContains(data, subs string) bool {
+func (s *SysHelper) StringContains(data, subs string) bool {
 	return strings.Contains(data, subs)
 }
 
 // 随机字符串
-func RandStr(n int) string {
+func (s *SysHelper) RandStr(n int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	b := make([]rune, n)
 	for i := range b {
@@ -162,7 +164,7 @@ data 待加密的明文
 key 秘钥
 vi 向量
 */
-func AesEncrypterCBC(data_s, key_s, iv_s string) (bool, string, string) {
+func (s *SysHelper) AesEncrypterCBC(data_s, key_s, iv_s string) (bool, string, string) {
 	data := []byte(data_s)
 	key := []byte(key_s)
 	iv := []byte(iv_s)
@@ -190,7 +192,7 @@ data 待解密的密文
 key 秘钥
 vi 向量
 */
-func AesDecrypterCBC(data_s, key_s, iv_s string) (bool, string, string) {
+func (s *SysHelper) AesDecrypterCBC(data_s, key_s, iv_s string) (bool, string, string) {
 	data := []byte(data_s)
 	key := []byte(key_s)
 	iv := []byte(iv_s)
@@ -206,72 +208,72 @@ func AesDecrypterCBC(data_s, key_s, iv_s string) (bool, string, string) {
 }
 
 // 大小写英文字母
-func RegEn(s string) bool {
+func (s *SysHelper) RegEn(p string) bool {
 	r, err := regexp.Compile("^[a-zA-Z]+$")
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	return r.MatchString(s)
+	return r.MatchString(p)
 }
 
 // 数字
-func RegNum(s string) bool {
+func (s *SysHelper) RegNum(p string) bool {
 	r, err := regexp.Compile("^[0-9]*$")
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	return r.MatchString(s)
+	return r.MatchString(p)
 }
 
 // 中文
-func RegZh(s string) bool {
+func (s *SysHelper) RegZh(p string) bool {
 	r, err := regexp.Compile("[\u4e00-\u9fa5]")
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	return r.MatchString(s)
+	return r.MatchString(p)
 }
 
 // 英文 数字
-func RegEnNum(s string) bool {
+func (s *SysHelper) RegEnNum(p string) bool {
 	r, err := regexp.Compile("^[a-zA-Z0-9]+$")
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	return r.MatchString(s)
+	return r.MatchString(p)
 }
 
 // 中英文 数字 下划线 短横线 中英文(逗号 句号 分号 感叹号 换行符 任何空白字符)
-func RegWriting(s string) bool {
+func (s *SysHelper) RegWriting(p string) bool {
 	r, err := regexp.Compile("^[\u4e00-\u9fa5_a-zA-Z0-9-,.;!，。；！\\n\\s]+$")
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	return r.MatchString(s)
+	return r.MatchString(p)
 }
 
 // 中英文 数字 下划线 短横线
-func RegAll(s string) bool {
+func (s *SysHelper) RegAll(p string) bool {
 	r, err := regexp.Compile("^[\u4e00-\u9fa5_a-zA-Z0-9-]+$")
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	return r.MatchString(s)
+	return r.MatchString(p)
 }
 
-func RegEmail(s string) bool {
+func (s *SysHelper) RegEmail(p string) bool {
 	r, err := regexp.Compile(`\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*`)
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	return r.MatchString(s)
+	return r.MatchString(p)
 }
 
 /*
@@ -284,7 +286,7 @@ to 客户邮箱
 subject 标题(Reset Password)
 body 内容(验证码)
 */
-func SendEmail(account, password, sender, host, to, subject, body string) (bool, string) {
+func (s *SysHelper) SendEmail(account, password, sender, host, to, subject, body string) (bool, string) {
 	if account == "" {
 		return false, "incorrect account"
 	}
@@ -317,38 +319,41 @@ func SendEmail(account, password, sender, host, to, subject, body string) (bool,
 	return true, ""
 }
 
-func LogDir() string {
-	return "./Log/" + strings.Split(TimeNowStr(), " ")[0] + "/"
+func (s *SysHelper) LogDir() string {
+	c := SysHelper{}
+	return "./Log/" + strings.Split(c.TimeNowStr(), " ")[0] + "/"
 }
 
-func WriteLog(fileName, content string) (bool, string) {
-	if !FileExist(LogDir()) {
-		b, s := DirMake(LogDir())
+func (s *SysHelper) WriteLog(fileName, content string) (bool, string) {
+	f := FileHelper{}
+	if !f.FileExist(s.LogDir()) {
+		b, s := f.DirMake(s.LogDir())
 		if !b {
 			return false, s
 		}
 	}
-	logFile := LogDir() + fileName + ".log"
-	if !FileExist(logFile) {
-		b, s := FileMake(logFile)
+	logFile := s.LogDir() + fileName + ".log"
+	if !f.FileExist(logFile) {
+		b, s := f.FileMake(logFile)
 		if !b {
 			return false, s
 		}
 	}
-	b, s := FileWriteAppend(logFile, TimeNowStr()+" "+content+""+"\n")
+	b, c := f.FileWriteAppend(logFile, s.TimeNowStr()+" "+content+""+"\n")
 	if !b {
-		return false, s
+		return false, c
 	}
 	return true, ""
 }
 
-func CheckConf() mod.Conf {
+func (s *SysHelper) CheckConf() mod.Conf {
+	f := FileHelper{}
 	var conf mod.Conf
-	if !FileExist("./Conf.json") {
+	if !f.FileExist("./Conf.json") {
 		log.Panic("The system configuration failed")
 		os.Exit(0)
 	}
-	_, byteData := FileRead("./Conf.json")
+	_, byteData := f.FileRead("./Conf.json")
 	json.Unmarshal([]byte(byteData), &conf)
 	return conf
 }

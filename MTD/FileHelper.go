@@ -10,21 +10,23 @@ import (
 	"os"
 )
 
+type FileHelper struct{}
+
 // 文件检查
-func FileExist(filePath string) bool {
+func (f *FileHelper) FileExist(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return !os.IsNotExist(err)
 }
 
 // 新建文件
-func FileMake(filePath string) (bool, string) {
-	f, err := os.Create(filePath)
+func (f *FileHelper) FileMake(filePath string) (bool, string) {
+	r, err := os.Create(filePath)
 
-	defer func(f io.Closer) {
-		if err := f.Close(); err != nil {
+	defer func(r io.Closer) {
+		if err := r.Close(); err != nil {
 			fmt.Printf("defer close file err: %v", err.Error())
 		}
-	}(f)
+	}(r)
 
 	if err != nil {
 		return false, err.Error()
@@ -33,7 +35,7 @@ func FileMake(filePath string) (bool, string) {
 }
 
 // 文件删除
-func FileRemove(filePath string) (bool, string) {
+func (f *FileHelper) FileRemove(filePath string) (bool, string) {
 	err := os.Remove(filePath)
 	if err != nil {
 		return false, err.Error()
@@ -42,7 +44,7 @@ func FileRemove(filePath string) (bool, string) {
 }
 
 // 文件重命名
-func FileRename(filePath, newName string) (bool, string) {
+func (f *FileHelper) FileRename(filePath, newName string) (bool, string) {
 	err := os.Rename(filePath, newName)
 	if err != nil {
 		return false, err.Error()
@@ -51,7 +53,7 @@ func FileRename(filePath, newName string) (bool, string) {
 }
 
 // 文件信息
-func Filespec(filePath string) (bool, os.FileInfo) {
+func (f *FileHelper) Filespec(filePath string) (bool, os.FileInfo) {
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
 		return false, nil
@@ -60,7 +62,7 @@ func Filespec(filePath string) (bool, os.FileInfo) {
 }
 
 // 文件读取
-func FileRead(filePath string) (bool, string) {
+func (f *FileHelper) FileRead(filePath string) (bool, string) {
 	contentByte, readErr := os.ReadFile(filePath)
 	if readErr != nil {
 		return false, readErr.Error()
@@ -71,15 +73,15 @@ func FileRead(filePath string) (bool, string) {
 // 文件分块读取(二进制)
 // buffer 偏移量
 // start 开始读取的位置
-func FileReadBlock(filePath string, buffer int, start int) (bool, string, []byte) {
-	f, err := os.Open(filePath)
+func (f *FileHelper) FileReadBlock(filePath string, buffer int, start int) (bool, string, []byte) {
+	r, err := os.Open(filePath)
 	if err != nil {
 		return false, err.Error(), nil
 	}
-	defer f.Close()
+	defer r.Close()
 
 	b := make([]byte, buffer)
-	n, err := f.ReadAt(b, int64(start))
+	n, err := r.ReadAt(b, int64(start))
 	if err != nil && err != io.EOF {
 		return false, err.Error(), nil
 	}
@@ -87,19 +89,19 @@ func FileReadBlock(filePath string, buffer int, start int) (bool, string, []byte
 }
 
 // 文件写入
-func FileWrite(filePath, content string) (bool, error) {
-	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, 0600)
+func (f *FileHelper) FileWrite(filePath, content string) (bool, error) {
+	r, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, 0600)
 
-	defer func(f io.Closer) {
-		if err := f.Close(); err != nil {
+	defer func(r io.Closer) {
+		if err := r.Close(); err != nil {
 			fmt.Printf("defer close file err: %v", err.Error())
 		}
-	}(f)
+	}(r)
 
 	if err != nil {
 		return false, err
 	} else {
-		_, writeErr := f.Write([]byte(content))
+		_, writeErr := r.Write([]byte(content))
 		if writeErr != nil {
 			return false, err
 		}
@@ -108,19 +110,19 @@ func FileWrite(filePath, content string) (bool, error) {
 }
 
 // 文件写入追加
-func FileWriteAppend(filePath, content string) (bool, string) {
-	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
+func (f *FileHelper) FileWriteAppend(filePath, content string) (bool, string) {
+	r, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
 
-	defer func(f io.Closer) {
-		if err := f.Close(); err != nil {
+	defer func(r io.Closer) {
+		if err := r.Close(); err != nil {
 			fmt.Printf("defer close file err: %v", err.Error())
 		}
-	}(f)
+	}(r)
 
 	if err != nil {
 		return false, err.Error()
 	} else {
-		write := bufio.NewWriter(f)
+		write := bufio.NewWriter(r)
 		write.WriteString(content)
 		write.Flush()
 		return true, ""
@@ -128,20 +130,20 @@ func FileWriteAppend(filePath, content string) (bool, string) {
 }
 
 // 文件二进制写入
-func FileWriteByte(filePath string, content []byte) (bool, string) {
-	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
-	defer func(f io.Closer) {
-		if err := f.Close(); err != nil {
+func (f *FileHelper) FileWriteByte(filePath string, content []byte) (bool, string) {
+	r, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND, 0666)
+	defer func(r io.Closer) {
+		if err := r.Close(); err != nil {
 			fmt.Printf("defer close file err: %v", err.Error())
 		}
-	}(f)
+	}(r)
 	if err != nil {
 		return false, err.Error()
 	}
 
 	var bytesBuffer bytes.Buffer
 	binary.Write(&bytesBuffer, binary.LittleEndian, content)
-	_, err = f.Write(bytesBuffer.Bytes())
+	_, err = r.Write(bytesBuffer.Bytes())
 	if err != nil {
 		return false, err.Error()
 	}
@@ -150,7 +152,7 @@ func FileWriteByte(filePath string, content []byte) (bool, string) {
 }
 
 // 新建文件夹
-func DirMake(dirPath string) (bool, string) {
+func (f *FileHelper) DirMake(dirPath string) (bool, string) {
 	err := os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
 		return false, err.Error()
@@ -160,7 +162,7 @@ func DirMake(dirPath string) (bool, string) {
 }
 
 // 文件夹信息
-func DirCheck(dirPath string) (bool, string, []fs.DirEntry) {
+func (f *FileHelper) DirCheck(dirPath string) (bool, string, []fs.DirEntry) {
 	files, err := os.ReadDir(dirPath)
 	if err != nil {
 		return false, err.Error(), nil
@@ -169,7 +171,7 @@ func DirCheck(dirPath string) (bool, string, []fs.DirEntry) {
 }
 
 // 文件删除
-func DirDel(dirPath string) (bool, string) {
+func (f *FileHelper) DirDel(dirPath string) (bool, string) {
 	err := os.RemoveAll(dirPath)
 	if err != nil {
 		return false, err.Error()
@@ -178,7 +180,7 @@ func DirDel(dirPath string) (bool, string) {
 }
 
 // 遍历文件夹
-func DirTraverse(dirPath string) (bool, string, []string, []string) {
+func (f *FileHelper) DirTraverse(dirPath string) (bool, string, []string, []string) {
 	dir, err := os.ReadDir(dirPath)
 	if err != nil {
 		return false, err.Error(), nil, nil

@@ -9,23 +9,25 @@ import (
 	"strings"
 )
 
-func GetMap(r *http.Request) map[string][]string {
+type HttpHelper struct{}
+
+func (httpHelper *HttpHelper) GetMap(r *http.Request) map[string][]string {
 	return r.Form
 }
 
-func PostMap(r *http.Request) map[string][]string {
+func (httpHelper *HttpHelper) PostMap(r *http.Request) map[string][]string {
 	return r.PostForm
 }
 
-func Get(r *http.Request, key string) string {
+func (httpHelper *HttpHelper) Get(r *http.Request, key string) string {
 	return strings.TrimSpace(r.URL.Query().Get(key))
 }
 
-func Post(r *http.Request, key string) string {
+func (httpHelper *HttpHelper) Post(r *http.Request, key string) string {
 	return strings.TrimSpace(r.PostFormValue(key))
 }
 
-func FormFile(w http.ResponseWriter, r *http.Request, key string) (bool, string) {
+func (httpHelper *HttpHelper) FormFile(w http.ResponseWriter, r *http.Request, key string) (bool, string) {
 	f, fheader, err := r.FormFile("file")
 	defer func(f io.Closer) {
 		if err := f.Close(); err != nil {
@@ -54,7 +56,7 @@ func FormFile(w http.ResponseWriter, r *http.Request, key string) (bool, string)
 	return true, newf.Name()
 }
 
-func HttpWrite(w http.ResponseWriter, Data interface{}) (int, error) {
+func (httpHelper *HttpHelper) HttpWrite(w http.ResponseWriter, Data interface{}) (int, error) {
 	j, err := json.Marshal(Data)
 	if err != nil {
 		return 0, err

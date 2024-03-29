@@ -23,8 +23,10 @@ var salesTargetTable = "SalesTarget"
 var xOnce sync.Once
 var xSession *xorm.Session
 
+var sysHelper = mtd.SysHelper{}
+
 func initDB() (bool, *xorm.Session, *xorm.EngineGroup) {
-	conf := mtd.CheckConf()
+	conf := sysHelper.CheckConf()
 	conns := []string{
 		"postgres://" + conf.DbUser + ":" + conf.DbPwd + "@" + conf.DbHost + ":" + conf.DbPort + "/BasicCrm?sslmode=disable",
 	}

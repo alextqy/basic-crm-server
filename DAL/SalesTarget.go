@@ -2,7 +2,6 @@ package dal
 
 import (
 	mod "basic-crm-server/MOD"
-	mtd "basic-crm-server/MTD"
 	"math"
 	"strings"
 
@@ -96,11 +95,11 @@ func SalesTargetAll(db *xorm.Session, Order int, Stext string, CustomerID int64,
 func SalesTargetDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
 	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTarget{}
-	if mtd.StringContains(ID, ",") {
+	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}
 		for i := 0; i < len(ids); i++ {
-			_, _, n := mtd.StringToInt(ids[i])
+			_, _, n := sysHelper.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
 		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)

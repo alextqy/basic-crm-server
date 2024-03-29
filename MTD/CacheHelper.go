@@ -5,9 +5,7 @@ import (
 	"time"
 )
 
-var c = &cache{}
-
-type cache struct {
+type CacheHelper struct {
 	mu            sync.RWMutex
 	items         map[string]interface{}
 	itemFunc      map[string]func(key string, value interface{})
@@ -15,15 +13,15 @@ type cache struct {
 }
 
 // return
-func init() {
+func (c *CacheHelper) init() {
 	c.items = make(map[string]interface{})
 	c.itemFunc = make(map[string]func(key string, value interface{}))
 	c.itemFieldFunc = make(map[string]map[string]func(key string, field string, value interface{}))
-	Start(runJanitor)
+	Start(c.runJanitor)
 }
 
 // Reset the expiration
-func Expire(key string, expiration time.Duration) (success bool) {
+func (c *CacheHelper) Expire(key string, expiration time.Duration) (success bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if _, ok := c.items[key]; !ok {
@@ -40,7 +38,7 @@ func Expire(key string, expiration time.Duration) (success bool) {
 
 // Delete the item
 // remove the item or item field resource
-func Del(keys ...string) (success int64) {
+func (c *CacheHelper) Del(keys ...string) (success int64) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	var count int64
@@ -53,7 +51,7 @@ func Del(keys ...string) (success int64) {
 			{
 				if fieldMap, ok := c.items[key].(map[string]interface{}); ok {
 					for field := range fieldMap {
-						removeJanitor(key, field)
+						c.removeJanitor(key, field)
 					}
 				}
 			}
@@ -61,7 +59,7 @@ func Del(keys ...string) (success int64) {
 			//  remove item resource
 			{
 				delete(c.items, key)
-				removeJanitor(key, "")
+				c.removeJanitor(key, "")
 			}
 		}
 	}
@@ -69,7 +67,7 @@ func Del(keys ...string) (success int64) {
 }
 
 // Create a goroutine to clean the key resource when timer expired
-func runJanitor(data interface{}) {
+func (c *CacheHelper) runJanitor(data interface{}) {
 	dataMap := data.(map[string]string)
 	key := dataMap["key"]
 	field := dataMap["field"]
@@ -129,7 +127,7 @@ func runJanitor(data interface{}) {
 
 // removeJanitor
 // remove the janitor of the item or item field
-func removeJanitor(key string, field string) {
+func (c *CacheHelper) removeJanitor(key string, field string) {
 	StopTimer(key + ":::" + field)
 	if field == "" {
 		// remove the item func
@@ -146,7 +144,7 @@ func removeJanitor(key string, field string) {
 }
 
 // HMSet Batch Set the hash field
-func HMSet(key string, values ...interface{}) (success bool) {
+func (c *CacheHelper) HMSet(key string, values ...interface{}) (success bool) {
 	if len(values) == 0 || len(values)%2 != 0 {
 		return false
 	}
@@ -181,7 +179,7 @@ func HMSet(key string, values ...interface{}) (success bool) {
 }
 
 // HSet Set the hash field with expiration and expiration callback function
-func HSet(
+func (c *CacheHelper) HSet(
 	key string,
 	field string,
 	value interface{},
@@ -226,7 +224,7 @@ func HSet(
 }
 
 // Get All Hash key value
-func HGetAll(key string) (value map[string]interface{}, found bool) {
+func (c *CacheHelper) HGetAll(key string) (value map[string]interface{}, found bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	// if not a map, return false
@@ -238,7 +236,7 @@ func HGetAll(key string) (value map[string]interface{}, found bool) {
 }
 
 // Get hash field value, if found return true
-func HGet(key string, field string) (value interface{}, found bool) {
+func (c *CacheHelper) HGet(key string, field string) (value interface{}, found bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	// if not a map, return false
@@ -254,7 +252,7 @@ func HGet(key string, field string) (value interface{}, found bool) {
 }
 
 // Delete Hash field, if success return true
-func HDel(key string, fields ...string) (count int64, success bool) {
+func (c *CacheHelper) HDel(key string, fields ...string) (count int64, success bool) {
 	if key == "" {
 		return 0, false
 	}
@@ -269,7 +267,7 @@ func HDel(key string, fields ...string) (count int64, success bool) {
 			if _, ok := fieldMap[field]; ok {
 				count++
 				delete(fieldMap, field)
-				removeJanitor(key, field)
+				c.removeJanitor(key, field)
 			}
 		}
 		// reset the item value
@@ -290,7 +288,7 @@ func HDel(key string, fields ...string) (count int64, success bool) {
 }
 
 // Reset the expiration of the hash field
-func HExpire(key string, field string, expiration time.Duration) (success bool) {
+func (c *CacheHelper) HExpire(key string, field string, expiration time.Duration) (success bool) {
 	if key == "" || field == "" {
 		return false
 	}
@@ -315,7 +313,7 @@ func HExpire(key string, field string, expiration time.Duration) (success bool) 
 }
 
 // Set Key value with expiration and expiration callback function
-func CacheSet(key string, value interface{}, expiration time.Duration, expirationFunc func(key string, value interface{})) (success bool) {
+func (c *CacheHelper) CacheSet(key string, value interface{}, expiration time.Duration, expirationFunc func(key string, value interface{})) (success bool) {
 	if key == "" {
 		return false
 	}
@@ -333,7 +331,7 @@ func CacheSet(key string, value interface{}, expiration time.Duration, expiratio
 }
 
 // Get the vlaue of given key , if exist return true, or return false
-func CacheGet(key string) (value interface{}, found bool) {
+func (c *CacheHelper) CacheGet(key string) (value interface{}, found bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	if _, ok := c.items[key]; ok {

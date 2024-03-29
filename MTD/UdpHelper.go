@@ -7,8 +7,10 @@ import (
 	"time"
 )
 
+type UdpHelper struct{}
+
 // udp socket 服务器
-func UdpServer(port string, content string, bufSize int) {
+func (u *UdpHelper) UdpServer(port string, content string, bufSize int) {
 	udpAddr, err := net.ResolveUDPAddr("udp4", ":"+port) // 转换地址，作为服务器使用时需要监听本机的一个端口
 	if err != nil {
 		fmt.Println(err.Error())
@@ -30,7 +32,7 @@ func UdpServer(port string, content string, bufSize int) {
 }
 
 // socket客户端
-func UdpClient(ip, port string) {
+func (u *UdpHelper) UdpClient(ip, port string) {
 	udpAddr, err1 := net.ResolveUDPAddr("udp4", ip+":"+port) // 转换地址，作为客户端使用要向远程发送消息，这里用远程地址与端口号
 	if err1 != nil {
 		fmt.Println(err1.Error())
@@ -41,7 +43,7 @@ func UdpClient(ip, port string) {
 		fmt.Println(err2.Error())
 		return
 	}
-	go receive(conn) // 使用DialUDP建立连接后也可以监听来自远程端的数据
+	go u.receive(conn) // 使用DialUDP建立连接后也可以监听来自远程端的数据
 
 	for {
 		_, err3 := conn.Write([]byte("hi")) // 向远程端发送消息
@@ -52,7 +54,7 @@ func UdpClient(ip, port string) {
 		time.Sleep(1 * time.Second) // 等待1秒
 	}
 }
-func receive(conn *net.UDPConn) {
+func (u *UdpHelper) receive(conn *net.UDPConn) {
 	for {
 		var buf [128]byte
 		len, err := conn.Read(buf[0:]) // 读取数据 // 读取操作会阻塞直至有数据可读取
@@ -65,7 +67,7 @@ func receive(conn *net.UDPConn) {
 }
 
 // 获取广播地址
-func BroadcastAddress() ([]string, string) {
+func (u *UdpHelper) BroadcastAddress() ([]string, string) {
 	broadcastAddress := []string{}
 
 	interfaces, err := net.Interfaces() // 获取所有网络接口
@@ -98,7 +100,7 @@ func BroadcastAddress() ([]string, string) {
 }
 
 // udp广播
-func Broadcast(port, content string) {
+func (u *UdpHelper) Broadcast(port, content string) {
 	conn, err := net.Dial("udp", "255.255.255.255:"+port)
 
 	defer func(conn io.Closer) {
