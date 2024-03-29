@@ -6,28 +6,57 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 )
 
+var fileHelper = FileHelper{}
+
 type HttpHelper struct{}
 
-func (httpHelper *HttpHelper) GetMap(r *http.Request) map[string][]string {
+func (h *HttpHelper) RegParam(p string) bool {
+	r, err := regexp.Compile(fileHelper.CheckConf().Reg)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+	return r.MatchString(p)
+}
+
+func (h *HttpHelper) Middleware(handler http.HandlerFunc) http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		// log.Println(request.Header["User-Agent"])
+		handler(writer, request)
+	}
+}
+
+func (h *HttpHelper) GetMap(r *http.Request) map[string][]string {
 	return r.Form
 }
 
-func (httpHelper *HttpHelper) PostMap(r *http.Request) map[string][]string {
+func (h *HttpHelper) PostMap(r *http.Request) map[string][]string {
 	return r.PostForm
 }
 
-func (httpHelper *HttpHelper) Get(r *http.Request, key string) string {
-	return strings.TrimSpace(r.URL.Query().Get(key))
+func (h *HttpHelper) Get(r *http.Request, key string) string {
+	param := strings.TrimSpace(r.URL.Query().Get(key))
+	if h.RegParam(param) {
+		return param
+	} else {
+		return ""
+	}
 }
 
-func (httpHelper *HttpHelper) Post(r *http.Request, key string) string {
-	return strings.TrimSpace(r.PostFormValue(key))
+func (h *HttpHelper) Post(r *http.Request, key string) string {
+	param := strings.TrimSpace(r.PostFormValue(key))
+	if h.RegParam(param) {
+		return param
+	} else {
+		return ""
+	}
 }
 
-func (httpHelper *HttpHelper) FormFile(w http.ResponseWriter, r *http.Request, key string) (bool, string) {
+func (h *HttpHelper) FormFile(w http.ResponseWriter, r *http.Request, key string) (bool, string) {
 	f, fheader, err := r.FormFile("file")
 	defer func(f io.Closer) {
 		if err := f.Close(); err != nil {
@@ -56,7 +85,7 @@ func (httpHelper *HttpHelper) FormFile(w http.ResponseWriter, r *http.Request, k
 	return true, newf.Name()
 }
 
-func (httpHelper *HttpHelper) HttpWrite(w http.ResponseWriter, Data interface{}) (int, error) {
+func (h *HttpHelper) HttpWrite(w http.ResponseWriter, Data interface{}) (int, error) {
 	j, err := json.Marshal(Data)
 	if err != nil {
 		return 0, err

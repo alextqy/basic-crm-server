@@ -34,7 +34,7 @@ func loopBroadcast(ip string, port string) {
 	}
 }
 
-// 系统日志
+// 系统日志f
 func systemLog() {
 	for {
 		if !fileHelper.FileExist(fileHelper.LogDir()) {
@@ -62,5 +62,6 @@ func main() {
 }
 
 func routes(mux *http.ServeMux) {
-	mux.HandleFunc("/sign/in", api.SignIn)
+	var httpHelper = mtd.HttpHelper{}
+	mux.HandleFunc("/sign/in", httpHelper.Middleware(api.SignIn))
 }

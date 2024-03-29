@@ -6,5 +6,6 @@
     "db_debug": true,
     "tcp_port": "8080",
     "udp_port": "8001",
-    "lang": "zh"
+    "lang": "zh",
+    "reg": ""
 }
