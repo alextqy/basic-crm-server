@@ -1,4 +1,8 @@
 {
+    "db_host": "localhost",
+    "db_port": "5432",
+    "db_user": "postgres",
+    "db_pwd": "123456",
     "tcp_port": "8080",
     "udp_port": "8001",
     "lang": "zh"
