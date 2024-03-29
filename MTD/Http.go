@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func GetMap(r *http.Request) map[string][]string {
@@ -17,11 +18,11 @@ func PostMap(r *http.Request) map[string][]string {
 }
 
 func Get(r *http.Request, key string) string {
-	return r.URL.Query().Get(key)
+	return strings.TrimSpace(r.URL.Query().Get(key))
 }
 
 func Post(r *http.Request, key string) string {
-	return r.PostFormValue(key)
+	return strings.TrimSpace(r.PostFormValue(key))
 }
 
 func FormFile(w http.ResponseWriter, r *http.Request, key string) (bool, string) {
