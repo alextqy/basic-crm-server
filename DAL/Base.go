@@ -28,14 +28,17 @@ func initDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
 		"postgres://" + conf.DbUser + ":" + conf.DbPwd + "@" + conf.DbHost + ":" + conf.DbPort + "/BasicCrm?sslmode=disable",
 	}
 	engine, err := xorm.NewEngineGroup("postgres", conns)
-	engine.TZLocation, _ = time.LoadLocation("Asia/Shanghai")
-	engine.Ping()
-	engine.ShowSQL()
 	if err != nil {
 		engine.Close()
-		log.Fatal(err.Error())
+		log.Panic(err.Error())
 		return false, err.Error(), nil, nil
 	} else {
+		engine.SetMaxOpenConns(100) // 连接池中最大连接数
+		engine.SetMaxIdleConns(5)   // 连接池中最大空闲连接数
+		engine.TZLocation, _ = time.LoadLocation("Asia/Shanghai")
+		engine.Ping()
+		engine.ShowSQL(true)
+
 		session := engine.NewSession()
 		defer session.Close()
 		return true, "", session, engine
