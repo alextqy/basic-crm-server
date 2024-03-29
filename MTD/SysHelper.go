@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"net"
 	"net/smtp"
@@ -343,6 +344,10 @@ func WriteLog(fileName, content string) (bool, string) {
 
 func CheckConf() mod.Conf {
 	var conf mod.Conf
+	if !FileExist("./Conf.json") {
+		log.Panic("The system configuration failed")
+		os.Exit(0)
+	}
 	_, byteData := FileRead("./Conf.json")
 	json.Unmarshal([]byte(byteData), &conf)
 	return conf
