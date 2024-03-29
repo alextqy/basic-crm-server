@@ -1,7 +1,6 @@
 package mtd
 
 import (
-	mod "basic-crm-server/MOD"
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
@@ -9,9 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"log"
 	"math/rand"
 	"net"
 	"net/smtp"
@@ -317,43 +314,4 @@ func (s *SysHelper) SendEmail(account, password, sender, host, to, subject, body
 		return false, err.Error()
 	}
 	return true, ""
-}
-
-func (s *SysHelper) LogDir() string {
-	c := SysHelper{}
-	return "./Log/" + strings.Split(c.TimeNowStr(), " ")[0] + "/"
-}
-
-func (s *SysHelper) WriteLog(fileName, content string) (bool, string) {
-	f := FileHelper{}
-	if !f.FileExist(s.LogDir()) {
-		b, s := f.DirMake(s.LogDir())
-		if !b {
-			return false, s
-		}
-	}
-	logFile := s.LogDir() + fileName + ".log"
-	if !f.FileExist(logFile) {
-		b, s := f.FileMake(logFile)
-		if !b {
-			return false, s
-		}
-	}
-	b, c := f.FileWriteAppend(logFile, s.TimeNowStr()+" "+content+""+"\n")
-	if !b {
-		return false, c
-	}
-	return true, ""
-}
-
-func (s *SysHelper) CheckConf() mod.Conf {
-	f := FileHelper{}
-	var conf mod.Conf
-	if !f.FileExist("./Conf.json") {
-		log.Panic("The system configuration failed")
-		os.Exit(0)
-	}
-	_, byteData := f.FileRead("./Conf.json")
-	json.Unmarshal([]byte(byteData), &conf)
-	return conf
 }

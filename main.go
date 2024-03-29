@@ -29,7 +29,7 @@ func lineSearch() []string {
 // 开启内网广播
 func loopBroadcast(ip string, port string) {
 	for {
-		udpHelper.Broadcast(port, ip+":"+sysHelper.CheckConf().TcpPort)
+		udpHelper.Broadcast(port, ip+":"+fileHelper.CheckConf().TcpPort)
 		time.Sleep(time.Second)
 	}
 }
@@ -37,8 +37,8 @@ func loopBroadcast(ip string, port string) {
 // 系统日志
 func systemLog() {
 	for {
-		if !fileHelper.FileExist(sysHelper.LogDir()) {
-			fileHelper.DirMake(sysHelper.LogDir())
+		if !fileHelper.FileExist(fileHelper.LogDir()) {
+			fileHelper.DirMake(fileHelper.LogDir())
 		}
 		time.Sleep(time.Second)
 	}
@@ -46,18 +46,18 @@ func systemLog() {
 
 func main() {
 	ips := lineSearch()
-	go loopBroadcast(ips[len(ips)-1], sysHelper.CheckConf().UdpPort)
+	go loopBroadcast(ips[len(ips)-1], fileHelper.CheckConf().UdpPort)
 	go systemLog()
 
 	mux := http.NewServeMux()
 	routes(mux)
 	server := &http.Server{
-		Addr:         ":" + sysHelper.CheckConf().TcpPort,
+		Addr:         ":" + fileHelper.CheckConf().TcpPort,
 		WriteTimeout: time.Second * 5, //设置写超时
 		ReadTimeout:  time.Second * 5, //设置读超时
 		Handler:      mux,
 	}
-	log.Println("Http server on port:" + sysHelper.CheckConf().TcpPort)
+	log.Println("Http server on port:" + fileHelper.CheckConf().TcpPort)
 	log.Fatal(server.ListenAndServe())
 }
 

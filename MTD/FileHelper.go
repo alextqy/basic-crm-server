@@ -1,13 +1,18 @@
 package mtd
 
 import (
+	mod "basic-crm-server/MOD"
 	"bufio"
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
+	"log"
 	"os"
+	"strings"
+	"time"
 )
 
 type FileHelper struct{}
@@ -198,4 +203,42 @@ func (f *FileHelper) DirTraverse(dirPath string) (bool, string, []string, []stri
 	}
 
 	return true, "", dirs, files
+}
+
+func (f *FileHelper) LogDir() string {
+	t := time.Now().Format("2006-01-02 15:04:05")
+	return "./Log/" + strings.Split(t, " ")[0] + "/"
+}
+
+func (f *FileHelper) WriteLog(fileName, content string) (bool, string) {
+	if !f.FileExist(f.LogDir()) {
+		b, s := f.DirMake(f.LogDir())
+		if !b {
+			return false, s
+		}
+	}
+	logFile := f.LogDir() + fileName + ".log"
+	if !f.FileExist(logFile) {
+		b, s := f.FileMake(logFile)
+		if !b {
+			return false, s
+		}
+	}
+	t := time.Now().Format("2006-01-02 15:04:05")
+	b, c := f.FileWriteAppend(logFile, t+" "+content+""+"\n")
+	if !b {
+		return false, c
+	}
+	return true, ""
+}
+
+func (f *FileHelper) CheckConf() mod.Conf {
+	var conf mod.Conf
+	if !f.FileExist("./Conf.json") {
+		log.Panic("The system configuration failed")
+		os.Exit(0)
+	}
+	_, byteData := f.FileRead("./Conf.json")
+	json.Unmarshal([]byte(byteData), &conf)
+	return conf
 }

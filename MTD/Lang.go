@@ -4,9 +4,9 @@ type lang struct {
 }
 
 func Lang() lang {
-	s := SysHelper{}
+	f := FileHelper{}
 	l := lang{}
-	checkConf := s.CheckConf()
+	checkConf := f.CheckConf()
 	if checkConf.Lang == "zh" {
 	} else if checkConf.Lang == "en" {
 	} else {
