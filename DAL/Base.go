@@ -1,6 +1,8 @@
 package dal
 
 import (
+	mtd "basic-crm-server/MTD"
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -22,6 +24,8 @@ var xOnce sync.Once
 var xSession *xorm.Session
 
 func initDB() (bool, string, *xorm.Session, *xorm.EngineGroup) {
+	conf := mtd.CheckConf()
+	fmt.Println(conf)
 	conns := []string{
 		"postgres://postgres:123456@localhost:5432/BasicCrm?sslmode=disable",
 	}

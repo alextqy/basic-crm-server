@@ -1,8 +1,8 @@
 package dal
 
 import (
-	lib "basic-crm-server/LIB"
 	mod "basic-crm-server/MOD"
+	mtd "basic-crm-server/MTD"
 	"math"
 	"strings"
 
@@ -87,11 +87,11 @@ func CompanyAll(db *xorm.Session, Order int, Stext string, Outfit string) []mod.
 func CompanyDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
 	TableName := companyTable + Outfit
 	Data := mod.Company{}
-	if lib.StringContains(ID, ",") {
+	if mtd.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}
 		for i := 0; i < len(ids); i++ {
-			_, _, n := lib.StringToInt(ids[i])
+			_, _, n := mtd.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
 		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)

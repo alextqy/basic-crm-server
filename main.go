@@ -2,7 +2,7 @@ package main
 
 import (
 	api "basic-crm-server/API"
-	lib "basic-crm-server/LIB"
+	mtd "basic-crm-server/MTD"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 // 线路检索
 func lineSearch() []string {
 	fmt.Println("Local IP address:")
-	_, e, ips := lib.LocalIP()
+	_, e, ips := mtd.LocalIP()
 	if e != "" {
 		panic(e)
 	}
@@ -25,7 +25,7 @@ func lineSearch() []string {
 // 开启内网广播
 func loopBroadcast(ip string, port string) {
 	for {
-		lib.Broadcast(port, ip+":"+lib.CheckConf().TcpPort)
+		mtd.Broadcast(port, ip+":"+mtd.CheckConf().TcpPort)
 		time.Sleep(time.Second)
 	}
 }
@@ -33,8 +33,8 @@ func loopBroadcast(ip string, port string) {
 // 系统日志
 func systemLog() {
 	for {
-		if !lib.FileExist(lib.LogDir()) {
-			lib.DirMake(lib.LogDir())
+		if !mtd.FileExist(mtd.LogDir()) {
+			mtd.DirMake(mtd.LogDir())
 		}
 		time.Sleep(time.Second)
 	}
@@ -42,18 +42,18 @@ func systemLog() {
 
 func main() {
 	ips := lineSearch()
-	go loopBroadcast(ips[len(ips)-1], lib.CheckConf().UdpPort)
+	go loopBroadcast(ips[len(ips)-1], mtd.CheckConf().UdpPort)
 	go systemLog()
 
 	mux := http.NewServeMux()
 	routes(mux)
 	server := &http.Server{
-		Addr:         ":" + lib.CheckConf().TcpPort,
+		Addr:         ":" + mtd.CheckConf().TcpPort,
 		WriteTimeout: time.Second * 5, //设置写超时
 		ReadTimeout:  time.Second * 5, //设置读超时
 		Handler:      mux,
 	}
-	log.Println("Http server on port:" + lib.CheckConf().TcpPort)
+	log.Println("Http server on port:" + mtd.CheckConf().TcpPort)
 	log.Fatal(server.ListenAndServe())
 }
 
