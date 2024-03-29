@@ -1,4 +1,4 @@
-package lib
+package mtd
 
 import (
 	mod "basic-crm-server/MOD"

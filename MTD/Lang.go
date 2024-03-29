@@ -1,4 +1,4 @@
-package lib
+package mtd
 
 type lang struct {
 }
