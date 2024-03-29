@@ -38,7 +38,7 @@ func initDB() (bool, *xorm.Session, *xorm.EngineGroup) {
 		engine.SetMaxIdleConns(5)   // 连接池中最大空闲连接数
 		engine.TZLocation, _ = time.LoadLocation("Asia/Shanghai")
 		engine.Ping()
-		engine.ShowSQL(true)
+		engine.ShowSQL(conf.DbDebug)
 
 		session := engine.NewSession()
 		defer session.Close()
