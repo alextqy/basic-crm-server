@@ -1,4 +1,4 @@
 desktop.ini
 /.vscode
 Log/*
-Conf.json
+./Conf.json
