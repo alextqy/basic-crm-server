@@ -1,7 +1,7 @@
 package mod
 
 type Customer struct {
-	ID           int64  `xorm:"ID"`
+	ID           int64  `xorm:"pk ID"`
 	Name         string `xorm:"Name"`
 	Birthday     int64  `xorm:"Birthday"`
 	Gender       int64  `xorm:"Gender"`

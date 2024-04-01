@@ -1,15 +1,23 @@
 package mtd
 
-type lang struct {
+type Language struct {
+	IncorrectAccount  string
+	IncorrectPassword string
 }
 
-func Lang() lang {
+func SysLang() Language {
 	f := FileHelper{}
-	l := lang{}
 	checkConf := f.CheckConf()
+	language := Language{}
 	if checkConf.Lang == "zh" {
+		language.IncorrectAccount = "账号错误"
+		language.IncorrectPassword = "密码错误"
 	} else if checkConf.Lang == "en" {
+		language.IncorrectAccount = "Incorrect account"
+		language.IncorrectPassword = "Incorrect password"
 	} else {
+		language.IncorrectAccount = ""
+		language.IncorrectPassword = ""
 	}
-	return l
+	return language
 }

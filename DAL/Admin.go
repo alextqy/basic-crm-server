@@ -121,9 +121,9 @@ func (a *AdminDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error
 	}
 }
 
-func (a *AdminDal) Check(db *xorm.Session, Account, Password string, Outfit string) (mod.Admin, error) {
+func (a *AdminDal) Check(db *xorm.Session, Account, Outfit string) (mod.Admin, error) {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
-	_, err := db.Table(TableName).Where("`Account` = ?", Account).Where("`Password` = ?", Password).Get(&Data)
+	_, err := db.Table(TableName).Where("`Account` = ?", Account).Get(&Data)
 	return Data, err
 }

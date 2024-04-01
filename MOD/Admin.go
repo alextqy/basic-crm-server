@@ -1,7 +1,7 @@
 package mod
 
 type Admin struct {
-	ID           int64  `xorm:"ID"`
+	ID           int64  `xorm:"pk ID"`
 	Account      string `xorm:"Account"`
 	Password     string `xorm:"Password"`
 	Name         string `xorm:"Name"`

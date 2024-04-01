@@ -1,7 +1,7 @@
 package mod
 
 type SalesPlan struct {
-	ID           int64   `xorm:"ID"`
+	ID           int64   `xorm:"pk ID"`
 	PlanName     string  `xorm:"PlanName"`
 	TargetID     int64   `xorm:"TargetID"`
 	PlanContent  string  `xorm:"PlanContent"`

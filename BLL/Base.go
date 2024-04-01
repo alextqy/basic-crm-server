@@ -5,6 +5,8 @@ import (
 	mtd "basic-crm-server/MTD"
 )
 
+var lang = mtd.SysLang()
+
 var cacheHelper = mtd.CacheHelper{}
 var fileHelper = mtd.FileHelper{}
 var httpHelper = mtd.HttpHelper{}

@@ -1,7 +1,7 @@
 package mod
 
 type SalesTarget struct {
-	ID              int64   `xorm:"ID"`
+	ID              int64   `xorm:"pk ID"`
 	TargetName      string  `xorm:"TargetName"`
 	ExpirationDate  int64   `xorm:"ExpirationDate"`
 	CreationTime    int64   `xorm:"CreationTime"`

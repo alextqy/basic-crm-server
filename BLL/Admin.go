@@ -6,14 +6,38 @@ import (
 )
 
 func SignIn(Account, Password string) mod.Result {
-	result := mod.Result{}
-	db := dal.ConnDB()
-	r, e := adminDal.Check(db, Account, Password, "")
-	if e != nil {
-		result.Message = e.Error()
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	if Account == "" {
+		result.Message = lang.IncorrectAccount
+	} else if Password == "" {
+		result.Message = lang.IncorrectPassword
 	} else {
-		result.Data = r
-		result.State = true
+		db := dal.ConnDB()
+		r, e := adminDal.Check(db, Account, "")
+		if e != nil {
+			result.Message = e.Error()
+		} else {
+			if r.Password != sysHelper.MD5(sysHelper.EnBase64(Password)) {
+				result.Message = lang.IncorrectPassword
+			} else {
+				r.Token = sysHelper.MD5(sysHelper.EnBase64(sysHelper.RandStr(10)))
+				_, e := adminDal.Update(db, r, "")
+				if e != nil {
+					result.Message = e.Error()
+				} else {
+					go fileHelper.WriteLog(r.Account, r.Account+" login")
+					r.Password = ""
+					result.Data = r
+					result.State = true
+				}
+			}
+		}
 	}
 	return result
 }
