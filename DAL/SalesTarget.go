@@ -8,7 +8,9 @@ import (
 	"xorm.io/xorm"
 )
 
-func SalesTargetCount(db *xorm.Session, Stext string, CustomerID int64, Outfit string) (int64, error) {
+type SalesTargetDal struct{}
+
+func (s *SalesTargetDal) Count(db *xorm.Session, Stext string, CustomerID int64, Outfit string) (int64, error) {
 	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTarget{}
 	engine := db.Table(TableName).Where("1=1")
@@ -22,26 +24,26 @@ func SalesTargetCount(db *xorm.Session, Stext string, CustomerID int64, Outfit s
 	return r, e
 }
 
-func SalesTargetAdd(db *xorm.Session, Data mod.SalesTarget, Outfit string) (int64, error) {
+func (s *SalesTargetDal) Add(db *xorm.Session, Data mod.SalesTarget, Outfit string) (int64, error) {
 	TableName := salesTargetTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func SalesTargetUpdate(db *xorm.Session, Data mod.SalesTarget, Outfit string) (int64, error) {
+func (s *SalesTargetDal) Update(db *xorm.Session, Data mod.SalesTarget, Outfit string) (int64, error) {
 	TableName := salesTargetTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func SalesTargetData(db *xorm.Session, ID int64, Outfit string) (mod.SalesTarget, error) {
+func (s *SalesTargetDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.SalesTarget, error) {
 	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTarget{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func SalesTargetList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, CustomerID int64, Outfit string) (int, int, int, []mod.SalesTarget) {
+func (s *SalesTargetDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, CustomerID int64, Outfit string) (int, int, int, []mod.SalesTarget) {
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName).Where("1=1")
@@ -63,7 +65,7 @@ func SalesTargetList(db *xorm.Session, Page int, PageSize int, Order int, Stext 
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := SalesTargetCount(db, Stext, CustomerID, Outfit)
+	Count, _ := s.Count(db, Stext, CustomerID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -72,7 +74,7 @@ func SalesTargetList(db *xorm.Session, Page int, PageSize int, Order int, Stext 
 	return Page, PageSize, TotalPage, Data
 }
 
-func SalesTargetAll(db *xorm.Session, Order int, Stext string, CustomerID int64, Outfit string) []mod.SalesTarget {
+func (s *SalesTargetDal) All(db *xorm.Session, Order int, Stext string, CustomerID int64, Outfit string) []mod.SalesTarget {
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName).Where("1=1")
@@ -92,7 +94,7 @@ func SalesTargetAll(db *xorm.Session, Order int, Stext string, CustomerID int64,
 	return Data
 }
 
-func SalesTargetDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+func (s *SalesTargetDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error) {
 	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTarget{}
 	if sysHelper.StringContains(ID, ",") {

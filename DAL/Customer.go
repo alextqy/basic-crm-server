@@ -8,7 +8,9 @@ import (
 	"xorm.io/xorm"
 )
 
-func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int64, error) {
+type CustomerDal struct{}
+
+func (c *CustomerDal) Count(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	engine := db.Table(TableName).Where("1=1")
@@ -31,26 +33,26 @@ func CustomerCount(db *xorm.Session, Stext string, Gender int64, Priority int64,
 	return r, e
 }
 
-func CustomerAdd(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
+func (c *CustomerDal) Add(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func CustomerUpdate(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
+func (c *CustomerDal) Update(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func CustomerData(db *xorm.Session, ID int64, Outfit string) (mod.Customer, error) {
+func (c *CustomerDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Customer, error) {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
+func (c *CustomerDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName).Where("1=1")
@@ -81,7 +83,7 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := CustomerCount(db, Stext, Gender, Priority, CompanyID, ManagerID, Outfit)
+	Count, _ := c.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -90,7 +92,7 @@ func CustomerList(db *xorm.Session, Page int, PageSize int, Order int, Stext str
 	return Page, PageSize, TotalPage, Data
 }
 
-func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
+func (c *CustomerDal) All(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName).Where("1=1")
@@ -119,7 +121,7 @@ func CustomerAll(db *xorm.Session, Order int, Stext string, Gender int64, Priori
 	return Data
 }
 
-func CustomerDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+func (c *CustomerDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	if sysHelper.StringContains(ID, ",") {

@@ -8,7 +8,9 @@ import (
 	"xorm.io/xorm"
 )
 
-func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int64, error) {
+type ManagerDal struct{}
+
+func (m *ManagerDal) Count(db *xorm.Session, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int64, error) {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	engine := db.Table(TableName).Where("1=1")
@@ -28,26 +30,26 @@ func ManagerCount(db *xorm.Session, Stext string, Level int64, Status int64, Gro
 	return r, e
 }
 
-func ManagerAdd(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
+func (m *ManagerDal) Add(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
 	TableName := managerTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func ManagerUpdate(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
+func (m *ManagerDal) Update(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
 	TableName := managerTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func ManagerData(db *xorm.Session, ID int64, Outfit string) (mod.Manager, error) {
+func (m *ManagerDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Manager, error) {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.Manager) {
+func (m *ManagerDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.Manager) {
 	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName).Where("1=1")
@@ -75,7 +77,7 @@ func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := ManagerCount(db, Stext, Level, Status, GroupID, Outfit)
+	Count, _ := m.Count(db, Stext, Level, Status, GroupID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -84,7 +86,7 @@ func ManagerList(db *xorm.Session, Page int, PageSize int, Order int, Stext stri
 	return Page, PageSize, TotalPage, Data
 }
 
-func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.Manager {
+func (m *ManagerDal) All(db *xorm.Session, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.Manager {
 	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName).Where("1=1")
@@ -110,7 +112,7 @@ func ManagerAll(db *xorm.Session, Order int, Stext string, Level int64, Status i
 	return Data
 }
 
-func ManagerDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+func (m *ManagerDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error) {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	if sysHelper.StringContains(ID, ",") {

@@ -19,12 +19,16 @@ var managerGroupTable = "ManagerGroup"
 var salesPlanTable = "SalesPlan"
 var salesTargetTable = "SalesTarget"
 
+var cacheHelper = mtd.CacheHelper{}
+var fileHelper = mtd.FileHelper{}
+var httpHelper = mtd.HttpHelper{}
+var sysHelper = mtd.SysHelper{}
+var tcpHelper = mtd.TcpHelper{}
+var udpHelper = mtd.UdpHelper{}
+
 // var mu sync.Mutex
 var xOnce sync.Once
 var xSession *xorm.Session
-
-var fileHelper = mtd.FileHelper{}
-var sysHelper = mtd.SysHelper{}
 
 func initDB() (bool, *xorm.Session, *xorm.EngineGroup) {
 	conf := fileHelper.CheckConf()

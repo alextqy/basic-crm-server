@@ -8,7 +8,9 @@ import (
 	"xorm.io/xorm"
 )
 
-func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64, Outfit string) (int64, error) {
+type AdminDal struct{}
+
+func (a *AdminDal) Count(db *xorm.Session, Stext string, Level int64, Status int64, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	engine := db.Table(TableName).Where("1=1")
@@ -25,26 +27,26 @@ func AdminCount(db *xorm.Session, Stext string, Level int64, Status int64, Outfi
 	return r, e
 }
 
-func AdminAdd(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
+func (a *AdminDal) Add(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
 	r, e := db.Table(TableName).Insert(&Data)
 	return r, e
 }
 
-func AdminUpdate(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
+func (a *AdminDal) Update(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
 	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
 	return r, e
 }
 
-func AdminData(db *xorm.Session, ID int64, Outfit string) (mod.Admin, error) {
+func (a *AdminDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Admin, error) {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	_, err := db.Table(TableName).ID(ID).Get(&Data)
 	return Data, err
 }
 
-func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
+func (a *AdminDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName).Where("1=1")
@@ -69,7 +71,7 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 	} else {
 		OrderBy = "ASC"
 	}
-	Count, _ := AdminCount(db, Stext, Level, Status, Outfit)
+	Count, _ := a.Count(db, Stext, Level, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -78,7 +80,7 @@ func AdminList(db *xorm.Session, Page int, PageSize int, Order int, Stext string
 	return Page, PageSize, TotalPage, Data
 }
 
-func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
+func (a *AdminDal) All(db *xorm.Session, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName).Where("1=1")
@@ -101,7 +103,7 @@ func AdminAll(db *xorm.Session, Order int, Stext string, Level int64, Status int
 	return Data
 }
 
-func AdminDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
+func (a *AdminDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	if sysHelper.StringContains(ID, ",") {
@@ -119,7 +121,7 @@ func AdminDel(db *xorm.Session, ID string, Outfit string) (int64, error) {
 	}
 }
 
-func AdminCheck(db *xorm.Session, Account, Password string, Outfit string) (mod.Admin, error) {
+func (a *AdminDal) Check(db *xorm.Session, Account, Password string, Outfit string) (mod.Admin, error) {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	_, err := db.Table(TableName).Where("`Account` = ?", Account).Where("`Password` = ?", Password).Get(&Data)
