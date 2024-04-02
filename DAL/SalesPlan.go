@@ -35,7 +35,7 @@ func (s *SalesPlanDal) Add(db *xorm.Session, Data mod.SalesPlan, Outfit string) 
 
 func (s *SalesPlanDal) Update(db *xorm.Session, Data mod.SalesPlan, Outfit string) (int64, error) {
 	TableName := salesPlanTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
+	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
 	return r, e
 }
 

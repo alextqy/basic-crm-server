@@ -29,7 +29,7 @@ func (c *CompanyDal) Add(db *xorm.Session, Data mod.Company, Outfit string) (int
 
 func (c *CompanyDal) Update(db *xorm.Session, Data mod.Company, Outfit string) (int64, error) {
 	TableName := companyTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
+	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
 	return r, e
 }
 

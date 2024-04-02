@@ -5,7 +5,7 @@ import (
 	mod "basic-crm-server/MOD"
 )
 
-func SignIn(Account, Password string) mod.Result {
+func AdminSignIn(Account, Password string) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -22,6 +22,8 @@ func SignIn(Account, Password string) mod.Result {
 		r, e := adminDal.Check(db, Account, "")
 		if e != nil {
 			result.Message = e.Error()
+		} else if r.ID == 0 {
+			result.Message = lang.TheAccountDoesNotExist
 		} else {
 			if r.Password != sysHelper.MD5(sysHelper.EnBase64(Password)) {
 				result.Message = lang.IncorrectPassword
@@ -33,11 +35,44 @@ func SignIn(Account, Password string) mod.Result {
 				} else {
 					go fileHelper.WriteLog(r.Account, r.Account+" login")
 					r.Password = ""
-					result.Data = r
+
 					result.State = true
+					result.Data = r
 				}
 			}
 		}
 	}
+	return result
+}
+
+func AdminSignOut(Token string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	if Token == "" {
+		result.Message = Token
+	} else {
+		db := dal.ConnDB()
+		r, e := adminDal.Token(db, Token, "")
+		if e != nil {
+			result.Message = e.Error()
+		} else if r.ID == 0 {
+			result.Message = lang.TheAccountDoesNotExist
+		} else {
+			r.Token = ""
+			_, e := adminDal.Update(db, r, "")
+			if e != nil {
+				result.Message = e.Error()
+			} else {
+				result.State = true
+				result.Message = ""
+			}
+		}
+	}
+
 	return result
 }

@@ -66,5 +66,6 @@ func main() {
 
 func routes(mux *http.ServeMux) {
 	var httpHelper = mtd.HttpHelper{}
-	mux.HandleFunc("/sign/in", httpHelper.Middleware(api.SignIn))
+	mux.HandleFunc("/admin/sign/in", httpHelper.Middleware(api.AdminSignIn))
+	mux.HandleFunc("/admin/sign/out", httpHelper.Middleware(api.AdminSignOut))
 }

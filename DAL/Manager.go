@@ -38,7 +38,7 @@ func (m *ManagerDal) Add(db *xorm.Session, Data mod.Manager, Outfit string) (int
 
 func (m *ManagerDal) Update(db *xorm.Session, Data mod.Manager, Outfit string) (int64, error) {
 	TableName := managerTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
+	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
 	return r, e
 }
 

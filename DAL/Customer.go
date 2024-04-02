@@ -41,7 +41,7 @@ func (c *CustomerDal) Add(db *xorm.Session, Data mod.Customer, Outfit string) (i
 
 func (c *CustomerDal) Update(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
+	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
 	return r, e
 }
 

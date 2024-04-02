@@ -5,8 +5,13 @@ import (
 	"net/http"
 )
 
-func SignIn(w http.ResponseWriter, r *http.Request) {
+func AdminSignIn(w http.ResponseWriter, r *http.Request) {
 	Account := httpHelper.Post(r, "account")
 	Password := httpHelper.Post(r, "password")
-	httpHelper.HttpWrite(w, bll.SignIn(Account, Password))
+	httpHelper.HttpWrite(w, bll.AdminSignIn(Account, Password))
+}
+
+func AdminSignOut(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "token")
+	httpHelper.HttpWrite(w, bll.AdminSignOut(Token))
 }

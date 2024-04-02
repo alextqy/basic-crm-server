@@ -35,7 +35,7 @@ func (a *AdminDal) Add(db *xorm.Session, Data mod.Admin, Outfit string) (int64, 
 
 func (a *AdminDal) Update(db *xorm.Session, Data mod.Admin, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).Update(&Data)
+	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
 	return r, e
 }
 
@@ -125,5 +125,12 @@ func (a *AdminDal) Check(db *xorm.Session, Account, Outfit string) (mod.Admin, e
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	_, err := db.Table(TableName).Where("`Account` = ?", Account).Get(&Data)
+	return Data, err
+}
+
+func (a *AdminDal) Token(db *xorm.Session, Token, Outfit string) (mod.Admin, error) {
+	TableName := adminTable + Outfit
+	Data := mod.Admin{}
+	_, err := db.Table(TableName).Where("`Token` = ?", Token).Get(&Data)
 	return Data, err
 }
