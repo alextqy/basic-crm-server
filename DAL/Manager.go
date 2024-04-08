@@ -129,3 +129,17 @@ func (m *ManagerDal) Del(db *xorm.Session, ID string, Outfit string) (int64, err
 		return r, e
 	}
 }
+
+func (a *ManagerDal) Check(db *xorm.Session, Account, Outfit string) (mod.Manager, error) {
+	TableName := managerTable + Outfit
+	Data := mod.Manager{}
+	_, err := db.Table(TableName).Where("`Account` = ?", Account).Get(&Data)
+	return Data, err
+}
+
+func (a *ManagerDal) Token(db *xorm.Session, Token, Outfit string) (mod.Manager, error) {
+	TableName := managerTable + Outfit
+	Data := mod.Manager{}
+	_, err := db.Table(TableName).Where("`Token` = ?", Token).Get(&Data)
+	return Data, err
+}

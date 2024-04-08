@@ -10,4 +10,5 @@ type Conf struct {
 	UdpPort string `json:"udp_port"`
 	Lang    string `json:"lang"`
 	Reg     string `json:"reg"`
+	EncKey  string `json:"enc_key"`
 }

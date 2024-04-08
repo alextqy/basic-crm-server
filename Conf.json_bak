@@ -7,5 +7,6 @@
     "tcp_port": "8080",
     "udp_port": "8001",
     "lang": "zh",
-    "reg": ""
+    "reg": "",
+    "enc_key": ""
 }
