@@ -13,7 +13,7 @@ type CustomerDal struct{}
 func (c *CustomerDal) Count(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
@@ -55,7 +55,7 @@ func (c *CustomerDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Custo
 func (c *CustomerDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}
@@ -83,19 +83,20 @@ func (c *CustomerDal) List(db *xorm.Session, Page int, PageSize int, Order int, 
 	} else {
 		OrderBy = "ASC"
 	}
+	engine.AllCols().OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+
 	Count, _ := c.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
 	}
-	engine.OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
 	return Page, PageSize, TotalPage, Data
 }
 
 func (c *CustomerDal) All(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
 	}

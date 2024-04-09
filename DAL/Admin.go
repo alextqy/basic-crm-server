@@ -13,7 +13,7 @@ type AdminDal struct{}
 func (a *AdminDal) Count(db *xorm.Session, Stext string, Level int64, Status int64, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -49,7 +49,7 @@ func (a *AdminDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Admin, e
 func (a *AdminDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}
@@ -71,19 +71,20 @@ func (a *AdminDal) List(db *xorm.Session, Page int, PageSize int, Order int, Ste
 	} else {
 		OrderBy = "ASC"
 	}
+	engine.AllCols().OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+
 	Count, _ := a.Count(db, Stext, Level, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
 	}
-	engine.OrderBy("ID "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
 	return Page, PageSize, TotalPage, Data
 }
 
 func (a *AdminDal) All(db *xorm.Session, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`Account` LIKE ?", "%"+Stext+"%").Or("`Name` LIKE ?", "%"+Stext+"%")
 	}

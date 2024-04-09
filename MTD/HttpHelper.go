@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -53,6 +54,62 @@ func (h *HttpHelper) Post(r *http.Request, key string) string {
 		return param
 	} else {
 		return ""
+	}
+}
+
+func (h *HttpHelper) GetInt(r *http.Request, key string) int {
+	param := strings.TrimSpace(r.URL.Query().Get(key))
+	if h.RegParam(param) {
+		r, e := strconv.Atoi(param)
+		if e != nil {
+			return 0
+		} else {
+			return r
+		}
+	} else {
+		return 0
+	}
+}
+
+func (h *HttpHelper) GetInt64(r *http.Request, key string) int64 {
+	param := strings.TrimSpace(r.URL.Query().Get(key))
+	if h.RegParam(param) {
+		r, e := strconv.ParseInt(param, 10, 64)
+		if e != nil {
+			return 0
+		} else {
+			return r
+		}
+	} else {
+		return 0
+	}
+}
+
+func (h *HttpHelper) PostInt(r *http.Request, key string) int {
+	param := strings.TrimSpace(r.PostFormValue(key))
+	if h.RegParam(param) {
+		r, e := strconv.Atoi(param)
+		if e != nil {
+			return 0
+		} else {
+			return r
+		}
+	} else {
+		return 0
+	}
+}
+
+func (h *HttpHelper) PostInt64(r *http.Request, key string) int64 {
+	param := strings.TrimSpace(r.PostFormValue(key))
+	if h.RegParam(param) {
+		r, e := strconv.ParseInt(param, 10, 64)
+		if e != nil {
+			return 0
+		} else {
+			return r
+		}
+	} else {
+		return 0
 	}
 }
 

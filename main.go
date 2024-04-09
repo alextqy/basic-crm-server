@@ -70,4 +70,5 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/admin/sign/in", httpHelper.Middleware(api.AdminSignIn))
 	mux.HandleFunc("/admin/sign/out", httpHelper.Middleware(api.AdminSignOut))
 	mux.HandleFunc("/admin/update", httpHelper.Middleware(api.AdminUpdate))
+	mux.HandleFunc("/admin/list", httpHelper.Middleware(api.AdminList))
 }

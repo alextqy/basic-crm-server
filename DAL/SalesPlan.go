@@ -13,7 +13,7 @@ type SalesPlanDal struct{}
 func (s *SalesPlanDal) Count(db *xorm.Session, Stext string, TargetID int64, Status int64, Outfit string) (int64, error) {
 	TableName := salesPlanTable + Outfit
 	Data := mod.SalesPlan{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
@@ -49,7 +49,7 @@ func (s *SalesPlanDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Sale
 func (s *SalesPlanDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, Outfit string) (int, int, int, []mod.SalesPlan) {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
@@ -71,19 +71,20 @@ func (s *SalesPlanDal) List(db *xorm.Session, Page int, PageSize int, Order int,
 	} else {
 		OrderBy = "ASC"
 	}
+	engine.AllCols().OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+
 	Count, _ := s.Count(db, Stext, TargetID, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
 	}
-	engine.OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
 	return Page, PageSize, TotalPage, Data
 }
 
 func (s *SalesPlanDal) All(db *xorm.Session, Order int, Stext string, TargetID int64, Status int64, Outfit string) []mod.SalesPlan {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
-	engine := db.Table(TableName).Where("1=1")
+	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
 	}

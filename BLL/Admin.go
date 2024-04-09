@@ -134,3 +134,27 @@ func AdminUpdate(Token, Password, Name, Remark string) mod.Result {
 	}
 	return result
 }
+
+func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Status int64) mod.ResultList {
+	result := mod.ResultList{
+		State:     false,
+		Code:      200,
+		Message:   "",
+		Page:      0,
+		PageSize:  0,
+		TotalPage: 0,
+		Data:      nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Data.(mod.Admin).ID == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		result.State = true
+		result.Page, result.PageSize, result.TotalPage, result.Data = adminDal.List(db, Page, PageSize, Order, Stext, Level, Status, "")
+	}
+	return result
+}
