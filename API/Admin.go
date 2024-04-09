@@ -39,3 +39,12 @@ func AdminList(w http.ResponseWriter, r *http.Request) {
 	Status := httpHelper.PostInt64(r, "Status")
 	httpHelper.HttpWrite(w, bll.AdminList(Token, Page, PageSize, Order, Stext, Level, Status))
 }
+
+func AdminAll(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	Order := httpHelper.PostInt(r, "Order")
+	Stext := httpHelper.Post(r, "Stext")
+	Level := httpHelper.PostInt64(r, "Level")
+	Status := httpHelper.PostInt64(r, "Status")
+	httpHelper.HttpWrite(w, bll.AdminAll(Token, Order, Stext, Level, Status))
+}

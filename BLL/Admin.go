@@ -158,3 +158,24 @@ func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Sta
 	}
 	return result
 }
+
+func AdminAll(Token string, Order int, Stext string, Level, Status int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Data.(mod.Admin).ID == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		result.State = true
+		result.Data = adminDal.All(db, Order, Stext, Level, Status, "")
+	}
+	return result
+}
