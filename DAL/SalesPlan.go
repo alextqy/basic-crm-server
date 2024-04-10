@@ -15,13 +15,13 @@ func (s *SalesPlanDal) Count(db *gorm.DB, Stext string, TargetID int64, Status i
 	TableName := salesPlanTable + Outfit
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.Where("`PlanName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("PlanName LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.Where("`TargetID` = ?", TargetID)
+		engine = engine.Where("TargetID = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.Where("`Status` = ?", Status)
+		engine = engine.Where("Status = ?", Status)
 	}
 	engine.Count(&Count)
 	return Count
@@ -50,13 +50,13 @@ func (s *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stex
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.Where("`PlanName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("PlanName LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.Where("`TargetID` = ?", TargetID)
+		engine = engine.Where("TargetID = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.Where("`Status` = ?", Status)
+		engine = engine.Where("Status = ?", Status)
 	}
 	if Page <= 1 {
 		Page = 1
@@ -85,13 +85,13 @@ func (s *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID int64,
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.Where("`PlanName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("PlanName LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.Where("`TargetID` = ?", TargetID)
+		engine = engine.Where("TargetID = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.Where("`Status` = ?", Status)
+		engine = engine.Where("Status = ?", Status)
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -99,7 +99,7 @@ func (s *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID int64,
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.Order("`ID` " + OrderBy).Find(&Data)
+	engine.Order("ID " + OrderBy).Find(&Data)
 	return Data
 }
 
