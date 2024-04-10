@@ -5,59 +5,58 @@ import (
 	"math"
 	"strings"
 
-	"xorm.io/xorm"
+	"gorm.io/gorm"
 )
 
 type SalesPlanDal struct{}
 
-func (s *SalesPlanDal) Count(db *xorm.Session, Stext string, TargetID int64, Status int64, Outfit string) (int64, error) {
+func (s *SalesPlanDal) Count(db *gorm.DB, Stext string, TargetID int64, Status int64, Outfit string) int64 {
+	var Count int64
 	TableName := salesPlanTable + Outfit
-	Data := mod.SalesPlan{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.And("`TargetID` = ?", TargetID)
+		engine = engine.Where("`TargetID` = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.And("`Status` = ?", Status)
+		engine = engine.Where("`Status` = ?", Status)
 	}
-	r, e := engine.Count(&Data)
-	return r, e
+	engine.Count(&Count)
+	return Count
 }
 
-func (s *SalesPlanDal) Add(db *xorm.Session, Data mod.SalesPlan, Outfit string) (int64, error) {
+func (s *SalesPlanDal) Add(db *gorm.DB, Data mod.SalesPlan, Outfit string) (int64, error) {
 	TableName := salesPlanTable + Outfit
-	r, e := db.Table(TableName).Insert(&Data)
-	return r, e
+	e := db.Table(TableName).Create(&Data).Error
+	return Data.ID, e
 }
 
-func (s *SalesPlanDal) Update(db *xorm.Session, Data mod.SalesPlan, Outfit string) (int64, error) {
+func (s *SalesPlanDal) Update(db *gorm.DB, Data mod.SalesPlan, Outfit string) error {
 	TableName := salesPlanTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
-	return r, e
+	return db.Table(TableName).Save(&Data).Error
 }
 
-func (s *SalesPlanDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.SalesPlan, error) {
+func (s *SalesPlanDal) Data(db *gorm.DB, ID int64, Outfit string) mod.SalesPlan {
 	TableName := salesPlanTable + Outfit
 	Data := mod.SalesPlan{}
-	_, err := db.Table(TableName).ID(ID).Get(&Data)
-	return Data, err
+	db.Table(TableName).First(&Data, ID)
+	return Data
 }
 
-func (s *SalesPlanDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, Outfit string) (int, int, int, []mod.SalesPlan) {
+func (s *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, Outfit string) (int, int, int, []mod.SalesPlan) {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.And("`TargetID` = ?", TargetID)
+		engine = engine.Where("`TargetID` = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.And("`Status` = ?", Status)
+		engine = engine.Where("`Status` = ?", Status)
 	}
 	if Page <= 1 {
 		Page = 1
@@ -71,9 +70,9 @@ func (s *SalesPlanDal) List(db *xorm.Session, Page int, PageSize int, Order int,
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.AllCols().OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count, _ := s.Count(db, Stext, TargetID, Status, Outfit)
+	Count := s.Count(db, Stext, TargetID, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -81,18 +80,18 @@ func (s *SalesPlanDal) List(db *xorm.Session, Page int, PageSize int, Order int,
 	return Page, PageSize, TotalPage, Data
 }
 
-func (s *SalesPlanDal) All(db *xorm.Session, Order int, Stext string, TargetID int64, Status int64, Outfit string) []mod.SalesPlan {
+func (s *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID int64, Status int64, Outfit string) []mod.SalesPlan {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`PlanName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("`PlanName` LIKE ?", "%"+Stext+"%")
 	}
 	if TargetID > 0 {
-		engine = engine.And("`TargetID` = ?", TargetID)
+		engine = engine.Where("`TargetID` = ?", TargetID)
 	}
 	if Status > 0 {
-		engine = engine.And("`Status` = ?", Status)
+		engine = engine.Where("`Status` = ?", Status)
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -100,13 +99,14 @@ func (s *SalesPlanDal) All(db *xorm.Session, Order int, Stext string, TargetID i
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.OrderBy("`ID` " + OrderBy).Find(&Data)
+	engine.Order("`ID` " + OrderBy).Find(&Data)
 	return Data
 }
 
-func (s *SalesPlanDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error) {
+func (s *SalesPlanDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := salesPlanTable + Outfit
 	Data := mod.SalesPlan{}
+	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}
@@ -114,10 +114,9 @@ func (s *SalesPlanDal) Del(db *xorm.Session, ID string, Outfit string) (int64, e
 			_, _, n := sysHelper.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
-		return r, e
+		e = db.Table(TableName).Delete(Data, intArr).Error
 	} else {
-		r, e := db.Table(TableName).ID(ID).Delete(Data)
-		return r, e
+		e = db.Table(TableName).Delete(Data, ID).Error
 	}
+	return e
 }

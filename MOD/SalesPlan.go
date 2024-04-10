@@ -1,11 +1,11 @@
 package mod
 
 type SalesPlan struct {
-	ID           int64   `xorm:"pk ID"`
-	PlanName     string  `xorm:"PlanName"`
-	TargetID     int64   `xorm:"TargetID"`
-	PlanContent  string  `xorm:"PlanContent"`
-	CreationTime int64   `xorm:"CreationTime"`
-	Status       int64   `xorm:"Status"`
-	Budget       float32 `xorm:"Budget"`
+	ID           int64   `gorm:"column:ID;primarykey"`
+	PlanName     string  `gorm:"column:PlanName"`
+	TargetID     int64   `gorm:"column:TargetID"`
+	PlanContent  string  `gorm:"column:PlanContent"`
+	CreationTime int64   `gorm:"column:CreationTime"`
+	Status       int64   `gorm:"column:Status"`
+	Budget       float32 `gorm:"column:Budget"`
 }

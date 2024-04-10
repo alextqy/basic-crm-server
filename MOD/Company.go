@@ -1,8 +1,8 @@
 package mod
 
 type Company struct {
-	ID           int64  `xorm:"pk ID"`
-	CompanyName  string `xorm:"CompanyName"`
-	CreationTime int64  `xorm:"CreationTime"`
-	Remark       string `xorm:"Remark"`
+	ID           int64  `gorm:"column:ID;primarykey"`
+	CompanyName  string `gorm:"column:CompanyName"`
+	CreationTime int64  `gorm:"column:CreationTime"`
+	Remark       string `gorm:"column:Remark"`
 }

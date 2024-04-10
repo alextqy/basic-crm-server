@@ -17,12 +17,13 @@ var tcpHelper = mtd.TcpHelper{}
 var udpHelper = mtd.UdpHelper{}
 
 var adminDal = dal.AdminDal{}
-var companyDal = dal.CompanyDal{}
-var customerDal = dal.CustomerDal{}
-var managerDal = dal.ManagerDal{}
-var managerGroupDal = dal.ManagerGroupDal{}
-var salesPlanDal = dal.SalesPlanDal{}
-var salesTargetDal = dal.SalesTargetDal{}
+
+// var companyDal = dal.CompanyDal{}
+// var customerDal = dal.CustomerDal{}
+// var managerDal = dal.ManagerDal{}
+// var managerGroupDal = dal.ManagerGroupDal{}
+// var salesPlanDal = dal.SalesPlanDal{}
+// var salesTargetDal = dal.SalesTargetDal{}
 
 func PwdMD5(Password string) string {
 	return sysHelper.MD5(sysHelper.EnBase64(Password))
@@ -84,27 +85,25 @@ func DeToken(Token string) mod.Result {
 			db := dal.ConnDB()
 			t := strings.Split(r, " ")
 			if t[1] == "admin" {
-				admin, e := adminDal.Token(db, Token, "")
-				if e != nil {
-					result.Message = e.Error()
-				} else if admin.ID == 0 {
+				admin := adminDal.Token(db, Token, "")
+				if admin.ID == 0 {
 					result.Message = lang.IncorrectToken
 				} else {
 					result.State = true
 					result.Message = "admin"
 					result.Data = admin
 				}
-			} else if t[1] == "manager" {
-				manager, e := managerDal.Token(db, Token, "")
-				if e != nil {
-					result.Message = e.Error()
-				} else if manager.ID == 0 {
-					result.Message = lang.IncorrectToken
-				} else {
-					result.State = true
-					result.Message = "manager"
-					result.Data = manager
-				}
+				// } else if t[1] == "manager" {
+				// 	manager, e := managerDal.Token(db, Token, "")
+				// 	if e != nil {
+				// 		result.Message = e.Error()
+				// 	} else if manager.ID == 0 {
+				// 		result.Message = lang.IncorrectToken
+				// 	} else {
+				// 		result.State = true
+				// 		result.Message = "manager"
+				// 		result.Data = manager
+				// 	}
 			} else {
 				result.Message = lang.IncorrectToken
 			}

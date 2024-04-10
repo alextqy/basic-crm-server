@@ -5,71 +5,70 @@ import (
 	"math"
 	"strings"
 
-	"xorm.io/xorm"
+	"gorm.io/gorm"
 )
 
 type CustomerDal struct{}
 
-func (c *CustomerDal) Count(db *xorm.Session, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int64, error) {
+func (c *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) int64 {
+	var Count int64
 	TableName := customerTable + Outfit
-	Data := mod.Customer{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
 	}
 	if Gender > 0 {
-		engine = engine.And("`Gender` = ?", Gender)
+		engine = engine.Where("Gender = ?", Gender)
 	}
 	if Priority > 0 {
-		engine = engine.And("`Priority` = ?", Priority)
+		engine = engine.Where("Priority = ?", Priority)
 	}
 	if CompanyID > 0 {
-		engine = engine.And("`CompanyID` = ?", CompanyID)
+		engine = engine.Where("CompanyID = ?", CompanyID)
 	}
 	if ManagerID > 0 {
-		engine = engine.And("`ManagerID` = ?", ManagerID)
+		engine = engine.Where("ManagerID = ?", ManagerID)
 	}
-	r, e := engine.Count(&Data)
-	return r, e
+	engine.Count(&Count)
+	return Count
 }
 
-func (c *CustomerDal) Add(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
+func (c *CustomerDal) Add(db *gorm.DB, Data mod.Customer, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
-	r, e := db.Table(TableName).Insert(&Data)
-	return r, e
+	e := db.Table(TableName).Create(&Data).Error
+	return Data.ID, e
 }
 
-func (c *CustomerDal) Update(db *xorm.Session, Data mod.Customer, Outfit string) (int64, error) {
+func (c *CustomerDal) Update(db *gorm.DB, Data mod.Customer, Outfit string) error {
 	TableName := customerTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
-	return r, e
+	return db.Table(TableName).Save(&Data).Error
 }
 
-func (c *CustomerDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Customer, error) {
+func (c *CustomerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Customer {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
-	_, err := db.Table(TableName).ID(ID).Get(&Data)
-	return Data, err
+	db.Table(TableName).First(&Data, ID)
+	return Data
 }
 
-func (c *CustomerDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
+func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
 	}
 	if Gender > 0 {
-		engine = engine.And("`Gender` = ?", Gender)
+		engine = engine.Where("Gender = ?", Gender)
 	}
 	if Priority > 0 {
-		engine = engine.And("`Priority` = ?", Priority)
+		engine = engine.Where("Priority = ?", Priority)
 	}
 	if CompanyID > 0 {
-		engine = engine.And("`CompanyID` = ?", CompanyID)
+		engine = engine.Where("CompanyID = ?", CompanyID)
 	}
 	if ManagerID > 0 {
-		engine = engine.And("`ManagerID` = ?", ManagerID)
+		engine = engine.Where("ManagerID = ?", ManagerID)
 	}
 	if Page <= 1 {
 		Page = 1
@@ -83,9 +82,9 @@ func (c *CustomerDal) List(db *xorm.Session, Page int, PageSize int, Order int, 
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.AllCols().OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count, _ := c.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, Outfit)
+	Count := c.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -93,24 +92,24 @@ func (c *CustomerDal) List(db *xorm.Session, Page int, PageSize int, Order int, 
 	return Page, PageSize, TotalPage, Data
 }
 
-func (c *CustomerDal) All(db *xorm.Session, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
+func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`Name` LIKE ?", "%"+Stext+"%").Or("`Email` LIKE ?", "%"+Stext+"%").Or("`Tel` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
 	}
 	if Gender > 0 {
-		engine = engine.And("`Gender` = ?", Gender)
+		engine = engine.Where("Gender = ?", Gender)
 	}
 	if Priority > 0 {
-		engine = engine.And("`Priority` = ?", Priority)
+		engine = engine.Where("Priority = ?", Priority)
 	}
 	if CompanyID > 0 {
-		engine = engine.And("`CompanyID` = ?", CompanyID)
+		engine = engine.Where("CompanyID = ?", CompanyID)
 	}
 	if ManagerID > 0 {
-		engine = engine.And("`ManagerID` = ?", ManagerID)
+		engine = engine.Where("ManagerID = ?", ManagerID)
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -118,13 +117,14 @@ func (c *CustomerDal) All(db *xorm.Session, Order int, Stext string, Gender int6
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.OrderBy("`ID` " + OrderBy).Find(&Data)
+	engine.Order("ID " + OrderBy).Find(&Data)
 	return Data
 }
 
-func (c *CustomerDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error) {
+func (c *CustomerDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
+	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}
@@ -132,10 +132,9 @@ func (c *CustomerDal) Del(db *xorm.Session, ID string, Outfit string) (int64, er
 			_, _, n := sysHelper.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
-		return r, e
+		e = db.Table(TableName).Delete(Data, intArr).Error
 	} else {
-		r, e := db.Table(TableName).ID(ID).Delete(Data)
-		return r, e
+		e = db.Table(TableName).Delete(Data, ID).Error
 	}
+	return e
 }

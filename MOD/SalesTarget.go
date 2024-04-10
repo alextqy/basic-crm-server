@@ -1,11 +1,11 @@
 package mod
 
 type SalesTarget struct {
-	ID              int64   `xorm:"pk ID"`
-	TargetName      string  `xorm:"TargetName"`
-	ExpirationDate  int64   `xorm:"ExpirationDate"`
-	CreationTime    int64   `xorm:"CreationTime"`
-	AchievementRate float32 `xorm:"AchievementRate"`
-	CustomerID      int64   `xorm:"CustomerID"`
-	Remark          string  `xorm:"Remark"`
+	ID              int64   `gorm:"column:ID;primarykey"`
+	TargetName      string  `gorm:"column:TargetName"`
+	ExpirationDate  int64   `gorm:"column:ExpirationDate"`
+	CreationTime    int64   `gorm:"column:CreationTime"`
+	AchievementRate float32 `gorm:"column:AchievementRate"`
+	CustomerID      int64   `gorm:"column:CustomerID"`
+	Remark          string  `gorm:"column:Remark"`
 }

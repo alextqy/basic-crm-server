@@ -7,7 +7,7 @@ import (
 
 func Test(w http.ResponseWriter, r *http.Request) {
 	Test := httpHelper.Post(r, "test")
-	bll.Test(Test)
+	httpHelper.HttpWrite(w, bll.Test(Test))
 }
 
 func AdminSignIn(w http.ResponseWriter, r *http.Request) {
@@ -47,4 +47,19 @@ func AdminAll(w http.ResponseWriter, r *http.Request) {
 	Level := httpHelper.PostInt64(r, "Level")
 	Status := httpHelper.PostInt64(r, "Status")
 	httpHelper.HttpWrite(w, bll.AdminAll(Token, Order, Stext, Level, Status))
+}
+
+func AdminNew(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	Account := httpHelper.Post(r, "Account")
+	Password := httpHelper.Post(r, "Password")
+	Name := httpHelper.Post(r, "Name")
+	Remark := httpHelper.Post(r, "Remark")
+	httpHelper.HttpWrite(w, bll.AdminNew(Token, Account, Password, Name, Remark))
+}
+
+func AdminDel(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	ID := httpHelper.Post(r, "ID")
+	httpHelper.HttpWrite(w, bll.AdminDel(Token, ID))
 }

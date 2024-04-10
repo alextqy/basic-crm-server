@@ -1,15 +1,15 @@
 package mod
 
 type Customer struct {
-	ID           int64  `xorm:"pk ID"`
-	Name         string `xorm:"Name"`
-	Birthday     int64  `xorm:"Birthday"`
-	Gender       int64  `xorm:"Gender"`
-	Email        string `xorm:"Email"`
-	Tel          string `xorm:"Tel"`
-	CustomerInfo string `xorm:"CustomerInfo"`
-	Priority     int64  `xorm:"Priority"`
-	CreationTime int64  `xorm:"CreationTime"`
-	CompanyID    int64  `xorm:"CompanyID"`
-	ManagerID    int64  `xorm:"ManagerID"`
+	ID           int64  `gorm:"column:ID;primarykey"`
+	Name         string `gorm:"column:Name"`
+	Birthday     int64  `gorm:"column:Birthday"`
+	Gender       int64  `gorm:"column:Gender"`
+	Email        string `gorm:"column:Email"`
+	Tel          string `gorm:"column:Tel"`
+	CustomerInfo string `gorm:"column:CustomerInfo"`
+	Priority     int64  `gorm:"column:Priority"`
+	CreationTime int64  `gorm:"column:CreationTime"`
+	CompanyID    int64  `gorm:"column:CompanyID"`
+	ManagerID    int64  `gorm:"column:ManagerID"`
 }

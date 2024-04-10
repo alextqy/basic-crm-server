@@ -5,47 +5,46 @@ import (
 	"math"
 	"strings"
 
-	"xorm.io/xorm"
+	"gorm.io/gorm"
 )
 
 type CompanyDal struct{}
 
-func (c *CompanyDal) Count(db *xorm.Session, Stext string, Outfit string) (int64, error) {
+func (c *CompanyDal) Count(db *gorm.DB, Stext string, Outfit string) int64 {
+	var Count int64
 	TableName := companyTable + Outfit
-	Data := mod.Company{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`CompanyName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("CompanyName LIKE ?", "%"+Stext+"%")
 	}
-	r, e := engine.Count(&Data)
-	return r, e
+	engine.Count(&Count)
+	return Count
 }
 
-func (c *CompanyDal) Add(db *xorm.Session, Data mod.Company, Outfit string) (int64, error) {
+func (c *CompanyDal) Add(db *gorm.DB, Data mod.Company, Outfit string) (int64, error) {
 	TableName := companyTable + Outfit
-	r, e := db.Table(TableName).Insert(&Data)
-	return r, e
+	e := db.Table(TableName).Create(&Data).Error
+	return Data.ID, e
 }
 
-func (c *CompanyDal) Update(db *xorm.Session, Data mod.Company, Outfit string) (int64, error) {
+func (c *CompanyDal) Update(db *gorm.DB, Data mod.Company, Outfit string) error {
 	TableName := companyTable + Outfit
-	r, e := db.Table(TableName).ID(Data.ID).AllCols().Update(&Data)
-	return r, e
+	return db.Table(TableName).Save(&Data).Error
 }
 
-func (c *CompanyDal) Data(db *xorm.Session, ID int64, Outfit string) (mod.Company, error) {
+func (c *CompanyDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Company {
 	TableName := companyTable + Outfit
 	Data := mod.Company{}
-	_, err := db.Table(TableName).ID(ID).Get(&Data)
-	return Data, err
+	db.Table(TableName).First(&Data, ID)
+	return Data
 }
 
-func (c *CompanyDal) List(db *xorm.Session, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.Company) {
+func (c *CompanyDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.Company) {
 	TableName := companyTable + Outfit
 	Data := []mod.Company{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`CompanyName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("CompanyName LIKE ?", "%"+Stext+"%")
 	}
 	if Page <= 1 {
 		Page = 1
@@ -59,9 +58,9 @@ func (c *CompanyDal) List(db *xorm.Session, Page int, PageSize int, Order int, S
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.AllCols().OrderBy("`ID` "+OrderBy).Limit(int(PageSize), int((Page-1)*PageSize)).Find(&Data)
+	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count, _ := c.Count(db, Stext, TableName)
+	Count := c.Count(db, Stext, TableName)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -69,12 +68,12 @@ func (c *CompanyDal) List(db *xorm.Session, Page int, PageSize int, Order int, S
 	return Page, PageSize, TotalPage, Data
 }
 
-func (c *CompanyDal) All(db *xorm.Session, Order int, Stext string, Outfit string) []mod.Company {
+func (c *CompanyDal) All(db *gorm.DB, Order int, Stext string, Outfit string) []mod.Company {
 	TableName := companyTable + Outfit
 	Data := []mod.Company{}
 	engine := db.Table(TableName)
 	if Stext != "" {
-		engine = engine.And("`CompanyName` LIKE ?", "%"+Stext+"%")
+		engine = engine.Where("CompanyName LIKE ?", "%"+Stext+"%")
 	}
 	OrderBy := ""
 	if Order == -1 {
@@ -82,13 +81,14 @@ func (c *CompanyDal) All(db *xorm.Session, Order int, Stext string, Outfit strin
 	} else {
 		OrderBy = "ASC"
 	}
-	engine.OrderBy("`ID` " + OrderBy).Find(&Data)
+	engine.Order("ID " + OrderBy).Find(&Data)
 	return Data
 }
 
-func (c *CompanyDal) Del(db *xorm.Session, ID string, Outfit string) (int64, error) {
+func (c *CompanyDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := companyTable + Outfit
 	Data := mod.Company{}
+	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
 		intArr := []int{}
@@ -96,10 +96,9 @@ func (c *CompanyDal) Del(db *xorm.Session, ID string, Outfit string) (int64, err
 			_, _, n := sysHelper.StringToInt(ids[i])
 			intArr = append(intArr, n)
 		}
-		r, e := db.Table(TableName).In("`ID`", intArr).Delete(Data)
-		return r, e
+		e = db.Table(TableName).Delete(Data, intArr).Error
 	} else {
-		r, e := db.Table(TableName).ID(ID).Delete(Data)
-		return r, e
+		e = db.Table(TableName).Delete(Data, ID).Error
 	}
+	return e
 }
