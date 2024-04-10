@@ -11,6 +11,7 @@ type Language struct {
 	ThePasswordIsTooShort   string
 	TheAccountAlreadyExists string
 	NoData                  string
+	PermissionDenied        string
 }
 
 func SysLang() Language {
@@ -28,6 +29,7 @@ func SysLang() Language {
 		language.ThePasswordIsTooShort = "密码长度不够"
 		language.TheAccountAlreadyExists = "账号已存在"
 		language.NoData = "数据不存在"
+		language.PermissionDenied = "无权限"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -39,6 +41,7 @@ func SysLang() Language {
 		language.ThePasswordIsTooShort = "The password is too short"
 		language.TheAccountAlreadyExists = "The account already exists"
 		language.NoData = "No data"
+		language.PermissionDenied = "Permission denied"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -50,6 +53,7 @@ func SysLang() Language {
 		language.ThePasswordIsTooShort = ""
 		language.TheAccountAlreadyExists = ""
 		language.NoData = ""
+		language.PermissionDenied = ""
 	}
 	return language
 }
