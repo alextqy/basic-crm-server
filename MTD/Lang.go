@@ -1,17 +1,18 @@
 package mtd
 
 type Language struct {
-	IncorrectAccount        string
-	IncorrectPassword       string
-	TheAccountDoesNotExist  string
-	IncorrectToken          string
-	The16bitKeyIsNotSet     string
-	IncorrectName           string
-	TheAccountIsTooShort    string
-	ThePasswordIsTooShort   string
-	TheAccountAlreadyExists string
-	NoData                  string
-	PermissionDenied        string
+	IncorrectAccount          string
+	IncorrectPassword         string
+	TheAccountDoesNotExist    string
+	IncorrectToken            string
+	The16bitKeyIsNotSet       string
+	IncorrectName             string
+	TheAccountIsTooShort      string
+	ThePasswordIsTooShort     string
+	TheAccountAlreadyExists   string
+	NoData                    string
+	PermissionDenied          string
+	DataWithTheSameNameExists string
 }
 
 func SysLang() Language {
@@ -30,6 +31,7 @@ func SysLang() Language {
 		language.TheAccountAlreadyExists = "账号已存在"
 		language.NoData = "数据不存在"
 		language.PermissionDenied = "无权限"
+		language.DataWithTheSameNameExists = "存在同名数据"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -42,6 +44,7 @@ func SysLang() Language {
 		language.TheAccountAlreadyExists = "The account already exists"
 		language.NoData = "No data"
 		language.PermissionDenied = "Permission denied"
+		language.DataWithTheSameNameExists = "Data with the same name exists"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -54,6 +57,7 @@ func SysLang() Language {
 		language.TheAccountAlreadyExists = ""
 		language.NoData = ""
 		language.PermissionDenied = ""
+		language.DataWithTheSameNameExists = ""
 	}
 	return language
 }

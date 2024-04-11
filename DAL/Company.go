@@ -102,3 +102,10 @@ func (c *CompanyDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	}
 	return e
 }
+
+func (c *CompanyDal) Check(db *gorm.DB, CompanyName, Outfit string) mod.Company {
+	TableName := companyTable + Outfit
+	Data := mod.Company{}
+	db.Table(TableName).Where("CompanyName = ?", CompanyName).First(&Data)
+	return Data
+}

@@ -113,7 +113,7 @@ func AdminUpdate(Token, Password, Name, Remark string) mod.Result {
 		result.Message = t.Message
 	} else if t.Message != "admin" {
 		result.Message = lang.PermissionDenied
-	} else if t.Data.(mod.Admin).ID == 0 {
+	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else if Name == "" {
 		result.Message = lang.IncorrectName
@@ -135,7 +135,7 @@ func AdminUpdate(Token, Password, Name, Remark string) mod.Result {
 		} else {
 			result.State = true
 			jData, _ := json.Marshal(userData)
-			go fileHelper.WriteLog(userData.Account, "The data has been updated. Old data: "+string(jData))
+			go fileHelper.WriteLog(CheckAccount(t), "The data has been updated. Data: "+string(jData))
 		}
 	}
 	return result
@@ -157,7 +157,7 @@ func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Sta
 		result.Message = t.Message
 	} else if t.Message != "admin" {
 		result.Message = lang.PermissionDenied
-	} else if t.Data.(mod.Admin).ID == 0 {
+	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
 		db := dal.ConnDB()
@@ -180,7 +180,7 @@ func AdminAll(Token string, Order int, Stext string, Level, Status int64) mod.Re
 		result.Message = t.Message
 	} else if t.Message != "admin" {
 		result.Message = lang.PermissionDenied
-	} else if t.Data.(mod.Admin).ID == 0 {
+	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
 		db := dal.ConnDB()
@@ -203,7 +203,7 @@ func AdminNew(Token string, Account, Password, Name, Remark string) mod.Result {
 		result.Message = t.Message
 	} else if t.Message != "admin" {
 		result.Message = lang.PermissionDenied
-	} else if t.Data.(mod.Admin).ID == 0 {
+	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else if Account == "" {
 		result.Message = lang.IncorrectAccount
@@ -216,8 +216,6 @@ func AdminNew(Token string, Account, Password, Name, Remark string) mod.Result {
 	} else if len(Password) < 6 {
 		result.Message = lang.ThePasswordIsTooShort
 	} else {
-		userData := t.Data.(mod.Admin)
-
 		data := mod.Admin{
 			Account:      Account,
 			Password:     PwdMD5(Password),
@@ -237,7 +235,7 @@ func AdminNew(Token string, Account, Password, Name, Remark string) mod.Result {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(data)
-				go fileHelper.WriteLog(userData.Account, "Add data: "+string(jData))
+				go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData))
 				result.State = true
 			}
 		}
@@ -253,14 +251,16 @@ func AdminDel(Token, ID string) mod.Result {
 		Data:    nil,
 	}
 
+	if ID == "1" {
+		return result
+	}
+
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Data.(mod.Admin).ID == 0 {
+	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
-		userData := t.Data.(mod.Admin)
-
 		db := dal.ConnDB()
 		_, _, ID64 := sysHelper.StringToInt64(ID)
 		checkData := adminDal.Data(db, ID64, "")
@@ -272,7 +272,7 @@ func AdminDel(Token, ID string) mod.Result {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(userData.Account, "Remove data: "+string(jData))
+				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData))
 				result.State = true
 			}
 		}

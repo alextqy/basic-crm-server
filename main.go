@@ -74,4 +74,10 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/admin/all", httpHelper.Middleware(api.AdminAll))
 	mux.HandleFunc("/admin/new", httpHelper.Middleware(api.AdminNew))
 	mux.HandleFunc("/admin/del", httpHelper.Middleware(api.AdminDel))
+
+	mux.HandleFunc("/company/new", httpHelper.Middleware(api.CompanyNew))
+	mux.HandleFunc("/company/update", httpHelper.Middleware(api.CompanyUpdate))
+	mux.HandleFunc("/company/list", httpHelper.Middleware(api.CompanyList))
+	mux.HandleFunc("/company/all", httpHelper.Middleware(api.CompanyAll))
+	mux.HandleFunc("/company/del", httpHelper.Middleware(api.CompanyDel))
 }

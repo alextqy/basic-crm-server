@@ -24,6 +24,26 @@ var managerGroupDal = dal.ManagerGroupDal{}
 var salesPlanDal = dal.SalesPlanDal{}
 var salesTargetDal = dal.SalesTargetDal{}
 
+func CheckID(t mod.Result) int64 {
+	var ID int64
+	if t.Message == "admin" {
+		ID = t.Data.(mod.Admin).ID
+	} else {
+		ID = t.Data.(mod.Manager).ID
+	}
+	return ID
+}
+
+func CheckAccount(t mod.Result) string {
+	account := ""
+	if t.Message == "admin" {
+		account = t.Data.(mod.Admin).Account
+	} else {
+		account = t.Data.(mod.Manager).Account
+	}
+	return account
+}
+
 func PwdMD5(Password string) string {
 	return sysHelper.MD5(sysHelper.EnBase64(Password))
 }
