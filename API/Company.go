@@ -9,15 +9,8 @@ func CompanyNew(w http.ResponseWriter, r *http.Request) {
 	Token := httpHelper.Post(r, "Token")
 	CompanyName := httpHelper.Post(r, "CompanyName")
 	Remark := httpHelper.Post(r, "Remark")
-	httpHelper.HttpWrite(w, bll.CompanyNew(Token, CompanyName, Remark))
-}
-
-func CompanyUpdate(w http.ResponseWriter, r *http.Request) {
-	Token := httpHelper.Post(r, "Token")
 	ID := httpHelper.PostInt64(r, "ID")
-	CompanyName := httpHelper.Post(r, "CompanyName")
-	Remark := httpHelper.Post(r, "Remark")
-	httpHelper.HttpWrite(w, bll.CompanyUpdate(Token, ID, CompanyName, Remark))
+	httpHelper.HttpWrite(w, bll.CompanyNew(Token, CompanyName, Remark, ID))
 }
 
 func CompanyList(w http.ResponseWriter, r *http.Request) {

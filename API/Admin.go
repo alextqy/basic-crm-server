@@ -21,12 +21,14 @@ func AdminSignOut(w http.ResponseWriter, r *http.Request) {
 	httpHelper.HttpWrite(w, bll.AdminSignOut(Token))
 }
 
-func AdminUpdate(w http.ResponseWriter, r *http.Request) {
+func AdminNew(w http.ResponseWriter, r *http.Request) {
 	Token := httpHelper.Post(r, "Token")
+	Account := httpHelper.Post(r, "Account")
 	Password := httpHelper.Post(r, "Password")
 	Name := httpHelper.Post(r, "Name")
 	Remark := httpHelper.Post(r, "Remark")
-	httpHelper.HttpWrite(w, bll.AdminUpdate(Token, Password, Name, Remark))
+	ID := httpHelper.PostInt64(r, "ID")
+	httpHelper.HttpWrite(w, bll.AdminNew(Token, Account, Password, Name, Remark, ID))
 }
 
 func AdminList(w http.ResponseWriter, r *http.Request) {
@@ -47,15 +49,6 @@ func AdminAll(w http.ResponseWriter, r *http.Request) {
 	Level := httpHelper.PostInt64(r, "Level")
 	Status := httpHelper.PostInt64(r, "Status")
 	httpHelper.HttpWrite(w, bll.AdminAll(Token, Order, Stext, Level, Status))
-}
-
-func AdminNew(w http.ResponseWriter, r *http.Request) {
-	Token := httpHelper.Post(r, "Token")
-	Account := httpHelper.Post(r, "Account")
-	Password := httpHelper.Post(r, "Password")
-	Name := httpHelper.Post(r, "Name")
-	Remark := httpHelper.Post(r, "Remark")
-	httpHelper.HttpWrite(w, bll.AdminNew(Token, Account, Password, Name, Remark))
 }
 
 func AdminDel(w http.ResponseWriter, r *http.Request) {

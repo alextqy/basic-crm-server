@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, CustomerInfo string, Priority, CreationTime, CompanyID int64) mod.Result {
+func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, CustomerInfo string, Priority, CompanyID, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -23,8 +23,6 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 		result.Message = lang.TheAccountDoesNotExist
 	} else if Name == "" {
 		result.Message = lang.IncorrectName
-	} else if Birthday <= 0 {
-		result.Message = lang.IncorrectBirthday
 	} else if Gender <= 0 {
 		result.Message = lang.IncorrectGender
 	} else if Tel == "" {
@@ -49,38 +47,51 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 			ManagerID = 0
 		}
 
-		data := mod.Customer{
-			Name:         Name,
-			Birthday:     Birthday,
-			Gender:       Gender,
-			Email:        Email,
-			Tel:          Tel,
-			CustomerInfo: CustomerInfo,
-			Priority:     Priority,
-			CreationTime: sysHelper.TimeStamp(),
-			CompanyID:    CompanyID,
-			ManagerID:    ManagerID,
-		}
-		_, e := customerDal.Add(db, data, "")
-		if e != nil {
-			result.Message = e.Error()
+		if ID > 0 {
+			checkCustomer := customerDal.Data(db, ID, "")
+			if checkCustomer.ID == 0 {
+				result.Message = lang.CustomerDataDoesNotExist
+			} else {
+				checkCustomer.Name = Name
+				checkCustomer.Birthday = Birthday
+				checkCustomer.Gender = Gender
+				checkCustomer.Email = Email
+				checkCustomer.Tel = Tel
+				checkCustomer.CustomerInfo = CustomerInfo
+				checkCustomer.Priority = Priority
+				checkCustomer.CompanyID = CompanyID
+				e := customerDal.Update(db, checkCustomer, "")
+				if e != nil {
+					result.Message = e.Error()
+				} else {
+					jData, _ := json.Marshal(checkCustomer)
+					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData))
+					result.State = true
+				}
+			}
 		} else {
-			jData, _ := json.Marshal(data)
-			go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData))
-			result.State = true
+			data := mod.Customer{
+				Name:         Name,
+				Birthday:     Birthday,
+				Gender:       Gender,
+				Email:        Email,
+				Tel:          Tel,
+				CustomerInfo: CustomerInfo,
+				Priority:     Priority,
+				CreationTime: sysHelper.TimeStamp(),
+				CompanyID:    CompanyID,
+				ManagerID:    ManagerID,
+			}
+			_, e := customerDal.Add(db, data, "")
+			if e != nil {
+				result.Message = e.Error()
+			} else {
+				jData, _ := json.Marshal(data)
+				go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData))
+				result.State = true
+			}
 		}
 	}
-	return result
-}
-
-func CustomerUpdate(Token string) mod.Result {
-	result := mod.Result{
-		State:   false,
-		Message: "",
-		Code:    200,
-		Data:    nil,
-	}
-
 	return result
 }
 
