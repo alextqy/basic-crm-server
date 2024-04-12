@@ -135,7 +135,7 @@ func AdminUpdate(Token, Password, Name, Remark string) mod.Result {
 		} else {
 			result.State = true
 			jData, _ := json.Marshal(userData)
-			go fileHelper.WriteLog(CheckAccount(t), "The data has been updated. Data: "+string(jData))
+			go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData))
 		}
 	}
 	return result

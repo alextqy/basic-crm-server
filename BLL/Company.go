@@ -78,7 +78,7 @@ func CompanyUpdate(Token string, ID int64, CompanyName, Remark string) mod.Resul
 			} else {
 				result.State = true
 				jData, _ := json.Marshal(data)
-				go fileHelper.WriteLog(CheckAccount(t), "The data has been updated. Data: "+string(jData))
+				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData))
 			}
 		}
 	}

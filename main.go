@@ -37,7 +37,7 @@ func loopBroadcast(ip string, port string) {
 	}
 }
 
-// 系统日志f
+// 系统日志
 func systemLog() {
 	for {
 		if !fileHelper.FileExist(fileHelper.LogDir()) {
@@ -66,6 +66,8 @@ func main() {
 
 func routes(mux *http.ServeMux) {
 	var httpHelper = mtd.HttpHelper{}
+
+	// admin
 	mux.HandleFunc("/test", httpHelper.Middleware(api.Test))
 	mux.HandleFunc("/admin/sign/in", httpHelper.Middleware(api.AdminSignIn))
 	mux.HandleFunc("/admin/sign/out", httpHelper.Middleware(api.AdminSignOut))
@@ -75,9 +77,17 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/admin/new", httpHelper.Middleware(api.AdminNew))
 	mux.HandleFunc("/admin/del", httpHelper.Middleware(api.AdminDel))
 
+	// company
 	mux.HandleFunc("/company/new", httpHelper.Middleware(api.CompanyNew))
 	mux.HandleFunc("/company/update", httpHelper.Middleware(api.CompanyUpdate))
 	mux.HandleFunc("/company/list", httpHelper.Middleware(api.CompanyList))
 	mux.HandleFunc("/company/all", httpHelper.Middleware(api.CompanyAll))
 	mux.HandleFunc("/company/del", httpHelper.Middleware(api.CompanyDel))
+
+	// customer
+	mux.HandleFunc("/customer/new", httpHelper.Middleware(api.CustomerNew))
+	mux.HandleFunc("/customer/update", httpHelper.Middleware(api.CustomerUpdate))
+	mux.HandleFunc("/customer/list", httpHelper.Middleware(api.CustomerList))
+	mux.HandleFunc("/customer/all", httpHelper.Middleware(api.CustomerAll))
+	mux.HandleFunc("/customer/del", httpHelper.Middleware(api.CustomerDel))
 }
