@@ -131,7 +131,7 @@ func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mo
 		if ID > 0 {
 			checkData := adminDal.Data(db, ID, "")
 			if checkData.ID == 0 {
-				result.Message = lang.NoData
+				result.Message = lang.TheAccountDoesNotExist
 			} else {
 				newPwd := ""
 				if Password == "" {
@@ -201,6 +201,9 @@ func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Sta
 		db := dal.ConnDB()
 		result.State = true
 		result.Page, result.PageSize, result.TotalPage, result.Data = adminDal.List(db, Page, PageSize, Order, Stext, Level, Status, "")
+		for i := 0; i < len(result.Data.([]mod.Admin)); i++ {
+			result.Data.([]mod.Admin)[i].Password = ""
+		}
 	}
 	return result
 }
@@ -224,6 +227,32 @@ func AdminAll(Token string, Order int, Stext string, Level, Status int64) mod.Re
 		db := dal.ConnDB()
 		result.State = true
 		result.Data = adminDal.All(db, Order, Stext, Level, Status, "")
+		for i := 0; i < len(result.Data.([]mod.Admin)); i++ {
+			result.Data.([]mod.Admin)[i].Password = ""
+		}
+	}
+	return result
+}
+
+func AdminData(Token string, ID int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "admin" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		result.State = true
+		result.Data = adminDal.Data(db, ID, "")
 	}
 	return result
 }
@@ -250,7 +279,7 @@ func AdminDel(Token, ID string) mod.Result {
 		_, _, ID64 := sysHelper.StringToInt64(ID)
 		checkData := adminDal.Data(db, ID64, "")
 		if checkData.ID == 0 {
-			result.Message = lang.NoData
+			result.Message = lang.TheAccountDoesNotExist
 		} else {
 			e := adminDal.Del(db, ID, "")
 			if e != nil {

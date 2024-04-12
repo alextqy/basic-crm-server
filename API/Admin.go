@@ -51,6 +51,12 @@ func AdminAll(w http.ResponseWriter, r *http.Request) {
 	httpHelper.HttpWrite(w, bll.AdminAll(Token, Order, Stext, Level, Status))
 }
 
+func AdminData(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	ID := httpHelper.PostInt64(r, "ID")
+	httpHelper.HttpWrite(w, bll.AdminData(Token, ID))
+}
+
 func AdminDel(w http.ResponseWriter, r *http.Request) {
 	Token := httpHelper.Post(r, "Token")
 	ID := httpHelper.Post(r, "ID")

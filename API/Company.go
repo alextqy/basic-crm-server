@@ -29,6 +29,12 @@ func CompanyAll(w http.ResponseWriter, r *http.Request) {
 	httpHelper.HttpWrite(w, bll.CompanyAll(Token, Order, Stext))
 }
 
+func CompanyData(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	ID := httpHelper.PostInt64(r, "ID")
+	httpHelper.HttpWrite(w, bll.CompanyData(Token, ID))
+}
+
 func CompanyDel(w http.ResponseWriter, r *http.Request) {
 	Token := httpHelper.Post(r, "Token")
 	ID := httpHelper.Post(r, "ID")

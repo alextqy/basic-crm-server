@@ -17,7 +17,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if t.Message != "admin" && t.Message != "manager" {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -95,7 +95,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 	return result
 }
 
-func CustomerList(Token string) mod.ResultList {
+func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender, Priority, CompanyID, ManagerID int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -106,10 +106,22 @@ func CustomerList(Token string) mod.ResultList {
 		Data:      nil,
 	}
 
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "admin" && t.Message != "manager" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		result.State = true
+		result.Page, result.PageSize, result.TotalPage, result.Data = customerDal.List(db, Page, PageSize, Order, Stext, Gender, Priority, CompanyID, ManagerID, "")
+	}
 	return result
 }
 
-func CustomerAll(Token string) mod.Result {
+func CustomerAll(Token string, Order int, Stext string, Gender, Priority, CompanyID, ManagerID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -117,10 +129,22 @@ func CustomerAll(Token string) mod.Result {
 		Data:    nil,
 	}
 
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "admin" && t.Message != "manager" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		result.State = true
+		result.Data = customerDal.All(db, Order, Stext, Gender, Priority, CompanyID, ManagerID, "")
+	}
 	return result
 }
 
-func CustomerDel(Token string) mod.Result {
+func CustomerData(Token string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -128,5 +152,52 @@ func CustomerDel(Token string) mod.Result {
 		Data:    nil,
 	}
 
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "admin" && t.Message != "manager" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		result.State = true
+		result.Data = customerDal.Data(db, ID, "")
+	}
+	return result
+}
+
+func CustomerDel(Token, ID string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "admin" && t.Message != "manager" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		_, _, ID64 := sysHelper.StringToInt64(ID)
+		checkData := customerDal.Data(db, ID64, "")
+		if checkData.ID == 0 {
+			result.Message = lang.CustomerDataDoesNotExist
+		} else {
+			e := customerDal.Del(db, ID, "")
+			if e != nil {
+				result.Message = e.Error()
+			} else {
+				jData, _ := json.Marshal(checkData)
+				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData))
+				result.State = true
+			}
+		}
+	}
 	return result
 }

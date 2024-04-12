@@ -74,17 +74,20 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/admin/new", httpHelper.Middleware(api.AdminNew))
 	mux.HandleFunc("/admin/list", httpHelper.Middleware(api.AdminList))
 	mux.HandleFunc("/admin/all", httpHelper.Middleware(api.AdminAll))
+	mux.HandleFunc("/admin/data", httpHelper.Middleware(api.AdminData))
 	mux.HandleFunc("/admin/del", httpHelper.Middleware(api.AdminDel))
 
 	// company
 	mux.HandleFunc("/company/new", httpHelper.Middleware(api.CompanyNew))
 	mux.HandleFunc("/company/list", httpHelper.Middleware(api.CompanyList))
 	mux.HandleFunc("/company/all", httpHelper.Middleware(api.CompanyAll))
+	mux.HandleFunc("/company/data", httpHelper.Middleware(api.CompanyData))
 	mux.HandleFunc("/company/del", httpHelper.Middleware(api.CompanyDel))
 
 	// customer
 	mux.HandleFunc("/customer/new", httpHelper.Middleware(api.CustomerNew))
 	mux.HandleFunc("/customer/list", httpHelper.Middleware(api.CustomerList))
 	mux.HandleFunc("/customer/all", httpHelper.Middleware(api.CustomerAll))
+	mux.HandleFunc("/customer/data", httpHelper.Middleware(api.CustomerData))
 	mux.HandleFunc("/customer/del", httpHelper.Middleware(api.CustomerDel))
 }

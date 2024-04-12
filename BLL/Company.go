@@ -114,6 +114,29 @@ func CompanyAll(Token string, Order int, Stext string) mod.Result {
 	return result
 }
 
+func CompanyData(Token string, ID int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "admin" && t.Message != "manager" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		result.State = true
+		result.Data = companyDal.Data(db, ID, "")
+	}
+	return result
+}
+
 func CompanyDel(Token, ID string) mod.Result {
 	result := mod.Result{
 		State:   false,
@@ -134,7 +157,7 @@ func CompanyDel(Token, ID string) mod.Result {
 		_, _, ID64 := sysHelper.StringToInt64(ID)
 		checkData := companyDal.Data(db, ID64, "")
 		if checkData.ID == 0 {
-			result.Message = lang.NoData
+			result.Message = lang.CompanyDataDoesNotExist
 		} else {
 			e := companyDal.Del(db, ID, "")
 			if e != nil {
