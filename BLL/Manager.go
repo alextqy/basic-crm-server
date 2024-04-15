@@ -227,7 +227,7 @@ func ManagerSignIn(Account, Password string) mod.Result {
 			if checkData.Password != PwdMD5(Password) {
 				result.Message = lang.IncorrectPassword
 			} else {
-				Token := EnToken(Account, 1)
+				Token := EnToken(Account, 2)
 				if !Token.State {
 					result.Message = Token.Message
 				} else {
