@@ -263,6 +263,8 @@ func ManagerSignIn(Account, Password string) mod.Result {
 		checkData := managerDal.Check(db, Account, "")
 		if checkData.ID == 0 {
 			result.Message = lang.TheAccountDoesNotExist
+		} else if checkData.Status != 1 {
+			result.Message = lang.AccountDisabled
 		} else {
 			if checkData.Password != PwdMD5(Password) {
 				result.Message = lang.IncorrectPassword
