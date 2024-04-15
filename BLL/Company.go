@@ -38,7 +38,7 @@ func CompanyNew(Token, CompanyName, Remark string, ID int64) mod.Result {
 				} else {
 					result.State = true
 					jData, _ := json.Marshal(checkData)
-					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData))
+					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
 				}
 			}
 		} else {
@@ -56,7 +56,7 @@ func CompanyNew(Token, CompanyName, Remark string, ID int64) mod.Result {
 					result.Message = e.Error()
 				} else {
 					jData, _ := json.Marshal(data)
-					go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData))
+					go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
 					result.State = true
 				}
 			}
@@ -164,7 +164,7 @@ func CompanyDel(Token, ID string) mod.Result {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData))
+				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), "admin")
 				result.State = true
 			}
 		}

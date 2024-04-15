@@ -65,7 +65,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 					result.Message = e.Error()
 				} else {
 					jData, _ := json.Marshal(checkCustomer)
-					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData))
+					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
 					result.State = true
 				}
 			}
@@ -87,7 +87,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(data)
-				go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData))
+				go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
 				result.State = true
 			}
 		}
@@ -194,7 +194,7 @@ func CustomerDel(Token, ID string) mod.Result {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData))
+				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), "admin")
 				result.State = true
 			}
 		}

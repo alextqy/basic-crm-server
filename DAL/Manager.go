@@ -45,6 +45,7 @@ func (m *ManagerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Manager {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	db.Table(TableName).First(&Data, ID)
+	Data.Password = ""
 	return Data
 }
 

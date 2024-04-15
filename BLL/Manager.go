@@ -6,101 +6,7 @@ import (
 	"encoding/json"
 )
 
-func Test(Test string) mod.Result {
-	result := mod.Result{
-		State:   false,
-		Message: "",
-		Code:    200,
-		Data:    nil,
-	}
-
-	result.State = true
-	result.Message = PwdMD5(Test)
-	return result
-}
-
-func AdminSignIn(Account, Password string) mod.Result {
-	result := mod.Result{
-		State:   false,
-		Message: "",
-		Code:    200,
-		Data:    nil,
-	}
-
-	if Account == "" {
-		result.Message = lang.IncorrectAccount
-	} else if Password == "" {
-		result.Message = lang.IncorrectPassword
-	} else {
-		db := dal.ConnDB()
-		checkData := adminDal.Check(db, Account, "")
-		if checkData.ID == 0 {
-			result.Message = lang.TheAccountDoesNotExist
-		} else {
-			if checkData.Password != PwdMD5(Password) {
-				result.Message = lang.IncorrectPassword
-			} else {
-				Token := EnToken(Account, 1)
-				if !Token.State {
-					result.Message = Token.Message
-				} else {
-					result.Data = Token.Data.(string)
-					checkData.Token = Token.Data.(string)
-					e := adminDal.Update(db, checkData, "")
-					if e != nil {
-						result.Message = e.Error()
-					} else {
-						go fileHelper.WriteLog(checkData.Account, checkData.Account+" login", "admin")
-						checkData.Password = ""
-						result.State = true
-						result.Data = checkData
-					}
-				}
-			}
-		}
-	}
-	return result
-}
-
-func AdminSignOut(Token string) mod.Result {
-	result := mod.Result{
-		State:   false,
-		Message: "",
-		Code:    200,
-		Data:    nil,
-	}
-
-	if Token == "" {
-		result.Message = lang.IncorrectToken
-	} else {
-		r := DeToken(Token)
-		if !r.State {
-			result.Message = r.Message
-		} else {
-			db := dal.ConnDB()
-			if r.Message == "admin" {
-				userData := r.Data.(mod.Admin)
-				if userData.ID == 0 {
-					result.Message = lang.TheAccountDoesNotExist
-				} else {
-					userData.Token = ""
-					e := adminDal.Update(db, userData, "")
-					if e != nil {
-						result.Message = e.Error()
-					} else {
-						result.State = true
-						go fileHelper.WriteLog(userData.Account, userData.Account+" logout", "admin")
-					}
-				}
-			} else {
-				result.Message = lang.TheAccountDoesNotExist
-			}
-		}
-	}
-	return result
-}
-
-func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mod.Result {
+func ManagerNew(Token string, Account, Password, Name, Remark string, GroupID, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -128,8 +34,16 @@ func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mo
 	} else {
 		db := dal.ConnDB()
 
+		if GroupID > 0 {
+			checkData := managerGroupDal.Data(db, GroupID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.IncorrectGroup
+				return result
+			}
+		}
+
 		if ID > 0 {
-			checkData := adminDal.Data(db, ID, "")
+			checkData := managerDal.Data(db, ID, "")
 			if checkData.ID == 0 {
 				result.Message = lang.TheAccountDoesNotExist
 			} else {
@@ -142,7 +56,8 @@ func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mo
 				checkData.Password = newPwd
 				checkData.Name = Name
 				checkData.Remark = Remark
-				e := adminDal.Update(db, checkData, "")
+				checkData.GroupID = GroupID
+				e := managerDal.Update(db, checkData, "")
 				if e != nil {
 					result.Message = e.Error()
 				} else {
@@ -152,7 +67,7 @@ func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mo
 				}
 			}
 		} else {
-			data := mod.Admin{
+			data := mod.Manager{
 				Account:      Account,
 				Password:     PwdMD5(Password),
 				Name:         Name,
@@ -160,12 +75,13 @@ func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mo
 				Status:       1,
 				Remark:       Remark,
 				CreationTime: sysHelper.TimeStamp(),
+				GroupID:      GroupID,
 			}
-			checkData := adminDal.Check(db, Account, "")
+			checkData := managerDal.Check(db, Account, "")
 			if checkData.ID > 0 {
 				result.Message = lang.TheAccountAlreadyExists
 			} else {
-				_, e := adminDal.Add(db, data, "")
+				_, e := managerDal.Add(db, data, "")
 				if e != nil {
 					result.Message = e.Error()
 				} else {
@@ -179,7 +95,7 @@ func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mo
 	return result
 }
 
-func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Status int64) mod.ResultList {
+func ManagerList(Token string, Page, PageSize, Order int, Stext string, Level, Status, GroupID int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -200,15 +116,15 @@ func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Sta
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = adminDal.List(db, Page, PageSize, Order, Stext, Level, Status, "")
-		for i := 0; i < len(result.Data.([]mod.Admin)); i++ {
-			result.Data.([]mod.Admin)[i].Password = ""
+		result.Page, result.PageSize, result.TotalPage, result.Data = managerDal.List(db, Page, PageSize, Order, Stext, Level, Status, GroupID, "")
+		for i := 0; i < len(result.Data.([]mod.Manager)); i++ {
+			result.Data.([]mod.Manager)[i].Password = ""
 		}
 	}
 	return result
 }
 
-func AdminAll(Token string, Order int, Stext string, Level, Status int64) mod.Result {
+func ManagerAll(Token string, Order int, Stext string, Level, Status, GroupID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -226,15 +142,15 @@ func AdminAll(Token string, Order int, Stext string, Level, Status int64) mod.Re
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = adminDal.All(db, Order, Stext, Level, Status, "")
-		for i := 0; i < len(result.Data.([]mod.Admin)); i++ {
-			result.Data.([]mod.Admin)[i].Password = ""
+		result.Data = managerDal.All(db, Order, Stext, Level, Status, GroupID, "")
+		for i := 0; i < len(result.Data.([]mod.Manager)); i++ {
+			result.Data.([]mod.Manager)[i].Password = ""
 		}
 	}
 	return result
 }
 
-func AdminData(Token string, ID int64) mod.Result {
+func ManagerData(Token string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -252,21 +168,17 @@ func AdminData(Token string, ID int64) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = adminDal.Data(db, ID, "")
+		result.Data = managerDal.Data(db, ID, "")
 	}
 	return result
 }
 
-func AdminDel(Token, ID string) mod.Result {
+func ManagerDel(Token string, ID string) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
 		Code:    200,
 		Data:    nil,
-	}
-
-	if ID == "1" {
-		return result
 	}
 
 	t := DeToken(Token)
@@ -277,17 +189,98 @@ func AdminDel(Token, ID string) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		_, _, ID64 := sysHelper.StringToInt64(ID)
-		checkData := adminDal.Data(db, ID64, "")
+		checkData := managerDal.Data(db, ID64, "")
 		if checkData.ID == 0 {
 			result.Message = lang.TheAccountDoesNotExist
 		} else {
-			e := adminDal.Del(db, ID, "")
+			e := managerDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(checkData)
 				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), "admin")
 				result.State = true
+			}
+		}
+	}
+	return result
+}
+
+func ManagerSignIn(Account, Password string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	if Account == "" {
+		result.Message = lang.IncorrectAccount
+	} else if Password == "" {
+		result.Message = lang.IncorrectPassword
+	} else {
+		db := dal.ConnDB()
+		checkData := managerDal.Check(db, Account, "")
+		if checkData.ID == 0 {
+			result.Message = lang.TheAccountDoesNotExist
+		} else {
+			if checkData.Password != PwdMD5(Password) {
+				result.Message = lang.IncorrectPassword
+			} else {
+				Token := EnToken(Account, 1)
+				if !Token.State {
+					result.Message = Token.Message
+				} else {
+					result.Data = Token.Data.(string)
+					checkData.Token = Token.Data.(string)
+					e := managerDal.Update(db, checkData, "")
+					if e != nil {
+						result.Message = e.Error()
+					} else {
+						go fileHelper.WriteLog(checkData.Account, checkData.Account+" login", "manager")
+						checkData.Password = ""
+						result.State = true
+						result.Data = checkData
+					}
+				}
+			}
+		}
+	}
+	return result
+}
+
+func ManagerSignOut(Token string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	if Token == "" {
+		result.Message = lang.IncorrectToken
+	} else {
+		r := DeToken(Token)
+		if !r.State {
+			result.Message = r.Message
+		} else {
+			db := dal.ConnDB()
+			if r.Message == "manager" {
+				userData := r.Data.(mod.Manager)
+				if userData.ID == 0 {
+					result.Message = lang.TheAccountDoesNotExist
+				} else {
+					userData.Token = ""
+					e := managerDal.Update(db, userData, "")
+					if e != nil {
+						result.Message = e.Error()
+					} else {
+						result.State = true
+						go fileHelper.WriteLog(userData.Account, userData.Account+" logout", "manager")
+					}
+				}
+			} else {
+				result.Message = lang.TheAccountDoesNotExist
 			}
 		}
 	}

@@ -210,14 +210,22 @@ func (f *FileHelper) LogDir() string {
 	return "./Log/" + strings.Split(t, " ")[0] + "/"
 }
 
-func (f *FileHelper) WriteLog(fileName, content string) (bool, string) {
+func (f *FileHelper) WriteLog(fileName, content, directory string) (bool, string) {
 	if !f.FileExist(f.LogDir()) {
 		b, s := f.DirMake(f.LogDir())
 		if !b {
 			return false, s
 		}
 	}
-	logFile := f.LogDir() + fileName + ".log"
+	dir := ""
+	if directory != "" {
+		dir = "/" + directory + "/"
+		b, e := f.DirMake(f.LogDir() + dir)
+		if !b {
+			return b, e
+		}
+	}
+	logFile := f.LogDir() + dir + fileName + ".log"
 	if !f.FileExist(logFile) {
 		b, s := f.FileMake(logFile)
 		if !b {

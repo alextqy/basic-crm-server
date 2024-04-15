@@ -19,6 +19,7 @@ type Language struct {
 	IncorrectPriority         string
 	CompanyDataDoesNotExist   string
 	CustomerDataDoesNotExist  string
+	IncorrectGroup            string
 }
 
 func SysLang() Language {
@@ -44,6 +45,7 @@ func SysLang() Language {
 		language.IncorrectPriority = "优先级错误"
 		language.CompanyDataDoesNotExist = "公司数据不存在"
 		language.CustomerDataDoesNotExist = "客户数据不存在"
+		language.IncorrectGroup = "小组数据错误"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -63,6 +65,7 @@ func SysLang() Language {
 		language.IncorrectPriority = "Incorrect priority"
 		language.CompanyDataDoesNotExist = "Company data does not exist"
 		language.CustomerDataDoesNotExist = "Customer data does not exist"
+		language.IncorrectGroup = "Incorrect group"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -82,6 +85,7 @@ func SysLang() Language {
 		language.IncorrectPriority = ""
 		language.CompanyDataDoesNotExist = ""
 		language.CustomerDataDoesNotExist = ""
+		language.IncorrectGroup = ""
 	}
 	return language
 }

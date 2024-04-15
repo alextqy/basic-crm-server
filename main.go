@@ -69,6 +69,7 @@ func routes(mux *http.ServeMux) {
 
 	// admin
 	mux.HandleFunc("/test", httpHelper.Middleware(api.Test))
+
 	mux.HandleFunc("/admin/sign/in", httpHelper.Middleware(api.AdminSignIn))
 	mux.HandleFunc("/admin/sign/out", httpHelper.Middleware(api.AdminSignOut))
 	mux.HandleFunc("/admin/new", httpHelper.Middleware(api.AdminNew))
@@ -90,4 +91,14 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/customer/all", httpHelper.Middleware(api.CustomerAll))
 	mux.HandleFunc("/customer/data", httpHelper.Middleware(api.CustomerData))
 	mux.HandleFunc("/customer/del", httpHelper.Middleware(api.CustomerDel))
+
+	// manager
+	mux.HandleFunc("/manager/new", httpHelper.Middleware(api.ManagerNew))
+	mux.HandleFunc("/manager/list", httpHelper.Middleware(api.ManagerList))
+	mux.HandleFunc("/manager/all", httpHelper.Middleware(api.ManagerAll))
+	mux.HandleFunc("/manager/data", httpHelper.Middleware(api.ManagerData))
+	mux.HandleFunc("/manager/del", httpHelper.Middleware(api.ManagerDel))
+
+	mux.HandleFunc("/manager/sign/in", httpHelper.Middleware(api.ManagerSignIn))
+	mux.HandleFunc("/manager/sign/out", httpHelper.Middleware(api.ManagerSignOut))
 }
