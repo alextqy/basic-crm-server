@@ -62,3 +62,9 @@ func AdminDel(w http.ResponseWriter, r *http.Request) {
 	ID := httpHelper.Post(r, "ID")
 	httpHelper.HttpWrite(w, bll.AdminDel(Token, ID))
 }
+
+func AdminStatus(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	ID := httpHelper.PostInt64(r, "ID")
+	httpHelper.HttpWrite(w, bll.AdminStatus(Token, ID))
+}

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func ManagerNew(Token string, Account, Password, Name, Remark string, GroupID, ID int64) mod.Result {
+func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -168,12 +168,14 @@ func ManagerData(Token string, ID int64) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = managerDal.Data(db, ID, "")
+		Data := managerDal.Data(db, ID, "")
+		Data.Password = ""
+		result.Data = Data
 	}
 	return result
 }
 
-func ManagerDel(Token string, ID string) mod.Result {
+func ManagerDel(Token, ID string) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -200,6 +202,44 @@ func ManagerDel(Token string, ID string) mod.Result {
 				jData, _ := json.Marshal(checkData)
 				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), "admin")
 				result.State = true
+			}
+		}
+	}
+	return result
+}
+
+func ManagerStatus(Token string, ID int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		checkData := managerDal.Data(db, ID, "")
+		if checkData.ID == 0 {
+			result.Message = lang.NoData
+		} else {
+			if checkData.Status == 1 {
+				checkData.Status = 2
+			} else {
+				checkData.Status = 1
+			}
+
+			e := managerDal.Update(db, checkData, "")
+			if e != nil {
+				result.Message = e.Error()
+			} else {
+				result.State = true
+				jData, _ := json.Marshal(checkData)
+				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
 			}
 		}
 	}

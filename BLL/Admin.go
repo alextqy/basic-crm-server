@@ -100,7 +100,7 @@ func AdminSignOut(Token string) mod.Result {
 	return result
 }
 
-func AdminNew(Token string, Account, Password, Name, Remark string, ID int64) mod.Result {
+func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -252,7 +252,9 @@ func AdminData(Token string, ID int64) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = adminDal.Data(db, ID, "")
+		Data := adminDal.Data(db, ID, "")
+		Data.Password = ""
+		result.Data = Data
 	}
 	return result
 }
@@ -288,6 +290,48 @@ func AdminDel(Token, ID string) mod.Result {
 				jData, _ := json.Marshal(checkData)
 				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), "admin")
 				result.State = true
+			}
+		}
+	}
+	return result
+}
+
+func AdminStatus(Token string, ID int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	if ID == 1 {
+		return result
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		checkData := adminDal.Data(db, ID, "")
+		if checkData.ID == 0 {
+			result.Message = lang.NoData
+		} else {
+			if checkData.Status == 1 {
+				checkData.Status = 2
+			} else {
+				checkData.Status = 1
+			}
+
+			e := adminDal.Update(db, checkData, "")
+			if e != nil {
+				result.Message = e.Error()
+			} else {
+				result.State = true
+				jData, _ := json.Marshal(checkData)
+				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
 			}
 		}
 	}

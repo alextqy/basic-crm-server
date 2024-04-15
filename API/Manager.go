@@ -50,6 +50,12 @@ func ManagerDel(w http.ResponseWriter, r *http.Request) {
 	httpHelper.HttpWrite(w, bll.ManagerDel(Token, ID))
 }
 
+func ManagerStatus(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	ID := httpHelper.PostInt64(r, "ID")
+	httpHelper.HttpWrite(w, bll.ManagerStatus(Token, ID))
+}
+
 func ManagerSignIn(w http.ResponseWriter, r *http.Request) {
 	Account := httpHelper.Post(r, "Account")
 	Password := httpHelper.Post(r, "Password")
