@@ -42,12 +42,12 @@ func AdminSignIn(Account, Password string) mod.Result {
 			if checkData.Password != PwdMD5(Password) {
 				result.Message = lang.IncorrectPassword
 			} else {
-				Token := EnToken(Account, 1)
-				if !Token.State {
-					result.Message = Token.Message
+				t := EnToken(Account, 1)
+				if !t.State {
+					result.Message = t.Message
 				} else {
-					result.Data = Token.Data.(string)
-					checkData.Token = Token.Data.(string)
+					result.Data = t.Data.(string)
+					checkData.Token = t.Data.(string)
 					e := adminDal.Update(db, checkData, "")
 					if e != nil {
 						result.Message = e.Error()
@@ -90,8 +90,8 @@ func AdminSignOut(Token string) mod.Result {
 					if e != nil {
 						result.Message = e.Error()
 					} else {
+						go fileHelper.WriteLog(userData.Account, userData.Account+" logout", r.Message)
 						result.State = true
-						go fileHelper.WriteLog(userData.Account, userData.Account+" logout", "admin")
 					}
 				}
 			} else {
@@ -149,9 +149,9 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 				if e != nil {
 					result.Message = e.Error()
 				} else {
-					result.State = true
 					jData, _ := json.Marshal(checkData)
-					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
+					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
+					result.State = true
 				}
 			}
 		} else {
@@ -182,7 +182,7 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 						result.Message = e.Error()
 					} else {
 						jData, _ := json.Marshal(data)
-						go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
+						go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), t.Message)
 						result.State = true
 					}
 				}
@@ -303,7 +303,7 @@ func AdminDel(Token, ID string) mod.Result {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), "admin")
+				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), t.Message)
 				result.State = true
 			}
 		}
@@ -348,7 +348,7 @@ func AdminStatus(Token string, ID int64) mod.Result {
 			} else {
 				result.State = true
 				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
+				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
 			}
 		}
 	}

@@ -58,9 +58,9 @@ func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64
 				if e != nil {
 					result.Message = e.Error()
 				} else {
-					result.State = true
 					jData, _ := json.Marshal(checkData)
-					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
+					go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
+					result.State = true
 				}
 			}
 		} else {
@@ -92,7 +92,7 @@ func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64
 						result.Message = e.Error()
 					} else {
 						jData, _ := json.Marshal(data)
-						go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
+						go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), t.Message)
 						result.State = true
 					}
 				}
@@ -175,9 +175,9 @@ func ManagerData(Token string, ID int64) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		Data := managerDal.Data(db, ID, "")
-		Data.Password = ""
-		result.Data = Data
+		data := managerDal.Data(db, ID, "")
+		data.Password = ""
+		result.Data = data
 	}
 	return result
 }
@@ -209,7 +209,7 @@ func ManagerDel(Token, ID string) mod.Result {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), "admin")
+				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), t.Message)
 				result.State = true
 			}
 		}
@@ -248,9 +248,9 @@ func ManagerStatus(Token string, ID int64) mod.Result {
 			if e != nil {
 				result.Message = e.Error()
 			} else {
-				result.State = true
 				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "admin")
+				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
+				result.State = true
 			}
 		}
 	}
@@ -280,12 +280,12 @@ func ManagerSignIn(Account, Password string) mod.Result {
 			if checkData.Password != PwdMD5(Password) {
 				result.Message = lang.IncorrectPassword
 			} else {
-				Token := EnToken(Account, 2)
-				if !Token.State {
-					result.Message = Token.Message
+				t := EnToken(Account, 2)
+				if !t.State {
+					result.Message = t.Message
 				} else {
-					result.Data = Token.Data.(string)
-					checkData.Token = Token.Data.(string)
+					result.Data = t.Data.(string)
+					checkData.Token = t.Data.(string)
 					e := managerDal.Update(db, checkData, "")
 					if e != nil {
 						result.Message = e.Error()
@@ -328,8 +328,8 @@ func ManagerSignOut(Token string) mod.Result {
 					if e != nil {
 						result.Message = e.Error()
 					} else {
+						go fileHelper.WriteLog(userData.Account, userData.Account+" logout", r.Message)
 						result.State = true
-						go fileHelper.WriteLog(userData.Account, userData.Account+" logout", "manager")
 					}
 				}
 			} else {
@@ -373,24 +373,24 @@ func ManagerUpdate(Token, Password, Name, Remark string, GroupID int64) mod.Resu
 			return result
 		}
 
-		Data := t.Data.(mod.Manager)
+		data := t.Data.(mod.Manager)
 		newPwd := ""
 		if Password == "" {
-			newPwd = Data.Password
+			newPwd = data.Password
 		} else {
 			newPwd = PwdMD5(Password)
 		}
-		Data.Password = newPwd
-		Data.Name = Name
-		Data.Remark = Remark
-		Data.GroupID = GroupID
-		e := managerDal.Update(db, Data, "")
+		data.Password = newPwd
+		data.Name = Name
+		data.Remark = Remark
+		data.GroupID = GroupID
+		e := managerDal.Update(db, data, "")
 		if e != nil {
 			result.Message = e.Error()
 		} else {
+			jData, _ := json.Marshal(data)
+			go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
 			result.State = true
-			jData, _ := json.Marshal(Data)
-			go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "manager")
 		}
 	}
 	return result

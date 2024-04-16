@@ -104,4 +104,11 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/manager/sign/in", httpHelper.Middleware(api.ManagerSignIn))
 	mux.HandleFunc("/manager/sign/out", httpHelper.Middleware(api.ManagerSignOut))
 	mux.HandleFunc("/manager/update", httpHelper.Middleware(api.ManagerUpdate))
+
+	// Group
+	mux.HandleFunc("/group/new", httpHelper.Middleware(api.GroupNew))
+	mux.HandleFunc("/group/list", httpHelper.Middleware(api.GroupList))
+	mux.HandleFunc("/group/all", httpHelper.Middleware(api.GroupAll))
+	mux.HandleFunc("/group/data", httpHelper.Middleware(api.GroupData))
+	mux.HandleFunc("/group/del", httpHelper.Middleware(api.GroupDel))
 }

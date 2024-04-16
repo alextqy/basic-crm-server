@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, CustomerInfo string, Priority, CompanyID, ID int64) mod.Result {
+func GroupNew(Token, GroupName, Remark string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -21,46 +21,19 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
-	} else if Name == "" {
+	} else if GroupName == "" {
 		result.Message = lang.IncorrectName
-	} else if Gender <= 0 {
-		result.Message = lang.IncorrectGender
-	} else if Tel == "" {
-		result.Message = lang.IncorrectPhoneNumber
-	} else if Priority <= 0 {
-		result.Message = lang.IncorrectPriority
 	} else {
 		db := dal.ConnDB()
 
-		if CompanyID > 0 {
-			checkData := companyDal.Data(db, CompanyID, "")
-			if checkData.ID == 0 {
-				result.Message = lang.CompanyDataDoesNotExist
-				return result
-			}
-		}
-
-		var ManagerID int64
-		if t.Message == "manager" {
-			ManagerID = customerDal.Data(db, t.Data.(mod.Manager).ID, "").ID
-		} else {
-			ManagerID = 0
-		}
-
 		if ID > 0 {
-			checkData := customerDal.Data(db, ID, "")
+			checkData := managerGroupDal.Data(db, ID, "")
 			if checkData.ID == 0 {
-				result.Message = lang.CustomerDataDoesNotExist
+				result.Message = lang.GroupDataDoesNotExist
 			} else {
-				checkData.Name = Name
-				checkData.Birthday = Birthday
-				checkData.Gender = Gender
-				checkData.Email = Email
-				checkData.Tel = Tel
-				checkData.CustomerInfo = CustomerInfo
-				checkData.Priority = Priority
-				checkData.CompanyID = CompanyID
-				e := customerDal.Update(db, checkData, "")
+				checkData.GroupName = GroupName
+				checkData.Remark = Remark
+				e := managerGroupDal.Update(db, checkData, "")
 				if e != nil {
 					result.Message = e.Error()
 				} else {
@@ -70,19 +43,12 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 				}
 			}
 		} else {
-			data := mod.Customer{
-				Name:         Name,
-				Birthday:     Birthday,
-				Gender:       Gender,
-				Email:        Email,
-				Tel:          Tel,
-				CustomerInfo: CustomerInfo,
-				Priority:     Priority,
+			data := mod.ManagerGroup{
+				GroupName:    GroupName,
+				Remark:       Remark,
 				CreationTime: sysHelper.TimeStamp(),
-				CompanyID:    CompanyID,
-				ManagerID:    ManagerID,
 			}
-			_, e := customerDal.Add(db, data, "")
+			_, e := managerGroupDal.Add(db, data, "")
 			if e != nil {
 				result.Message = e.Error()
 			} else {
@@ -95,7 +61,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 	return result
 }
 
-func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender, Priority, CompanyID, ManagerID int64) mod.ResultList {
+func GroupList(Token string, Page, PageSize, Order int, Stext string) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -116,12 +82,12 @@ func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender,
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = customerDal.List(db, Page, PageSize, Order, Stext, Gender, Priority, CompanyID, ManagerID, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = managerGroupDal.List(db, Page, PageSize, Order, Stext, "")
 	}
 	return result
 }
 
-func CustomerAll(Token string, Order int, Stext string, Gender, Priority, CompanyID, ManagerID int64) mod.Result {
+func GroupAll(Token string, Order int, Stext string) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -139,12 +105,12 @@ func CustomerAll(Token string, Order int, Stext string, Gender, Priority, Compan
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = customerDal.All(db, Order, Stext, Gender, Priority, CompanyID, ManagerID, "")
+		result.Data = managerGroupDal.All(db, Order, Stext, "")
 	}
 	return result
 }
 
-func CustomerData(Token string, ID int64) mod.Result {
+func GroupData(Token string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -162,12 +128,12 @@ func CustomerData(Token string, ID int64) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = customerDal.Data(db, ID, "")
+		result.Data = managerGroupDal.Data(db, ID, "")
 	}
 	return result
 }
 
-func CustomerDel(Token, ID string) mod.Result {
+func GroupDel(Token string, ID string) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -185,11 +151,11 @@ func CustomerDel(Token, ID string) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		_, _, ID64 := sysHelper.StringToInt64(ID)
-		checkData := customerDal.Data(db, ID64, "")
+		checkData := managerGroupDal.Data(db, ID64, "")
 		if checkData.ID == 0 {
-			result.Message = lang.CustomerDataDoesNotExist
+			result.Message = lang.GroupDataDoesNotExist
 		} else {
-			e := customerDal.Del(db, ID, "")
+			e := managerGroupDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()
 			} else {

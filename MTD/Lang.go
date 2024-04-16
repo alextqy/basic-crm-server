@@ -21,6 +21,7 @@ type Language struct {
 	CompanyDataDoesNotExist   string
 	CustomerDataDoesNotExist  string
 	IncorrectGroup            string
+	GroupDataDoesNotExist     string
 }
 
 func SysLang() Language {
@@ -48,6 +49,7 @@ func SysLang() Language {
 		language.CompanyDataDoesNotExist = "公司数据不存在"
 		language.CustomerDataDoesNotExist = "客户数据不存在"
 		language.IncorrectGroup = "小组数据错误"
+		language.GroupDataDoesNotExist = "小组数据不存在"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -69,6 +71,7 @@ func SysLang() Language {
 		language.CompanyDataDoesNotExist = "Company data does not exist"
 		language.CustomerDataDoesNotExist = "Customer data does not exist"
 		language.IncorrectGroup = "Incorrect group"
+		language.GroupDataDoesNotExist = "Group data does not exist"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -90,6 +93,7 @@ func SysLang() Language {
 		language.CompanyDataDoesNotExist = ""
 		language.CustomerDataDoesNotExist = ""
 		language.IncorrectGroup = ""
+		language.GroupDataDoesNotExist = ""
 	}
 	return language
 }
