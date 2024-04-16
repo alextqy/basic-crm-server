@@ -21,16 +21,8 @@ func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
-	} else if Account == "" {
-		result.Message = lang.IncorrectAccount
-	} else if Password == "" {
-		result.Message = lang.IncorrectPassword
 	} else if Name == "" {
 		result.Message = lang.IncorrectName
-	} else if len(Account) < 6 {
-		result.Message = lang.TheAccountIsTooShort
-	} else if len(Password) < 6 {
-		result.Message = lang.ThePasswordIsTooShort
 	} else {
 		db := dal.ConnDB()
 
@@ -47,6 +39,11 @@ func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64
 			if checkData.ID == 0 {
 				result.Message = lang.TheAccountDoesNotExist
 			} else {
+				if Password != "" && len(Password) < 6 {
+					result.Message = lang.ThePasswordIsTooShort
+					return result
+				}
+
 				newPwd := ""
 				if Password == "" {
 					newPwd = checkData.Password
@@ -67,27 +64,37 @@ func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64
 				}
 			}
 		} else {
-			data := mod.Manager{
-				Account:      Account,
-				Password:     PwdMD5(Password),
-				Name:         Name,
-				Level:        1,
-				Status:       1,
-				Remark:       Remark,
-				CreationTime: sysHelper.TimeStamp(),
-				GroupID:      GroupID,
-			}
-			checkData := managerDal.Check(db, Account, "")
-			if checkData.ID > 0 {
-				result.Message = lang.TheAccountAlreadyExists
+			if Account == "" {
+				result.Message = lang.IncorrectAccount
+			} else if len(Account) < 6 {
+				result.Message = lang.TheAccountIsTooShort
+			} else if Password == "" {
+				result.Message = lang.IncorrectPassword
+			} else if len(Password) < 6 {
+				result.Message = lang.ThePasswordIsTooShort
 			} else {
-				_, e := managerDal.Add(db, data, "")
-				if e != nil {
-					result.Message = e.Error()
+				data := mod.Manager{
+					Account:      Account,
+					Password:     PwdMD5(Password),
+					Name:         Name,
+					Level:        1,
+					Status:       1,
+					Remark:       Remark,
+					CreationTime: sysHelper.TimeStamp(),
+					GroupID:      GroupID,
+				}
+				checkData := managerDal.Check(db, Account, "")
+				if checkData.ID > 0 {
+					result.Message = lang.TheAccountAlreadyExists
 				} else {
-					jData, _ := json.Marshal(data)
-					go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
-					result.State = true
+					_, e := managerDal.Add(db, data, "")
+					if e != nil {
+						result.Message = e.Error()
+					} else {
+						jData, _ := json.Marshal(data)
+						go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
+						result.State = true
+					}
 				}
 			}
 		}
@@ -186,6 +193,8 @@ func ManagerDel(Token, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
+	} else if t.Message != "admin" {
+		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
@@ -219,6 +228,8 @@ func ManagerStatus(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
+	} else if t.Message != "admin" {
+		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
@@ -324,6 +335,62 @@ func ManagerSignOut(Token string) mod.Result {
 			} else {
 				result.Message = lang.TheAccountDoesNotExist
 			}
+		}
+	}
+	return result
+}
+
+func ManagerUpdate(Token, Password, Name, Remark string, GroupID int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "manager" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else if Name == "" {
+		result.Message = lang.IncorrectName
+	} else {
+		db := dal.ConnDB()
+
+		if GroupID > 0 {
+			checkData := managerGroupDal.Data(db, GroupID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.IncorrectGroup
+				return result
+			}
+		}
+
+		if Password != "" && len(Password) < 6 {
+			result.Message = lang.ThePasswordIsTooShort
+			return result
+		}
+
+		Data := t.Data.(mod.Manager)
+		newPwd := ""
+		if Password == "" {
+			newPwd = Data.Password
+		} else {
+			newPwd = PwdMD5(Password)
+		}
+		Data.Password = newPwd
+		Data.Name = Name
+		Data.Remark = Remark
+		Data.GroupID = GroupID
+		e := managerDal.Update(db, Data, "")
+		if e != nil {
+			result.Message = e.Error()
+		} else {
+			result.State = true
+			jData, _ := json.Marshal(Data)
+			go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), "manager")
 		}
 	}
 	return result

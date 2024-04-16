@@ -103,4 +103,5 @@ func routes(mux *http.ServeMux) {
 
 	mux.HandleFunc("/manager/sign/in", httpHelper.Middleware(api.ManagerSignIn))
 	mux.HandleFunc("/manager/sign/out", httpHelper.Middleware(api.ManagerSignOut))
+	mux.HandleFunc("/manager/update", httpHelper.Middleware(api.ManagerUpdate))
 }

@@ -66,3 +66,12 @@ func ManagerSignOut(w http.ResponseWriter, r *http.Request) {
 	Token := httpHelper.Post(r, "Token")
 	httpHelper.HttpWrite(w, bll.ManagerSignOut(Token))
 }
+
+func ManagerUpdate(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	Password := httpHelper.Post(r, "Password")
+	Name := httpHelper.Post(r, "Name")
+	Remark := httpHelper.Post(r, "Remark")
+	GroupID := httpHelper.PostInt64(r, "GroupID")
+	httpHelper.HttpWrite(w, bll.ManagerUpdate(Token, Password, Name, Remark, GroupID))
+}

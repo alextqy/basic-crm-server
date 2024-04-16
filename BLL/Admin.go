@@ -119,14 +119,10 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 		result.Message = lang.TheAccountDoesNotExist
 	} else if Account == "" {
 		result.Message = lang.IncorrectAccount
-	} else if Password == "" {
-		result.Message = lang.IncorrectPassword
 	} else if Name == "" {
 		result.Message = lang.IncorrectName
 	} else if len(Account) < 6 {
 		result.Message = lang.TheAccountIsTooShort
-	} else if len(Password) < 6 {
-		result.Message = lang.ThePasswordIsTooShort
 	} else {
 		db := dal.ConnDB()
 
@@ -135,6 +131,11 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 			if checkData.ID == 0 {
 				result.Message = lang.TheAccountDoesNotExist
 			} else {
+				if Password != "" && len(Password) < 6 {
+					result.Message = lang.ThePasswordIsTooShort
+					return result
+				}
+
 				newPwd := ""
 				if Password == "" {
 					newPwd = checkData.Password
@@ -154,26 +155,36 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 				}
 			}
 		} else {
-			data := mod.Admin{
-				Account:      Account,
-				Password:     PwdMD5(Password),
-				Name:         Name,
-				Level:        1,
-				Status:       1,
-				Remark:       Remark,
-				CreationTime: sysHelper.TimeStamp(),
-			}
-			checkData := adminDal.Check(db, Account, "")
-			if checkData.ID > 0 {
-				result.Message = lang.TheAccountAlreadyExists
+			if Account == "" {
+				result.Message = lang.IncorrectAccount
+			} else if len(Account) < 6 {
+				result.Message = lang.TheAccountIsTooShort
+			} else if Password == "" {
+				result.Message = lang.IncorrectPassword
+			} else if len(Password) < 6 {
+				result.Message = lang.ThePasswordIsTooShort
 			} else {
-				_, e := adminDal.Add(db, data, "")
-				if e != nil {
-					result.Message = e.Error()
+				data := mod.Admin{
+					Account:      Account,
+					Password:     PwdMD5(Password),
+					Name:         Name,
+					Level:        1,
+					Status:       1,
+					Remark:       Remark,
+					CreationTime: sysHelper.TimeStamp(),
+				}
+				checkData := adminDal.Check(db, Account, "")
+				if checkData.ID > 0 {
+					result.Message = lang.TheAccountAlreadyExists
 				} else {
-					jData, _ := json.Marshal(data)
-					go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
-					result.State = true
+					_, e := adminDal.Add(db, data, "")
+					if e != nil {
+						result.Message = e.Error()
+					} else {
+						jData, _ := json.Marshal(data)
+						go fileHelper.WriteLog(CheckAccount(t), "Add data: "+string(jData), "admin")
+						result.State = true
+					}
 				}
 			}
 		}
