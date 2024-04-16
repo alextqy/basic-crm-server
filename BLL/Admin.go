@@ -287,6 +287,8 @@ func AdminDel(Token, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
+	} else if t.Message != "admin" {
+		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
@@ -324,6 +326,8 @@ func AdminStatus(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
+	} else if t.Message != "admin" {
+		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
