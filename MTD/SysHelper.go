@@ -76,6 +76,15 @@ func (s *SysHelper) Int64ToString(data int64) string {
 	return strconv.FormatInt(data, 10)
 }
 
+func (s *SysHelper) StringToFloat32(data string) (bool, string, float64) {
+	r, err := strconv.ParseFloat(data, 32)
+	if err != nil {
+		return false, err.Error(), 0
+	} else {
+		return true, "", r
+	}
+}
+
 func (s *SysHelper) StringToFloat64(data string) (bool, string, float64) {
 	r, err := strconv.ParseFloat(data, 64)
 	if err != nil {

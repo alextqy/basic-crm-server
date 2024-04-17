@@ -1,27 +1,30 @@
 package mtd
 
 type Language struct {
-	IncorrectAccount          string
-	IncorrectPassword         string
-	TheAccountDoesNotExist    string
-	AccountDisabled           string
-	IncorrectToken            string
-	The16bitKeyIsNotSet       string
-	IncorrectName             string
-	TheAccountIsTooShort      string
-	ThePasswordIsTooShort     string
-	TheAccountAlreadyExists   string
-	NoData                    string
-	PermissionDenied          string
-	DataWithTheSameNameExists string
-	IncorrectBirthday         string
-	IncorrectGender           string
-	IncorrectPhoneNumber      string
-	IncorrectPriority         string
-	CompanyDataDoesNotExist   string
-	CustomerDataDoesNotExist  string
-	IncorrectGroup            string
-	GroupDataDoesNotExist     string
+	IncorrectAccount            string
+	IncorrectPassword           string
+	TheAccountDoesNotExist      string
+	AccountDisabled             string
+	IncorrectToken              string
+	The16bitKeyIsNotSet         string
+	IncorrectName               string
+	TheAccountIsTooShort        string
+	ThePasswordIsTooShort       string
+	TheAccountAlreadyExists     string
+	NoData                      string
+	PermissionDenied            string
+	DataWithTheSameNameExists   string
+	IncorrectBirthday           string
+	IncorrectGender             string
+	IncorrectPhoneNumber        string
+	IncorrectPriority           string
+	CompanyDataDoesNotExist     string
+	CustomerDataDoesNotExist    string
+	IncorrectGroup              string
+	GroupDataDoesNotExist       string
+	IncorrectExpirationDate     string
+	IncorrectCustomer           string
+	SalesTargetDataDoesNotExist string
 }
 
 func SysLang() Language {
@@ -50,6 +53,9 @@ func SysLang() Language {
 		language.CustomerDataDoesNotExist = "客户数据不存在"
 		language.IncorrectGroup = "小组数据错误"
 		language.GroupDataDoesNotExist = "小组数据不存在"
+		language.IncorrectExpirationDate = "截至日期错误"
+		language.IncorrectCustomer = "归属客户错误"
+		language.SalesTargetDataDoesNotExist = "销售目标数据不存在"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -72,6 +78,9 @@ func SysLang() Language {
 		language.CustomerDataDoesNotExist = "Customer data does not exist"
 		language.IncorrectGroup = "Incorrect group"
 		language.GroupDataDoesNotExist = "Group data does not exist"
+		language.IncorrectExpirationDate = "Incorrect expiration date"
+		language.IncorrectCustomer = "Incorrect customer"
+		language.SalesTargetDataDoesNotExist = "Sales target data does not exist"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -94,6 +103,9 @@ func SysLang() Language {
 		language.CustomerDataDoesNotExist = ""
 		language.IncorrectGroup = ""
 		language.GroupDataDoesNotExist = ""
+		language.IncorrectExpirationDate = ""
+		language.IncorrectCustomer = ""
+		language.SalesTargetDataDoesNotExist = ""
 	}
 	return language
 }

@@ -113,6 +113,20 @@ func (h *HttpHelper) PostInt64(r *http.Request, key string) int64 {
 	}
 }
 
+func (h *HttpHelper) PostFloat32(r *http.Request, key string) float32 {
+	param := strings.TrimSpace(r.PostFormValue(key))
+	if h.RegParam(param) {
+		r, e := strconv.ParseFloat(param, 64)
+		if e != nil {
+			return 0
+		} else {
+			return float32(r)
+		}
+	} else {
+		return 0
+	}
+}
+
 func (h *HttpHelper) FormFile(w http.ResponseWriter, r *http.Request, key string) (bool, string) {
 	f, fheader, err := r.FormFile("file")
 	defer func(f io.Closer) {

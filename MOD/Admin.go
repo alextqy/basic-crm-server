@@ -2,12 +2,12 @@ package mod
 
 type Admin struct {
 	ID           int64  `gorm:"column:ID;primarykey"`
-	Account      string `gorm:"column:Account"`
-	Password     string `gorm:"column:Password"`
-	Name         string `gorm:"column:Name"`
-	Level        int64  `gorm:"column:Level"`  // 1普通 2超管
-	Status       int64  `gorm:"column:Status"` // 1正常 2禁用
-	Remark       string `gorm:"column:Remark"`
-	Token        string `gorm:"column:Token"`
-	CreationTime int64  `gorm:"column:CreationTime"`
+	Account      string `gorm:"column:Account"`      // 账号
+	Password     string `gorm:"column:Password"`     // 密码
+	Name         string `gorm:"column:Name"`         // 名称
+	Level        int64  `gorm:"column:Level"`        // 1普通 2超管
+	Status       int64  `gorm:"column:Status"`       // 1正常 2禁用
+	Remark       string `gorm:"column:Remark"`       // 备注
+	Token        string `gorm:"column:Token"`        // 令牌
+	CreationTime int64  `gorm:"column:CreationTime"` // 创建时间
 }
