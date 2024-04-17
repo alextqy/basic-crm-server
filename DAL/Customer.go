@@ -55,9 +55,6 @@ func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
-	}
 	if Gender > 0 {
 		engine = engine.Where("Gender = ?", Gender)
 	}
@@ -69,6 +66,9 @@ func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	}
 	if ManagerID > 0 {
 		engine = engine.Where("ManagerID = ?", ManagerID)
+	}
+	if Stext != "" {
+		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
 	}
 	if Page <= 1 {
 		Page = 1
@@ -96,9 +96,6 @@ func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Pr
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
-	}
 	if Gender > 0 {
 		engine = engine.Where("Gender = ?", Gender)
 	}
@@ -110,6 +107,9 @@ func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Pr
 	}
 	if ManagerID > 0 {
 		engine = engine.Where("ManagerID = ?", ManagerID)
+	}
+	if Stext != "" {
+		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
 	}
 	OrderBy := ""
 	if Order == -1 {

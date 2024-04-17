@@ -46,11 +46,11 @@ func (s *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, St
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("TargetName LIKE ?", "%"+Stext+"%")
-	}
 	if CustomerID > 0 {
 		engine = engine.Where("CustomerID = ?", CustomerID)
+	}
+	if Stext != "" {
+		engine = engine.Where("TargetName LIKE ?", "%"+Stext+"%")
 	}
 	if Page <= 1 {
 		Page = 1
@@ -78,11 +78,11 @@ func (s *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID in
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("TargetName LIKE ?", "%"+Stext+"%")
-	}
 	if CustomerID > 0 {
 		engine = engine.Where("CustomerID = ?", CustomerID)
+	}
+	if Stext != "" {
+		engine = engine.Where("TargetName LIKE ?", "%"+Stext+"%")
 	}
 	OrderBy := ""
 	if Order == -1 {

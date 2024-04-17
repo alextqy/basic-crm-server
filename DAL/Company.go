@@ -43,14 +43,14 @@ func (c *CompanyDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	TableName := companyTable + Outfit
 	Data := []mod.Company{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("CompanyName LIKE ?", "%"+Stext+"%")
-	}
 	if Page <= 1 {
 		Page = 1
 	}
 	if PageSize <= 0 {
 		PageSize = 10
+	}
+	if Stext != "" {
+		engine = engine.Where("CompanyName LIKE ?", "%"+Stext+"%")
 	}
 	OrderBy := ""
 	if Order == -1 {

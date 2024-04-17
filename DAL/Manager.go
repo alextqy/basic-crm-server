@@ -52,9 +52,6 @@ func (m *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
-	}
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
 	}
@@ -63,6 +60,9 @@ func (m *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	}
 	if GroupID > 0 {
 		engine = engine.Where("GroupID = ?", GroupID)
+	}
+	if Stext != "" {
+		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
 	}
 	if Page <= 1 {
 		Page = 1
@@ -90,9 +90,6 @@ func (m *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Stat
 	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
-	}
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
 	}
@@ -101,6 +98,9 @@ func (m *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Stat
 	}
 	if GroupID > 0 {
 		engine = engine.Where("GroupID = ?", GroupID)
+	}
+	if Stext != "" {
+		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
 	}
 	OrderBy := ""
 	if Order == -1 {

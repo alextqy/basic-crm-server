@@ -49,14 +49,14 @@ func (a *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext st
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
-	}
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
 	}
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
+	}
+	if Stext != "" {
+		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
 	}
 	if Page <= 1 {
 		Page = 1
@@ -84,14 +84,14 @@ func (a *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
-	}
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
 	}
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
+	}
+	if Stext != "" {
+		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
 	}
 	OrderBy := ""
 	if Order == -1 {
