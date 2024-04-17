@@ -168,13 +168,30 @@ func SalesTargetDel(Token, ID string) mod.Result {
 		if checkData.ID == 0 {
 			result.Message = lang.SalesTargetDataDoesNotExist
 		} else {
+			db.Begin()
+
+			planList := salesPlanDal.All(db, 0, "", ID64, 0, "")
+			if len(planList) > 0 {
+				for i := 0; i < len(planList); i++ {
+					ID := sysHelper.Int64ToString(planList[i].ID)
+					e := salesPlanDal.Del(db, ID, "")
+					if e != nil {
+						db.Rollback()
+						result.Message = e.Error()
+						return result
+					}
+				}
+			}
+
 			e := salesTargetDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()
+				db.Rollback()
 			} else {
 				jData, _ := json.Marshal(checkData)
 				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), t.Message)
 				result.State = true
+				db.Commit()
 			}
 		}
 	}
