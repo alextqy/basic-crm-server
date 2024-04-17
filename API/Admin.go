@@ -5,11 +5,6 @@ import (
 	"net/http"
 )
 
-func Test(w http.ResponseWriter, r *http.Request) {
-	Test := httpHelper.Post(r, "test")
-	httpHelper.HttpWrite(w, bll.Test(Test))
-}
-
 func AdminSignIn(w http.ResponseWriter, r *http.Request) {
 	Account := httpHelper.Post(r, "Account")
 	Password := httpHelper.Post(r, "Password")

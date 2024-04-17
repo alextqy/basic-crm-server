@@ -27,6 +27,7 @@ type Language struct {
 	SalesTargetDataDoesNotExist  string
 	IncorrectSalesTarget         string
 	TheSalesPlanDataDoesNotExist string
+	TypeError                    string
 }
 
 func SysLang() Language {
@@ -60,6 +61,7 @@ func SysLang() Language {
 		language.SalesTargetDataDoesNotExist = "销售目标数据不存在"
 		language.IncorrectSalesTarget = "销售目标数据错误"
 		language.TheSalesPlanDataDoesNotExist = "销售计划数据不存在"
+		language.TypeError = "类型错误"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -87,6 +89,7 @@ func SysLang() Language {
 		language.SalesTargetDataDoesNotExist = "Sales target data does not exist"
 		language.IncorrectSalesTarget = "Incorrect sales target"
 		language.TheSalesPlanDataDoesNotExist = "The sales plan data does not exist"
+		language.TypeError = "Type error"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -114,6 +117,7 @@ func SysLang() Language {
 		language.SalesTargetDataDoesNotExist = ""
 		language.IncorrectSalesTarget = ""
 		language.TheSalesPlanDataDoesNotExist = ""
+		language.TypeError = ""
 	}
 	return language
 }

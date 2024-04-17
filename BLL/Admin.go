@@ -6,19 +6,6 @@ import (
 	"encoding/json"
 )
 
-func Test(Test string) mod.Result {
-	result := mod.Result{
-		State:   false,
-		Message: "",
-		Code:    200,
-		Data:    nil,
-	}
-
-	result.State = true
-	result.Message = PwdMD5(Test)
-	return result
-}
-
 func AdminSignIn(Account, Password string) mod.Result {
 	result := mod.Result{
 		State:   false,
