@@ -14,7 +14,8 @@ func Test(Test string) mod.Result {
 	}
 
 	result.State = true
-	result.Message = PwdMD5(Test)
+	result.Message = sysHelper.TimeNowStr()
+	result.Data = Test
 	return result
 }
 
@@ -29,7 +30,7 @@ func CheckTheLogs(Token, Date, Type, Account string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if t.Message != "admin" {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -53,6 +54,28 @@ func CheckTheLogs(Token, Date, Type, Account string) mod.Result {
 				}
 			}
 		}
+	}
+	return result
+}
+
+func CheckEnv(Token string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if t.Message != "admin" {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		result.State = true
+		result.Data = sysHelper.SysEnvs()
 	}
 	return result
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func Test(w http.ResponseWriter, r *http.Request) {
-	Test := httpHelper.Post(r, "test")
+	Test := httpHelper.Post(r, "Test")
 	httpHelper.HttpWrite(w, bll.Test(Test))
 }
 
@@ -16,4 +16,9 @@ func CheckTheLogs(w http.ResponseWriter, r *http.Request) {
 	Type := httpHelper.Post(r, "Type")
 	Account := httpHelper.Post(r, "Account")
 	httpHelper.HttpWrite(w, bll.CheckTheLogs(Token, Date, Type, Account))
+}
+
+func CheckEnv(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	httpHelper.HttpWrite(w, bll.CheckEnv(Token))
 }

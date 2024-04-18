@@ -70,6 +70,7 @@ func routes(mux *http.ServeMux) {
 	// Sys ===================================================================
 	mux.HandleFunc("/test", httpHelper.Middleware(api.Test))
 	mux.HandleFunc("/check/the/logs", httpHelper.Middleware(api.CheckTheLogs))
+	mux.HandleFunc("/check/env", httpHelper.Middleware(api.CheckEnv))
 
 	// admin ===================================================================
 	mux.HandleFunc("/admin/sign/in", httpHelper.Middleware(api.AdminSignIn))

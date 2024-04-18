@@ -21,6 +21,20 @@ import (
 
 type SysHelper struct{}
 
+func (s *SysHelper) SysEnvs() map[string]string {
+	envMap := map[string]string{}
+	envs := os.Environ()
+	for _, e := range envs {
+		parts := strings.SplitN(e, "=", 2)
+		if len(parts) != 2 {
+			continue
+		} else {
+			envMap[string(parts[0])] = string(parts[1])
+		}
+	}
+	return envMap
+}
+
 func (s *SysHelper) GetEnv(key string) string {
 	return os.Getenv(key)
 }
