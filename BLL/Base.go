@@ -17,6 +17,7 @@ var tcpHelper = mtd.TcpHelper{}
 var udpHelper = mtd.UdpHelper{}
 
 var adminDal = dal.AdminDal{}
+var afterServiceDal = dal.AfterServiceDal{}
 var companyDal = dal.CompanyDal{}
 var customerDal = dal.CustomerDal{}
 var managerDal = dal.ManagerDal{}
@@ -26,7 +27,7 @@ var salesTargetDal = dal.SalesTargetDal{}
 
 func CheckPerm(t mod.Result) int {
 	var p int
-	if t.Message == "afterSales" {
+	if t.Message == "after service" {
 		p = 3
 	} else if t.Message == "manager" {
 		p = 2
@@ -133,6 +134,15 @@ func DeToken(Token string) mod.Result {
 				} else {
 					result.State = true
 					result.Message = "manager"
+					result.Data = manager
+				}
+			} else if t[1] == "after service" {
+				manager := afterServiceDal.Token(db, Token, "")
+				if manager.ID == 0 {
+					result.Message = lang.IncorrectToken
+				} else {
+					result.State = true
+					result.Message = "after service"
 					result.Data = manager
 				}
 			} else {

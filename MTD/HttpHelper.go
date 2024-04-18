@@ -99,20 +99,6 @@ func (h *HttpHelper) PostInt(r *http.Request, key string) int {
 	}
 }
 
-func (h *HttpHelper) PostInt64(r *http.Request, key string) int64 {
-	param := strings.TrimSpace(r.PostFormValue(key))
-	if h.RegParam(param) {
-		r, e := strconv.ParseInt(param, 10, 64)
-		if e != nil {
-			return 0
-		} else {
-			return r
-		}
-	} else {
-		return 0
-	}
-}
-
 func (h *HttpHelper) PostFloat32(r *http.Request, key string) float32 {
 	param := strings.TrimSpace(r.PostFormValue(key))
 	if h.RegParam(param) {
@@ -121,6 +107,20 @@ func (h *HttpHelper) PostFloat32(r *http.Request, key string) float32 {
 			return 0
 		} else {
 			return float32(r)
+		}
+	} else {
+		return 0
+	}
+}
+
+func (h *HttpHelper) PostInt64(r *http.Request, key string) int64 {
+	param := strings.TrimSpace(r.PostFormValue(key))
+	if h.RegParam(param) {
+		r, e := strconv.ParseInt(param, 10, 64)
+		if e != nil {
+			return 0
+		} else {
+			return r
 		}
 	} else {
 		return 0

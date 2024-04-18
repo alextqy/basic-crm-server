@@ -82,6 +82,14 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/admin/del", httpHelper.Middleware(api.AdminDel))
 	mux.HandleFunc("/admin/status", httpHelper.Middleware(api.AdminStatus))
 
+	// after service ===================================================================
+	mux.HandleFunc("/after/service/new", httpHelper.Middleware(api.AfterServiceNew))
+	mux.HandleFunc("/after/service/list", httpHelper.Middleware(api.AfterServiceList))
+	mux.HandleFunc("/after/service/all", httpHelper.Middleware(api.AfterServiceAll))
+	mux.HandleFunc("/after/service/data", httpHelper.Middleware(api.AfterServiceData))
+	mux.HandleFunc("/after/service/del", httpHelper.Middleware(api.AfterServiceDel))
+	mux.HandleFunc("/after/service/status", httpHelper.Middleware(api.AfterServiceStatus))
+
 	// company ===================================================================
 	mux.HandleFunc("/company/new", httpHelper.Middleware(api.CompanyNew))
 	mux.HandleFunc("/company/list", httpHelper.Middleware(api.CompanyList))
