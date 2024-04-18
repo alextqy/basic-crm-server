@@ -100,7 +100,7 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -193,7 +193,7 @@ func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Sta
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -219,7 +219,7 @@ func AdminAll(Token string, Order int, Stext string, Level, Status int64) mod.Re
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -245,7 +245,7 @@ func AdminData(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -274,7 +274,7 @@ func AdminDel(Token, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -313,7 +313,7 @@ func AdminStatus(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist

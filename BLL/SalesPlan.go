@@ -17,7 +17,7 @@ func SalesPlanNew(Token, PlanName string, TargetID int64, PlanContent string, Bu
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -86,7 +86,7 @@ func SalesPlanList(Token string, Page, PageSize, Order int, Stext string, Target
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -109,7 +109,7 @@ func SalesPlanAll(Token string, Order int, Stext string, TargetID int64, Status 
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -132,7 +132,7 @@ func SalesPlanData(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -155,7 +155,7 @@ func SalesPlanDel(Token string, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist

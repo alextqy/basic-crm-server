@@ -17,7 +17,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -109,7 +109,7 @@ func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender,
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -132,7 +132,7 @@ func CustomerAll(Token string, Order int, Stext string, Gender, Priority, Compan
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -155,7 +155,7 @@ func CustomerData(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -178,7 +178,7 @@ func CustomerDel(Token, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist

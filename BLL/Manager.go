@@ -17,7 +17,7 @@ func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -116,7 +116,7 @@ func ManagerList(Token string, Page, PageSize, Order int, Stext string, Level, S
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -142,7 +142,7 @@ func ManagerAll(Token string, Order int, Stext string, Level, Status, GroupID in
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -168,7 +168,7 @@ func ManagerData(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -193,7 +193,7 @@ func ManagerDel(Token, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -228,7 +228,7 @@ func ManagerStatus(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -351,7 +351,7 @@ func ManagerUpdate(Token, Password, Name, Remark string, GroupID int64) mod.Resu
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "manager" {
+	} else if CheckPerm(t) > 1 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist

@@ -17,7 +17,7 @@ func GroupNew(Token, GroupName, Remark string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -75,7 +75,7 @@ func GroupList(Token string, Page, PageSize, Order int, Stext string) mod.Result
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -98,7 +98,7 @@ func GroupAll(Token string, Order int, Stext string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -121,7 +121,7 @@ func GroupData(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -144,7 +144,7 @@ func GroupDel(Token string, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if t.Message != "admin" && t.Message != "manager" {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist

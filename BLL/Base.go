@@ -24,6 +24,20 @@ var managerGroupDal = dal.ManagerGroupDal{}
 var salesPlanDal = dal.SalesPlanDal{}
 var salesTargetDal = dal.SalesTargetDal{}
 
+func CheckPerm(t mod.Result) int {
+	var p int
+	if t.Message == "afterSales" {
+		p = 3
+	} else if t.Message == "manager" {
+		p = 2
+	} else if t.Message == "admin" {
+		p = 1
+	} else {
+		p = 99
+	}
+	return p
+}
+
 func CheckID(t mod.Result) int64 {
 	var ID int64
 	if t.Message == "admin" {
