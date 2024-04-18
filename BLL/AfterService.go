@@ -250,3 +250,133 @@ func AfterServiceStatus(Token string, ID int64) mod.Result {
 	}
 	return result
 }
+
+func AfterServiceSignIn(Account, Password string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	if Account == "" {
+		result.Message = lang.IncorrectAccount
+	} else if Password == "" {
+		result.Message = lang.IncorrectPassword
+	} else {
+		db := dal.ConnDB()
+		checkData := afterServiceDal.Check(db, Account, "")
+		if checkData.ID == 0 {
+			result.Message = lang.TheAccountDoesNotExist
+		} else if checkData.Status != 1 {
+			result.Message = lang.AccountDisabled
+		} else {
+			if checkData.Password != PwdMD5(Password) {
+				result.Message = lang.IncorrectPassword
+			} else {
+				t := EnToken(Account, 3)
+				if !t.State {
+					result.Message = t.Message
+				} else {
+					result.Data = t.Data.(string)
+					checkData.Token = t.Data.(string)
+					e := afterServiceDal.Update(db, checkData, "")
+					if e != nil {
+						result.Message = e.Error()
+					} else {
+						go fileHelper.WriteLog(checkData.Account, checkData.Account+" login", "afterService")
+						checkData.Password = ""
+						result.State = true
+						result.Data = checkData
+					}
+				}
+			}
+		}
+	}
+	return result
+}
+
+func AfterServiceSignOut(Token string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	if Token == "" {
+		result.Message = lang.IncorrectToken
+	} else {
+		r := DeToken(Token)
+		if !r.State {
+			result.Message = r.Message
+		} else {
+			db := dal.ConnDB()
+			if r.Message == "afterService" {
+				userData := r.Data.(mod.AfterService)
+				if userData.ID == 0 {
+					result.Message = lang.TheAccountDoesNotExist
+				} else {
+					userData.Token = ""
+					e := afterServiceDal.Update(db, userData, "")
+					if e != nil {
+						result.Message = e.Error()
+					} else {
+						go fileHelper.WriteLog(userData.Account, userData.Account+" logout", r.Message)
+						result.State = true
+					}
+				}
+			} else {
+				result.Message = lang.TheAccountDoesNotExist
+			}
+		}
+	}
+	return result
+}
+
+func AfterServiceUpdate(Token, Password, Name, Remark string) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if CheckPerm(t) != 3 {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else if Name == "" {
+		result.Message = lang.IncorrectName
+	} else {
+		db := dal.ConnDB()
+
+		if Password != "" && len(Password) < 6 {
+			result.Message = lang.ThePasswordIsTooShort
+			return result
+		}
+
+		data := t.Data.(mod.AfterService)
+		newPwd := ""
+		if Password == "" {
+			newPwd = data.Password
+		} else {
+			newPwd = PwdMD5(Password)
+		}
+		data.Password = newPwd
+		data.Name = Name
+		data.Remark = Remark
+		e := afterServiceDal.Update(db, data, "")
+		if e != nil {
+			result.Message = e.Error()
+		} else {
+			jData, _ := json.Marshal(data)
+			go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
+			result.State = true
+		}
+	}
+	return result
+}

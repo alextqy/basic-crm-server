@@ -52,3 +52,22 @@ func AfterServiceStatus(w http.ResponseWriter, r *http.Request) {
 	ID := httpHelper.PostInt64(r, "ID")
 	httpHelper.HttpWrite(w, bll.AfterServiceStatus(Token, ID))
 }
+
+func AfterServiceSignIn(w http.ResponseWriter, r *http.Request) {
+	Account := httpHelper.Post(r, "Account")
+	Password := httpHelper.Post(r, "Password")
+	httpHelper.HttpWrite(w, bll.AfterServiceSignIn(Account, Password))
+}
+
+func AfterServiceSignOut(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	httpHelper.HttpWrite(w, bll.AfterServiceSignOut(Token))
+}
+
+func AfterServiceUpdate(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	Password := httpHelper.Post(r, "Password")
+	Name := httpHelper.Post(r, "Name")
+	Remark := httpHelper.Post(r, "Remark")
+	httpHelper.HttpWrite(w, bll.AfterServiceUpdate(Token, Password, Name, Remark))
+}

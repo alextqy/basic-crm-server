@@ -27,7 +27,7 @@ var salesTargetDal = dal.SalesTargetDal{}
 
 func CheckPerm(t mod.Result) int {
 	var p int
-	if t.Message == "after service" {
+	if t.Message == "afterService" {
 		p = 3
 	} else if t.Message == "manager" {
 		p = 2
@@ -43,8 +43,12 @@ func CheckID(t mod.Result) int64 {
 	var ID int64
 	if t.Message == "admin" {
 		ID = t.Data.(mod.Admin).ID
-	} else {
+	} else if t.Message == "manager" {
 		ID = t.Data.(mod.Manager).ID
+	} else if t.Message == "afterService" {
+		ID = t.Data.(mod.AfterService).ID
+	} else {
+		ID = 0
 	}
 	return ID
 }
@@ -53,14 +57,14 @@ func CheckAccount(t mod.Result) string {
 	account := ""
 	if t.Message == "admin" {
 		account = t.Data.(mod.Admin).Account
-	} else {
+	} else if t.Message == "manager" {
 		account = t.Data.(mod.Manager).Account
+	} else if t.Message == "afterService" {
+		account = t.Data.(mod.AfterService).Account
+	} else {
+		account = ""
 	}
 	return account
-}
-
-func PwdMD5(Password string) string {
-	return sysHelper.MD5(sysHelper.EnBase64(Password))
 }
 
 func EnToken(Account string, Type int) mod.Result {
@@ -76,6 +80,8 @@ func EnToken(Account string, Type int) mod.Result {
 		tokenType = "admin"
 	} else if Type == 2 {
 		tokenType = "manager"
+	} else if Type == 3 {
+		tokenType = "afterService"
 	} else {
 		result.Message = ""
 		return result
@@ -136,13 +142,13 @@ func DeToken(Token string) mod.Result {
 					result.Message = "manager"
 					result.Data = manager
 				}
-			} else if t[1] == "after service" {
+			} else if t[1] == "afterService" {
 				manager := afterServiceDal.Token(db, Token, "")
 				if manager.ID == 0 {
 					result.Message = lang.IncorrectToken
 				} else {
 					result.State = true
-					result.Message = "after service"
+					result.Message = "afterService"
 					result.Data = manager
 				}
 			} else {
@@ -151,4 +157,8 @@ func DeToken(Token string) mod.Result {
 		}
 	}
 	return result
+}
+
+func PwdMD5(Password string) string {
+	return sysHelper.MD5(sysHelper.EnBase64(Password))
 }
