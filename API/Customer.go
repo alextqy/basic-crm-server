@@ -15,8 +15,9 @@ func CustomerNew(w http.ResponseWriter, r *http.Request) {
 	CustomerInfo := httpHelper.Post(r, "CustomerInfo")
 	Priority := httpHelper.PostInt64(r, "Priority")
 	CompanyID := httpHelper.PostInt64(r, "CompanyID")
+	AfterServiceID := httpHelper.PostInt64(r, "AfterServiceID")
 	ID := httpHelper.PostInt64(r, "ID")
-	httpHelper.HttpWrite(w, bll.CustomerNew(Token, Name, Birthday, Gender, Email, Tel, CustomerInfo, Priority, CompanyID, ID))
+	httpHelper.HttpWrite(w, bll.CustomerNew(Token, Name, Birthday, Gender, Email, Tel, CustomerInfo, Priority, CompanyID, AfterServiceID, ID))
 }
 
 func CustomerList(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +30,8 @@ func CustomerList(w http.ResponseWriter, r *http.Request) {
 	Priority := httpHelper.PostInt64(r, "Priority")
 	CompanyID := httpHelper.PostInt64(r, "CompanyID")
 	ManagerID := httpHelper.PostInt64(r, "ManagerID")
-	httpHelper.HttpWrite(w, bll.CustomerList(Token, Page, PageSize, Order, Stext, Gender, Priority, CompanyID, ManagerID))
+	AfterServiceID := httpHelper.PostInt64(r, "AfterServiceID")
+	httpHelper.HttpWrite(w, bll.CustomerList(Token, Page, PageSize, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID))
 }
 
 func CustomerAll(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +42,8 @@ func CustomerAll(w http.ResponseWriter, r *http.Request) {
 	Priority := httpHelper.PostInt64(r, "Priority")
 	CompanyID := httpHelper.PostInt64(r, "CompanyID")
 	ManagerID := httpHelper.PostInt64(r, "ManagerID")
-	httpHelper.HttpWrite(w, bll.CustomerAll(Token, Order, Stext, Gender, Priority, CompanyID, ManagerID))
+	AfterServiceID := httpHelper.PostInt64(r, "AfterServiceID")
+	httpHelper.HttpWrite(w, bll.CustomerAll(Token, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID))
 }
 
 func CustomerData(w http.ResponseWriter, r *http.Request) {

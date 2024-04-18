@@ -10,7 +10,7 @@ import (
 
 type CustomerDal struct{}
 
-func (c *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) int64 {
+func (c *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) int64 {
 	var Count int64
 	TableName := customerTable + Outfit
 	engine := db.Table(TableName)
@@ -28,6 +28,9 @@ func (c *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority in
 	}
 	if ManagerID > 0 {
 		engine = engine.Where("ManagerID = ?", ManagerID)
+	}
+	if AfterServiceID > 0 {
+		engine = engine.Where("AfterServiceID = ?", AfterServiceID)
 	}
 	engine.Count(&Count)
 	return Count
@@ -51,7 +54,7 @@ func (c *CustomerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Customer {
 	return Data
 }
 
-func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) (int, int, int, []mod.Customer) {
+func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) (int, int, int, []mod.Customer) {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
@@ -66,6 +69,9 @@ func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	}
 	if ManagerID > 0 {
 		engine = engine.Where("ManagerID = ?", ManagerID)
+	}
+	if AfterServiceID > 0 {
+		engine = engine.Where("AfterServiceID = ?", AfterServiceID)
 	}
 	if Stext != "" {
 		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
@@ -84,7 +90,7 @@ func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	}
 	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count := c.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, Outfit)
+	Count := c.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -92,7 +98,7 @@ func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	return Page, PageSize, TotalPage, Data
 }
 
-func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, Outfit string) []mod.Customer {
+func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) []mod.Customer {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
@@ -107,6 +113,9 @@ func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Pr
 	}
 	if ManagerID > 0 {
 		engine = engine.Where("ManagerID = ?", ManagerID)
+	}
+	if AfterServiceID > 0 {
+		engine = engine.Where("AfterServiceID = ?", AfterServiceID)
 	}
 	if Stext != "" {
 		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
