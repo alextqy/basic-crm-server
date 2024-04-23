@@ -8,4 +8,5 @@ type SalesPlan struct {
 	CreationTime int64   `gorm:"column:CreationTime"` // 创建时间
 	Status       int64   `gorm:"column:Status"`       // 状态 1正常 2作废
 	Budget       float32 `gorm:"column:Budget"`       // 预算
+	ManagerID    int64   `gorm:"column:ManagerID"`    // 归属销售人员
 }

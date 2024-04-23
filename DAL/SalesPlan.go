@@ -45,7 +45,7 @@ func (o *SalesPlanDal) Data(db *gorm.DB, ID int64, Outfit string) mod.SalesPlan 
 	return Data
 }
 
-func (o *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, Outfit string) (int, int, int, []mod.SalesPlan) {
+func (o *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, ManagerID int64, Outfit string) (int, int, int, []mod.SalesPlan) {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName)
@@ -54,6 +54,9 @@ func (o *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stex
 	}
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
+	}
+	if ManagerID > 0 {
+		engine = engine.Where("ManagerID = ?", ManagerID)
 	}
 	if Stext != "" {
 		engine = engine.Where("PlanName LIKE ?", "%"+Stext+"%")
@@ -80,7 +83,7 @@ func (o *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stex
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID int64, Status int64, Outfit string) []mod.SalesPlan {
+func (o *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID int64, Status int64, ManagerID int64, Outfit string) []mod.SalesPlan {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlan{}
 	engine := db.Table(TableName)
@@ -89,6 +92,9 @@ func (o *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID int64,
 	}
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
+	}
+	if ManagerID > 0 {
+		engine = engine.Where("ManagerID = ?", ManagerID)
 	}
 	if Stext != "" {
 		engine = engine.Where("PlanName LIKE ?", "%"+Stext+"%")

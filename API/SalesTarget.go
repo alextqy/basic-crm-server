@@ -22,7 +22,8 @@ func SalesTargetList(w http.ResponseWriter, r *http.Request) {
 	Order := httpHelper.PostInt(r, "Order")
 	Stext := httpHelper.Post(r, "Stext")
 	CustomerID := httpHelper.PostInt64(r, "CustomerID")
-	httpHelper.HttpWrite(w, bll.SalesTargetList(Token, Page, PageSize, Order, Stext, CustomerID))
+	ManagerID := httpHelper.PostInt64(r, "ManagerID")
+	httpHelper.HttpWrite(w, bll.SalesTargetList(Token, Page, PageSize, Order, Stext, CustomerID, ManagerID))
 }
 
 func SalesTargetAll(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +31,8 @@ func SalesTargetAll(w http.ResponseWriter, r *http.Request) {
 	Order := httpHelper.PostInt(r, "Order")
 	Stext := httpHelper.Post(r, "Stext")
 	CustomerID := httpHelper.PostInt64(r, "CustomerID")
-	httpHelper.HttpWrite(w, bll.SalesTargetAll(Token, Order, Stext, CustomerID))
+	ManagerID := httpHelper.PostInt64(r, "ManagerID")
+	httpHelper.HttpWrite(w, bll.SalesTargetAll(Token, Order, Stext, CustomerID, ManagerID))
 }
 
 func SalesTargetData(w http.ResponseWriter, r *http.Request) {

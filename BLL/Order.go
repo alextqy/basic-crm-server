@@ -91,7 +91,7 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 	return result
 }
 
-func OrderList(Token string, Page int, PageSize int, Order int, Stext string, ProductID int64, ManagerID int64, Status int64) mod.ResultList {
+func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID, ManagerID, Status int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -110,7 +110,7 @@ func OrderList(Token string, Page int, PageSize int, Order int, Stext string, Pr
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
-		if t.Message == "manager" {
+		if CheckPerm(t) == 2 {
 			ManagerID = CheckID(t)
 		}
 		db := dal.ConnDB()
@@ -120,7 +120,7 @@ func OrderList(Token string, Page int, PageSize int, Order int, Stext string, Pr
 	return result
 }
 
-func OrderAll(Token string, Order int, Stext string, ProductID int64, ManagerID int64, Status int64) mod.Result {
+func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, Status int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -136,7 +136,7 @@ func OrderAll(Token string, Order int, Stext string, ProductID int64, ManagerID 
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
-		if t.Message == "manager" {
+		if CheckPerm(t) == 2 {
 			ManagerID = CheckID(t)
 		}
 		db := dal.ConnDB()
@@ -163,8 +163,13 @@ func OrderData(Token string, ID int64) mod.Result {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
 		db := dal.ConnDB()
+		data := orderDal.Data(db, ID, "")
+		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
+			result.Data = mod.Order{}
+		} else {
+			result.Data = data
+		}
 		result.State = true
-		result.Data = orderDal.Data(db, ID, "")
 	}
 	return result
 }
@@ -191,6 +196,12 @@ func OrderDel(Token, ID string) mod.Result {
 		if checkData.ID == 0 {
 			result.Message = lang.TheOrderDataDoesNotExist
 		} else {
+			if CheckPerm(t) == 2 {
+				if checkData.ManagerID != CheckID(t) {
+					result.Message = lang.PermissionDenied
+					return result
+				}
+			}
 			e := orderDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()

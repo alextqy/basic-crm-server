@@ -42,12 +42,15 @@ func (o *SalesTargetDal) Data(db *gorm.DB, ID int64, Outfit string) mod.SalesTar
 	return Data
 }
 
-func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, CustomerID int64, Outfit string) (int, int, int, []mod.SalesTarget) {
+func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) (int, int, int, []mod.SalesTarget) {
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName)
 	if CustomerID > 0 {
 		engine = engine.Where("CustomerID = ?", CustomerID)
+	}
+	if ManagerID > 0 {
+		engine = engine.Where("ManagerID = ?", ManagerID)
 	}
 	if Stext != "" {
 		engine = engine.Where("TargetName LIKE ?", "%"+Stext+"%")
@@ -74,12 +77,15 @@ func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, St
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID int64, Outfit string) []mod.SalesTarget {
+func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) []mod.SalesTarget {
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTarget{}
 	engine := db.Table(TableName)
 	if CustomerID > 0 {
 		engine = engine.Where("CustomerID = ?", CustomerID)
+	}
+	if ManagerID > 0 {
+		engine = engine.Where("ManagerID = ?", ManagerID)
 	}
 	if Stext != "" {
 		engine = engine.Where("TargetName LIKE ?", "%"+Stext+"%")

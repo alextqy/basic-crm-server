@@ -23,7 +23,8 @@ func SalesPlanList(w http.ResponseWriter, r *http.Request) {
 	Stext := httpHelper.Post(r, "Stext")
 	TargetID := httpHelper.PostInt64(r, "TargetID")
 	Status := httpHelper.PostInt64(r, "Status")
-	httpHelper.HttpWrite(w, bll.SalesPlanList(Token, Page, PageSize, Order, Stext, TargetID, Status))
+	ManagerID := httpHelper.PostInt64(r, "ManagerID")
+	httpHelper.HttpWrite(w, bll.SalesPlanList(Token, Page, PageSize, Order, Stext, TargetID, Status, ManagerID))
 }
 
 func SalesPlanAll(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +33,8 @@ func SalesPlanAll(w http.ResponseWriter, r *http.Request) {
 	Stext := httpHelper.Post(r, "Stext")
 	TargetID := httpHelper.PostInt64(r, "TargetID")
 	Status := httpHelper.PostInt64(r, "Status")
-	httpHelper.HttpWrite(w, bll.SalesPlanAll(Token, Order, Stext, TargetID, Status))
+	ManagerID := httpHelper.PostInt64(r, "ManagerID")
+	httpHelper.HttpWrite(w, bll.SalesPlanAll(Token, Order, Stext, TargetID, Status, ManagerID))
 }
 
 func SalesPlanData(w http.ResponseWriter, r *http.Request) {

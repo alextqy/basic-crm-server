@@ -48,7 +48,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 		}
 
 		var ManagerID int64
-		if t.Message == "manager" {
+		if CheckPerm(t) == 2 {
 			ManagerID = customerDal.Data(db, t.Data.(mod.Manager).ID, "").ID
 		} else {
 			ManagerID = 0
@@ -123,7 +123,7 @@ func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender,
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
-		if t.Message == "manager" {
+		if CheckPerm(t) == 2 {
 			ManagerID = CheckID(t)
 		}
 		db := dal.ConnDB()
@@ -149,7 +149,7 @@ func CustomerAll(Token string, Order int, Stext string, Gender, Priority, Compan
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
-		if t.Message == "manager" {
+		if CheckPerm(t) == 2 {
 			ManagerID = CheckID(t)
 		}
 		db := dal.ConnDB()
@@ -176,8 +176,13 @@ func CustomerData(Token string, ID int64) mod.Result {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
 		db := dal.ConnDB()
+		data := customerDal.Data(db, ID, "")
+		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
+			result.Data = mod.Customer{}
+		} else {
+			result.Data = data
+		}
 		result.State = true
-		result.Data = customerDal.Data(db, ID, "")
 	}
 	return result
 }
@@ -204,6 +209,12 @@ func CustomerDel(Token, ID string) mod.Result {
 		if checkData.ID == 0 {
 			result.Message = lang.CustomerDataDoesNotExist
 		} else {
+			if CheckPerm(t) == 2 {
+				if checkData.ManagerID != CheckID(t) {
+					result.Message = lang.PermissionDenied
+					return result
+				}
+			}
 			e := customerDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()

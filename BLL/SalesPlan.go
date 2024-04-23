@@ -49,6 +49,8 @@ func SalesPlanNew(Token, PlanName string, TargetID int64, PlanContent string, Bu
 			checkData := salesTargetDal.Data(db, TargetID, "")
 			if checkData.ID == 0 {
 				result.Message = lang.SalesTargetDataDoesNotExist
+			} else if CheckPerm(t) == 2 && checkData.ManagerID != CheckID(t) {
+				result.Message = lang.PermissionDenied
 			} else {
 				data := mod.SalesPlan{
 					PlanName:     PlanName,
@@ -57,6 +59,7 @@ func SalesPlanNew(Token, PlanName string, TargetID int64, PlanContent string, Bu
 					CreationTime: sysHelper.TimeStamp(),
 					Status:       1,
 					Budget:       Budget,
+					ManagerID:    checkData.ManagerID,
 				}
 				_, e := salesPlanDal.Add(db, data, "")
 				if e != nil {
@@ -72,7 +75,7 @@ func SalesPlanNew(Token, PlanName string, TargetID int64, PlanContent string, Bu
 	return result
 }
 
-func SalesPlanList(Token string, Page, PageSize, Order int, Stext string, TargetID, Status int64) mod.ResultList {
+func SalesPlanList(Token string, Page, PageSize, Order int, Stext string, TargetID, Status, ManagerID int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -91,14 +94,17 @@ func SalesPlanList(Token string, Page, PageSize, Order int, Stext string, Target
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
+		if CheckPerm(t) == 2 {
+			ManagerID = CheckID(t)
+		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = salesPlanDal.List(db, Page, PageSize, Order, Stext, TargetID, Status, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = salesPlanDal.List(db, Page, PageSize, Order, Stext, TargetID, Status, ManagerID, "")
 	}
 	return result
 }
 
-func SalesPlanAll(Token string, Order int, Stext string, TargetID int64, Status int64) mod.Result {
+func SalesPlanAll(Token string, Order int, Stext string, TargetID, Status, ManagerID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -114,9 +120,12 @@ func SalesPlanAll(Token string, Order int, Stext string, TargetID int64, Status 
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
+		if CheckPerm(t) == 2 {
+			ManagerID = CheckID(t)
+		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = salesPlanDal.All(db, Order, Stext, TargetID, Status, "")
+		result.Data = salesPlanDal.All(db, Order, Stext, TargetID, Status, ManagerID, "")
 	}
 	return result
 }
@@ -138,8 +147,13 @@ func SalesPlanData(Token string, ID int64) mod.Result {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
 		db := dal.ConnDB()
+		data := salesPlanDal.Data(db, ID, "")
+		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
+			result.Data = mod.SalesPlan{}
+		} else {
+			result.Data = data
+		}
 		result.State = true
-		result.Data = salesPlanDal.Data(db, ID, "")
 	}
 	return result
 }
@@ -166,6 +180,12 @@ func SalesPlanDel(Token string, ID string) mod.Result {
 		if checkData.ID == 0 {
 			result.Message = lang.TheSalesPlanDataDoesNotExist
 		} else {
+			if CheckPerm(t) == 2 {
+				if checkData.ManagerID != CheckID(t) {
+					result.Message = lang.PermissionDenied
+					return result
+				}
+			}
 			e := salesPlanDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()
