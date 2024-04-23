@@ -123,6 +123,9 @@ func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender,
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
+		if t.Message == "manager" {
+			ManagerID = CheckID(t)
+		}
 		db := dal.ConnDB()
 		result.State = true
 		result.Page, result.PageSize, result.TotalPage, result.Data = customerDal.List(db, Page, PageSize, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, "")
@@ -146,6 +149,9 @@ func CustomerAll(Token string, Order int, Stext string, Gender, Priority, Compan
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
+		if t.Message == "manager" {
+			ManagerID = CheckID(t)
+		}
 		db := dal.ConnDB()
 		result.State = true
 		result.Data = customerDal.All(db, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, "")

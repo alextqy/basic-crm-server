@@ -30,6 +30,13 @@ func CompanyNew(Token, CompanyName, Remark string, ID int64) mod.Result {
 			if checkData.ID == 0 {
 				result.Message = lang.CompanyDataDoesNotExist
 			} else {
+				if checkData.CompanyName != CompanyName {
+					theData := companyDal.Check(db, CompanyName, "")
+					if theData.ID > 0 {
+						result.Message = lang.DataWithTheSameNameExists
+						return result
+					}
+				}
 				checkData.CompanyName = CompanyName
 				checkData.Remark = Remark
 				e := companyDal.Update(db, checkData, "")
