@@ -17,7 +17,7 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if CheckPerm(t) > 1 {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -105,11 +105,14 @@ func OrderList(Token string, Page int, PageSize int, Order int, Stext string, Pr
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if CheckPerm(t) > 1 {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
+		if t.Message == "manager" {
+			ManagerID = CheckID(t)
+		}
 		db := dal.ConnDB()
 		result.State = true
 		result.Page, result.PageSize, result.TotalPage, result.Data = orderDal.List(db, Page, PageSize, Order, Stext, ProductID, ManagerID, Status, "")
@@ -125,9 +128,21 @@ func OrderAll(Token string, Order int, Stext string, ProductID int64, ManagerID 
 		Data:    nil,
 	}
 
-	db := dal.ConnDB()
-	result.State = true
-	result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, Status, "")
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if CheckPerm(t) > 2 {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		if t.Message == "manager" {
+			ManagerID = CheckID(t)
+		}
+		db := dal.ConnDB()
+		result.State = true
+		result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, Status, "")
+	}
 	return result
 }
 
@@ -142,7 +157,7 @@ func OrderData(Token string, ID int64) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if CheckPerm(t) > 1 {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
@@ -165,7 +180,7 @@ func OrderDel(Token, ID string) mod.Result {
 	t := DeToken(Token)
 	if !t.State {
 		result.Message = t.Message
-	} else if CheckPerm(t) > 1 {
+	} else if CheckPerm(t) > 2 {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
