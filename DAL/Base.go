@@ -17,6 +17,8 @@ var companyTable = "Company"
 var customerTable = "Customer"
 var managerTable = "Manager"
 var managerGroupTable = "ManagerGroup"
+var orderTable = "Order"
+var productTable = "Product"
 var salesPlanTable = "SalesPlan"
 var salesTargetTable = "SalesTarget"
 

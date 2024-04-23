@@ -10,13 +10,10 @@ import (
 
 type CustomerDal struct{}
 
-func (c *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) int64 {
+func (o *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) int64 {
 	var Count int64
 	TableName := customerTable + Outfit
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
-	}
 	if Gender > 0 {
 		engine = engine.Where("Gender = ?", Gender)
 	}
@@ -32,29 +29,32 @@ func (c *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority in
 	if AfterServiceID > 0 {
 		engine = engine.Where("AfterServiceID = ?", AfterServiceID)
 	}
+	if Stext != "" {
+		engine = engine.Where("Name LIKE ?", "%"+Stext+"%").Or("Email LIKE ?", "%"+Stext+"%").Or("Tel LIKE ?", "%"+Stext+"%")
+	}
 	engine.Count(&Count)
 	return Count
 }
 
-func (c *CustomerDal) Add(db *gorm.DB, Data mod.Customer, Outfit string) (int64, error) {
+func (o *CustomerDal) Add(db *gorm.DB, Data mod.Customer, Outfit string) (int64, error) {
 	TableName := customerTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (c *CustomerDal) Update(db *gorm.DB, Data mod.Customer, Outfit string) error {
+func (o *CustomerDal) Update(db *gorm.DB, Data mod.Customer, Outfit string) error {
 	TableName := customerTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (c *CustomerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Customer {
+func (o *CustomerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Customer {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) (int, int, int, []mod.Customer) {
+func (o *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) (int, int, int, []mod.Customer) {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
@@ -90,7 +90,7 @@ func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	}
 	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count := c.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Outfit)
+	Count := o.Count(db, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -98,7 +98,7 @@ func (c *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	return Page, PageSize, TotalPage, Data
 }
 
-func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) []mod.Customer {
+func (o *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Outfit string) []mod.Customer {
 	TableName := customerTable + Outfit
 	Data := []mod.Customer{}
 	engine := db.Table(TableName)
@@ -130,7 +130,7 @@ func (c *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Pr
 	return Data
 }
 
-func (c *CustomerDal) Del(db *gorm.DB, ID string, Outfit string) error {
+func (o *CustomerDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := customerTable + Outfit
 	Data := mod.Customer{}
 	var e error

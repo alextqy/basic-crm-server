@@ -10,42 +10,42 @@ import (
 
 type AdminDal struct{}
 
-func (a *AdminDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, Outfit string) int64 {
+func (o *AdminDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, Outfit string) int64 {
 	var Count int64
 	TableName := adminTable + Outfit
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
-	}
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
 	}
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
 	}
+	if Stext != "" {
+		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
+	}
 	engine.Count(&Count)
 	return Count
 }
 
-func (a *AdminDal) Add(db *gorm.DB, Data mod.Admin, Outfit string) (int64, error) {
+func (o *AdminDal) Add(db *gorm.DB, Data mod.Admin, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (a *AdminDal) Update(db *gorm.DB, Data mod.Admin, Outfit string) error {
+func (o *AdminDal) Update(db *gorm.DB, Data mod.Admin, Outfit string) error {
 	TableName := adminTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (a *AdminDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Admin {
+func (o *AdminDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Admin {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (a *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
+func (o *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName)
@@ -72,7 +72,7 @@ func (a *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext st
 	}
 	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count := a.Count(db, Stext, Level, Status, Outfit)
+	Count := o.Count(db, Stext, Level, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -80,7 +80,7 @@ func (a *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext st
 	return Page, PageSize, TotalPage, Data
 }
 
-func (a *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
+func (o *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
 	TableName := adminTable + Outfit
 	Data := []mod.Admin{}
 	engine := db.Table(TableName)
@@ -103,7 +103,7 @@ func (a *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status
 	return Data
 }
 
-func (a *AdminDal) Del(db *gorm.DB, ID string, Outfit string) error {
+func (o *AdminDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	var e error
@@ -121,14 +121,14 @@ func (a *AdminDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (a *AdminDal) Check(db *gorm.DB, Account, Outfit string) mod.Admin {
+func (o *AdminDal) Check(db *gorm.DB, Account, Outfit string) mod.Admin {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	db.Table(TableName).Where("Account = ?", Account).First(&Data)
 	return Data
 }
 
-func (a *AdminDal) Token(db *gorm.DB, Token, Outfit string) mod.Admin {
+func (o *AdminDal) Token(db *gorm.DB, Token, Outfit string) mod.Admin {
 	TableName := adminTable + Outfit
 	Data := mod.Admin{}
 	db.Table(TableName).Where("Token = ?", Token).First(&Data)

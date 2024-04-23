@@ -29,6 +29,12 @@ type Language struct {
 	TheSalesPlanDataDoesNotExist string
 	TypeError                    string
 	AfterSalesPersonnelDoNot     string
+	TheProductDataDoesNotExist   string
+	IncorrectOrderNo             string
+	TheSalesManagerDoesNotExist  string
+	IncorrectOrderPrice          string
+	TheOrderDataDoesNotExist     string
+	TheOrderNumberIsDuplicated   string
 }
 
 func SysLang() Language {
@@ -64,6 +70,12 @@ func SysLang() Language {
 		language.TheSalesPlanDataDoesNotExist = "销售计划数据不存在"
 		language.TypeError = "类型错误"
 		language.AfterSalesPersonnelDoNot = "售后人员不存在"
+		language.TheProductDataDoesNotExist = "产品数据不存在"
+		language.IncorrectOrderNo = "订单编号错误"
+		language.TheSalesManagerDoesNotExist = "销售经理不存在"
+		language.IncorrectOrderPrice = "订单价格错误"
+		language.TheOrderDataDoesNotExist = "订单数据不存在"
+		language.TheOrderNumberIsDuplicated = "订单编号重复"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -93,6 +105,12 @@ func SysLang() Language {
 		language.TheSalesPlanDataDoesNotExist = "The sales plan data does not exist"
 		language.TypeError = "Type error"
 		language.AfterSalesPersonnelDoNot = "After-sales personnel do not exist"
+		language.TheProductDataDoesNotExist = "The product data does not exist"
+		language.IncorrectOrderNo = "Incorrect order no"
+		language.TheSalesManagerDoesNotExist = "The sales manager does not exist"
+		language.IncorrectOrderPrice = "Incorrect order price"
+		language.TheOrderDataDoesNotExist = "The order data does not exist"
+		language.TheOrderNumberIsDuplicated = "The order number is duplicated"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -122,6 +140,12 @@ func SysLang() Language {
 		language.TheSalesPlanDataDoesNotExist = ""
 		language.TypeError = ""
 		language.AfterSalesPersonnelDoNot = ""
+		language.TheProductDataDoesNotExist = ""
+		language.IncorrectOrderNo = ""
+		language.TheSalesManagerDoesNotExist = ""
+		language.IncorrectOrderPrice = ""
+		language.TheOrderDataDoesNotExist = ""
+		language.TheOrderNumberIsDuplicated = ""
 	}
 	return language
 }

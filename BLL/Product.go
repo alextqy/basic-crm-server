@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func GroupNew(Token, GroupName, Remark string, ID int64) mod.Result {
+func ProductNew(Token, ProductName string, Price, Cost float32, Remark string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -21,19 +21,21 @@ func GroupNew(Token, GroupName, Remark string, ID int64) mod.Result {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
-	} else if GroupName == "" {
+	} else if ProductName == "" {
 		result.Message = lang.IncorrectName
 	} else {
 		db := dal.ConnDB()
 
 		if ID > 0 {
-			checkData := managerGroupDal.Data(db, ID, "")
+			checkData := productDal.Data(db, ID, "")
 			if checkData.ID == 0 {
-				result.Message = lang.GroupDataDoesNotExist
+				result.Message = lang.TheProductDataDoesNotExist
 			} else {
-				checkData.GroupName = GroupName
+				checkData.ProductName = ProductName
+				checkData.Price = Price
+				checkData.Cost = Cost
 				checkData.Remark = Remark
-				e := managerGroupDal.Update(db, checkData, "")
+				e := productDal.Update(db, checkData, "")
 				if e != nil {
 					result.Message = e.Error()
 				} else {
@@ -43,12 +45,15 @@ func GroupNew(Token, GroupName, Remark string, ID int64) mod.Result {
 				}
 			}
 		} else {
-			data := mod.ManagerGroup{
-				GroupName:    GroupName,
+			data := mod.Product{
+				ProductName:  ProductName,
+				Price:        Price,
+				Cost:         Cost,
+				Status:       1,
 				Remark:       Remark,
 				CreationTime: sysHelper.TimeStamp(),
 			}
-			_, e := managerGroupDal.Add(db, data, "")
+			_, e := productDal.Add(db, data, "")
 			if e != nil {
 				result.Message = e.Error()
 			} else {
@@ -61,7 +66,7 @@ func GroupNew(Token, GroupName, Remark string, ID int64) mod.Result {
 	return result
 }
 
-func GroupList(Token string, Page, PageSize, Order int, Stext string) mod.ResultList {
+func ProductList(Token string, Page, PageSize, Order int, Stext string, Status int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -82,12 +87,12 @@ func GroupList(Token string, Page, PageSize, Order int, Stext string) mod.Result
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = managerGroupDal.List(db, Page, PageSize, Order, Stext, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = productDal.List(db, Page, PageSize, Order, Stext, Status, "")
 	}
 	return result
 }
 
-func GroupAll(Token string, Order int, Stext string) mod.Result {
+func ProductAll(Token string, Order int, Stext string, Status int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -105,12 +110,12 @@ func GroupAll(Token string, Order int, Stext string) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = managerGroupDal.All(db, Order, Stext, "")
+		result.Data = productDal.All(db, Order, Stext, Status, "")
 	}
 	return result
 }
 
-func GroupData(Token string, ID int64) mod.Result {
+func ProductData(Token string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -128,12 +133,12 @@ func GroupData(Token string, ID int64) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = managerGroupDal.Data(db, ID, "")
+		result.Data = productDal.Data(db, ID, "")
 	}
 	return result
 }
 
-func GroupDel(Token string, ID string) mod.Result {
+func ProductDel(Token, ID string) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -151,11 +156,11 @@ func GroupDel(Token string, ID string) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		_, _, ID64 := sysHelper.StringToInt64(ID)
-		checkData := managerGroupDal.Data(db, ID64, "")
+		checkData := productDal.Data(db, ID64, "")
 		if checkData.ID == 0 {
-			result.Message = lang.GroupDataDoesNotExist
+			result.Message = lang.TheProductDataDoesNotExist
 		} else {
-			e := managerGroupDal.Del(db, ID, "")
+			e := productDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()
 			} else {

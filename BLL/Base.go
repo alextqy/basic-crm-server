@@ -22,6 +22,8 @@ var companyDal = dal.CompanyDal{}
 var customerDal = dal.CustomerDal{}
 var managerDal = dal.ManagerDal{}
 var managerGroupDal = dal.ManagerGroupDal{}
+var orderDal = dal.OrderDal{}
+var productDal = dal.ProductDal{}
 var salesPlanDal = dal.SalesPlanDal{}
 var salesTargetDal = dal.SalesTargetDal{}
 

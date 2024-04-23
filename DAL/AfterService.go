@@ -10,42 +10,42 @@ import (
 
 type AfterServiceDal struct{}
 
-func (a *AfterServiceDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, Outfit string) int64 {
+func (o *AfterServiceDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, Outfit string) int64 {
 	var Count int64
 	TableName := AfterServiceTable + Outfit
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
-	}
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
 	}
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
 	}
+	if Stext != "" {
+		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
+	}
 	engine.Count(&Count)
 	return Count
 }
 
-func (a *AfterServiceDal) Add(db *gorm.DB, Data mod.AfterService, Outfit string) (int64, error) {
+func (o *AfterServiceDal) Add(db *gorm.DB, Data mod.AfterService, Outfit string) (int64, error) {
 	TableName := AfterServiceTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (a *AfterServiceDal) Update(db *gorm.DB, Data mod.AfterService, Outfit string) error {
+func (o *AfterServiceDal) Update(db *gorm.DB, Data mod.AfterService, Outfit string) error {
 	TableName := AfterServiceTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (a *AfterServiceDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AfterService {
+func (o *AfterServiceDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AfterService {
 	TableName := AfterServiceTable + Outfit
 	Data := mod.AfterService{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (a *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.AfterService) {
+func (o *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.AfterService) {
 	TableName := AfterServiceTable + Outfit
 	Data := []mod.AfterService{}
 	engine := db.Table(TableName)
@@ -72,7 +72,7 @@ func (a *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, S
 	}
 	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count := a.Count(db, Stext, Level, Status, Outfit)
+	Count := o.Count(db, Stext, Level, Status, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -80,7 +80,7 @@ func (a *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, S
 	return Page, PageSize, TotalPage, Data
 }
 
-func (a *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.AfterService {
+func (o *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.AfterService {
 	TableName := AfterServiceTable + Outfit
 	Data := []mod.AfterService{}
 	engine := db.Table(TableName)
@@ -103,7 +103,7 @@ func (a *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level int64,
 	return Data
 }
 
-func (a *AfterServiceDal) Del(db *gorm.DB, ID string, Outfit string) error {
+func (o *AfterServiceDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := AfterServiceTable + Outfit
 	Data := mod.AfterService{}
 	var e error
@@ -121,14 +121,14 @@ func (a *AfterServiceDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (a *AfterServiceDal) Check(db *gorm.DB, Account, Outfit string) mod.AfterService {
+func (o *AfterServiceDal) Check(db *gorm.DB, Account, Outfit string) mod.AfterService {
 	TableName := AfterServiceTable + Outfit
 	Data := mod.AfterService{}
 	db.Table(TableName).Where("Account = ?", Account).First(&Data)
 	return Data
 }
 
-func (a *AfterServiceDal) Token(db *gorm.DB, Token, Outfit string) mod.AfterService {
+func (o *AfterServiceDal) Token(db *gorm.DB, Token, Outfit string) mod.AfterService {
 	TableName := AfterServiceTable + Outfit
 	Data := mod.AfterService{}
 	db.Table(TableName).Where("Token = ?", Token).First(&Data)

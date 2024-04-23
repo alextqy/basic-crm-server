@@ -127,6 +127,20 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/group/data", httpHelper.Middleware(api.GroupData))
 	mux.HandleFunc("/group/del", httpHelper.Middleware(api.GroupDel))
 
+	// Orders ===================================================================
+	mux.HandleFunc("/order/new", httpHelper.Middleware(api.OrderNew))
+	mux.HandleFunc("/order/list", httpHelper.Middleware(api.OrderList))
+	mux.HandleFunc("/order/all", httpHelper.Middleware(api.OrderAll))
+	mux.HandleFunc("/order/data", httpHelper.Middleware(api.OrderData))
+	mux.HandleFunc("/order/del", httpHelper.Middleware(api.OrderDel))
+
+	// Products ===================================================================
+	mux.HandleFunc("/product/new", httpHelper.Middleware(api.ProductNew))
+	mux.HandleFunc("/product/list", httpHelper.Middleware(api.ProductList))
+	mux.HandleFunc("/product/all", httpHelper.Middleware(api.ProductAll))
+	mux.HandleFunc("/product/data", httpHelper.Middleware(api.ProductData))
+	mux.HandleFunc("/product/del", httpHelper.Middleware(api.ProductDel))
+
 	// SalesPlan ===================================================================
 	mux.HandleFunc("/sales/plan/new", httpHelper.Middleware(api.SalesPlanNew))
 	mux.HandleFunc("/sales/plan/list", httpHelper.Middleware(api.SalesPlanList))

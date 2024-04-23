@@ -10,7 +10,7 @@ import (
 
 type CompanyDal struct{}
 
-func (c *CompanyDal) Count(db *gorm.DB, Stext string, Outfit string) int64 {
+func (o *CompanyDal) Count(db *gorm.DB, Stext string, Outfit string) int64 {
 	var Count int64
 	TableName := companyTable + Outfit
 	engine := db.Table(TableName)
@@ -21,25 +21,25 @@ func (c *CompanyDal) Count(db *gorm.DB, Stext string, Outfit string) int64 {
 	return Count
 }
 
-func (c *CompanyDal) Add(db *gorm.DB, Data mod.Company, Outfit string) (int64, error) {
+func (o *CompanyDal) Add(db *gorm.DB, Data mod.Company, Outfit string) (int64, error) {
 	TableName := companyTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (c *CompanyDal) Update(db *gorm.DB, Data mod.Company, Outfit string) error {
+func (o *CompanyDal) Update(db *gorm.DB, Data mod.Company, Outfit string) error {
 	TableName := companyTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (c *CompanyDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Company {
+func (o *CompanyDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Company {
 	TableName := companyTable + Outfit
 	Data := mod.Company{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (c *CompanyDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.Company) {
+func (o *CompanyDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.Company) {
 	TableName := companyTable + Outfit
 	Data := []mod.Company{}
 	engine := db.Table(TableName)
@@ -60,7 +60,7 @@ func (c *CompanyDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	}
 	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count := c.Count(db, Stext, TableName)
+	Count := o.Count(db, Stext, TableName)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -68,7 +68,7 @@ func (c *CompanyDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	return Page, PageSize, TotalPage, Data
 }
 
-func (c *CompanyDal) All(db *gorm.DB, Order int, Stext string, Outfit string) []mod.Company {
+func (o *CompanyDal) All(db *gorm.DB, Order int, Stext string, Outfit string) []mod.Company {
 	TableName := companyTable + Outfit
 	Data := []mod.Company{}
 	engine := db.Table(TableName)
@@ -85,7 +85,7 @@ func (c *CompanyDal) All(db *gorm.DB, Order int, Stext string, Outfit string) []
 	return Data
 }
 
-func (c *CompanyDal) Del(db *gorm.DB, ID string, Outfit string) error {
+func (o *CompanyDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := companyTable + Outfit
 	Data := mod.Company{}
 	var e error
@@ -103,7 +103,7 @@ func (c *CompanyDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (c *CompanyDal) Check(db *gorm.DB, CompanyName, Outfit string) mod.Company {
+func (o *CompanyDal) Check(db *gorm.DB, CompanyName, Outfit string) mod.Company {
 	TableName := companyTable + Outfit
 	Data := mod.Company{}
 	db.Table(TableName).Where("CompanyName = ?", CompanyName).First(&Data)

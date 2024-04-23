@@ -10,13 +10,10 @@ import (
 
 type ManagerDal struct{}
 
-func (m *ManagerDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, GroupID int64, Outfit string) int64 {
+func (o *ManagerDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, GroupID int64, Outfit string) int64 {
 	var Count int64
 	TableName := managerTable + Outfit
 	engine := db.Table(TableName)
-	if Stext != "" {
-		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
-	}
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
 	}
@@ -26,29 +23,32 @@ func (m *ManagerDal) Count(db *gorm.DB, Stext string, Level int64, Status int64,
 	if GroupID > 0 {
 		engine = engine.Where("GroupID = ?", GroupID)
 	}
+	if Stext != "" {
+		engine = engine.Where("Account LIKE ?", "%"+Stext+"%").Or("Name LIKE ?", "%"+Stext+"%")
+	}
 	engine.Count(&Count)
 	return Count
 }
 
-func (m *ManagerDal) Add(db *gorm.DB, Data mod.Manager, Outfit string) (int64, error) {
+func (o *ManagerDal) Add(db *gorm.DB, Data mod.Manager, Outfit string) (int64, error) {
 	TableName := managerTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (m *ManagerDal) Update(db *gorm.DB, Data mod.Manager, Outfit string) error {
+func (o *ManagerDal) Update(db *gorm.DB, Data mod.Manager, Outfit string) error {
 	TableName := managerTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (m *ManagerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Manager {
+func (o *ManagerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Manager {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (m *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.Manager) {
+func (o *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.Manager) {
 	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName)
@@ -78,7 +78,7 @@ func (m *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	}
 	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count := m.Count(db, Stext, Level, Status, GroupID, Outfit)
+	Count := o.Count(db, Stext, Level, Status, GroupID, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -86,7 +86,7 @@ func (m *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	return Page, PageSize, TotalPage, Data
 }
 
-func (m *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.Manager {
+func (o *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.Manager {
 	TableName := managerTable + Outfit
 	Data := []mod.Manager{}
 	engine := db.Table(TableName)
@@ -112,7 +112,7 @@ func (m *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Stat
 	return Data
 }
 
-func (m *ManagerDal) Del(db *gorm.DB, ID string, Outfit string) error {
+func (o *ManagerDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	var e error
@@ -130,14 +130,14 @@ func (m *ManagerDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (a *ManagerDal) Check(db *gorm.DB, Account, Outfit string) mod.Manager {
+func (o *ManagerDal) Check(db *gorm.DB, Account, Outfit string) mod.Manager {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	db.Table(TableName).Where("Account = ?", Account).First(&Data)
 	return Data
 }
 
-func (a *ManagerDal) Token(db *gorm.DB, Token, Outfit string) mod.Manager {
+func (o *ManagerDal) Token(db *gorm.DB, Token, Outfit string) mod.Manager {
 	TableName := managerTable + Outfit
 	Data := mod.Manager{}
 	db.Table(TableName).Where("Token = ?", Token).First(&Data)
