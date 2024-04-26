@@ -236,7 +236,7 @@ func ManagerStatus(Token string, ID int64) mod.Result {
 		db := dal.ConnDB()
 		checkData := managerDal.Data(db, ID, "")
 		if checkData.ID == 0 {
-			result.Message = lang.NoData
+			result.Message = lang.TheSalesManagerDoesNotExist
 		} else {
 			if checkData.Status == 1 {
 				checkData.Status = 2

@@ -44,3 +44,9 @@ func AnnouncementDel(w http.ResponseWriter, r *http.Request) {
 	ID := httpHelper.Post(r, "ID")
 	httpHelper.HttpWrite(w, bll.AnnouncementDel(Token, ID))
 }
+
+func AnnouncementDisplay(w http.ResponseWriter, r *http.Request) {
+	Token := httpHelper.Post(r, "Token")
+	ID := httpHelper.PostInt64(r, "ID")
+	httpHelper.HttpWrite(w, bll.AnnouncementDisplay(Token, ID))
+}

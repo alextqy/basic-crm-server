@@ -230,7 +230,7 @@ func AfterServiceStatus(Token string, ID int64) mod.Result {
 		db := dal.ConnDB()
 		checkData := afterServiceDal.Data(db, ID, "")
 		if checkData.ID == 0 {
-			result.Message = lang.NoData
+			result.Message = lang.AfterSalesPersonnelDoNot
 		} else {
 			if checkData.Status == 1 {
 				checkData.Status = 2

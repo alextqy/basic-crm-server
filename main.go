@@ -94,6 +94,14 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/after/service/sign/out", httpHelper.Middleware(api.AfterServiceSignOut))
 	mux.HandleFunc("/after/service/update", httpHelper.Middleware(api.AfterServiceUpdate))
 
+	// Announcement ===================================================================
+	mux.HandleFunc("/announcement/new", httpHelper.Middleware(api.AnnouncementNew))
+	mux.HandleFunc("/announcement/list", httpHelper.Middleware(api.AnnouncementList))
+	mux.HandleFunc("/announcement/all", httpHelper.Middleware(api.AnnouncementAll))
+	mux.HandleFunc("/announcement/data", httpHelper.Middleware(api.AnnouncementData))
+	mux.HandleFunc("/announcement/del", httpHelper.Middleware(api.AnnouncementDel))
+	mux.HandleFunc("/announcement/display", httpHelper.Middleware(api.AnnouncementDisplay))
+
 	// company ===================================================================
 	mux.HandleFunc("/company/new", httpHelper.Middleware(api.CompanyNew))
 	mux.HandleFunc("/company/list", httpHelper.Middleware(api.CompanyList))
@@ -154,11 +162,4 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/sales/target/all", httpHelper.Middleware(api.SalesTargetAll))
 	mux.HandleFunc("/sales/target/data", httpHelper.Middleware(api.SalesTargetData))
 	mux.HandleFunc("/sales/target/del", httpHelper.Middleware(api.SalesTargetDel))
-
-	// Announcement ===================================================================
-	mux.HandleFunc("/announcement/new", httpHelper.Middleware(api.AnnouncementNew))
-	mux.HandleFunc("/announcement/list", httpHelper.Middleware(api.AnnouncementList))
-	mux.HandleFunc("/announcement/all", httpHelper.Middleware(api.AnnouncementAll))
-	mux.HandleFunc("/announcement/data", httpHelper.Middleware(api.AnnouncementData))
-	mux.HandleFunc("/announcement/del", httpHelper.Middleware(api.AnnouncementDel))
 }

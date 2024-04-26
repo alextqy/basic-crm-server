@@ -170,3 +170,43 @@ func AnnouncementDel(Token, ID string) mod.Result {
 	}
 	return result
 }
+
+func AnnouncementDisplay(Token string, ID int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if CheckPerm(t) > 1 {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		db := dal.ConnDB()
+		checkData := announcementDal.Data(db, ID, "")
+		if checkData.ID == 0 {
+			result.Message = lang.AnnouncementDataDoesNotExist
+		} else {
+			if checkData.Display == 1 {
+				checkData.Display = 2
+			} else {
+				checkData.Display = 1
+			}
+
+			e := announcementDal.Update(db, checkData, "")
+			if e != nil {
+				result.Message = e.Error()
+			} else {
+				result.State = true
+				jData, _ := json.Marshal(checkData)
+				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
+			}
+		}
+	}
+	return result
+}
