@@ -43,7 +43,7 @@ func GroupNew(Token, GroupName, Remark string, ID int64) mod.Result {
 				}
 			}
 		} else {
-			data := mod.ManagerGroup{
+			data := mod.ManagerGroupMod{
 				GroupName:    GroupName,
 				Remark:       Remark,
 				CreationTime: sysHelper.TimeStamp(),

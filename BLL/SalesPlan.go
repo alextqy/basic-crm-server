@@ -52,7 +52,7 @@ func SalesPlanNew(Token, PlanName string, TargetID int64, PlanContent string, Bu
 			} else if CheckPerm(t) == 2 && checkData.ManagerID != CheckID(t) {
 				result.Message = lang.PermissionDenied
 			} else {
-				data := mod.SalesPlan{
+				data := mod.SalesPlanMod{
 					PlanName:     PlanName,
 					TargetID:     TargetID,
 					PlanContent:  PlanContent,
@@ -149,7 +149,7 @@ func SalesPlanData(Token string, ID int64) mod.Result {
 		db := dal.ConnDB()
 		data := salesPlanDal.Data(db, ID, "")
 		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
-			result.Data = mod.SalesPlan{}
+			result.Data = mod.SalesPlanMod{}
 		} else {
 			result.Data = data
 		}

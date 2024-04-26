@@ -24,27 +24,27 @@ func (o *ProductDal) Count(db *gorm.DB, Stext string, Status int64, Outfit strin
 	return Count
 }
 
-func (o *ProductDal) Add(db *gorm.DB, Data mod.Product, Outfit string) (int64, error) {
+func (o *ProductDal) Add(db *gorm.DB, Data mod.ProductMod, Outfit string) (int64, error) {
 	TableName := productTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (o *ProductDal) Update(db *gorm.DB, Data mod.Product, Outfit string) error {
+func (o *ProductDal) Update(db *gorm.DB, Data mod.ProductMod, Outfit string) error {
 	TableName := productTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (o *ProductDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Product {
+func (o *ProductDal) Data(db *gorm.DB, ID int64, Outfit string) mod.ProductMod {
 	TableName := productTable + Outfit
-	Data := mod.Product{}
+	Data := mod.ProductMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (o *ProductDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Status int64, Outfit string) (int, int, int, []mod.Product) {
+func (o *ProductDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Status int64, Outfit string) (int, int, int, []mod.ProductMod) {
 	TableName := productTable + Outfit
-	Data := []mod.Product{}
+	Data := []mod.ProductMod{}
 	engine := db.Table(TableName)
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
@@ -74,9 +74,9 @@ func (o *ProductDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *ProductDal) All(db *gorm.DB, Order int, Stext string, Status int64, Outfit string) []mod.Product {
+func (o *ProductDal) All(db *gorm.DB, Order int, Stext string, Status int64, Outfit string) []mod.ProductMod {
 	TableName := productTable + Outfit
-	Data := []mod.Product{}
+	Data := []mod.ProductMod{}
 	engine := db.Table(TableName)
 	if Status > 0 {
 		engine = engine.Where("Status = ?", Status)
@@ -96,7 +96,7 @@ func (o *ProductDal) All(db *gorm.DB, Order int, Stext string, Status int64, Out
 
 func (o *ProductDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := productTable + Outfit
-	Data := mod.Product{}
+	Data := mod.ProductMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

@@ -68,7 +68,7 @@ func AdminSignOut(Token string) mod.Result {
 		} else {
 			db := dal.ConnDB()
 			if r.Message == "admin" {
-				userData := r.Data.(mod.Admin)
+				userData := r.Data.(mod.AdminMod)
 				if userData.ID == 0 {
 					result.Message = lang.TheAccountDoesNotExist
 				} else {
@@ -151,7 +151,7 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 			} else if len(Password) < 6 {
 				result.Message = lang.ThePasswordIsTooShort
 			} else {
-				data := mod.Admin{
+				data := mod.AdminMod{
 					Account:      Account,
 					Password:     PwdMD5(Password),
 					Name:         Name,
@@ -201,8 +201,8 @@ func AdminList(Token string, Page, PageSize, Order int, Stext string, Level, Sta
 		db := dal.ConnDB()
 		result.State = true
 		result.Page, result.PageSize, result.TotalPage, result.Data = adminDal.List(db, Page, PageSize, Order, Stext, Level, Status, "")
-		for i := 0; i < len(result.Data.([]mod.Admin)); i++ {
-			result.Data.([]mod.Admin)[i].Password = ""
+		for i := 0; i < len(result.Data.([]mod.AdminMod)); i++ {
+			result.Data.([]mod.AdminMod)[i].Password = ""
 		}
 	}
 	return result
@@ -227,8 +227,8 @@ func AdminAll(Token string, Order int, Stext string, Level, Status int64) mod.Re
 		db := dal.ConnDB()
 		result.State = true
 		result.Data = adminDal.All(db, Order, Stext, Level, Status, "")
-		for i := 0; i < len(result.Data.([]mod.Admin)); i++ {
-			result.Data.([]mod.Admin)[i].Password = ""
+		for i := 0; i < len(result.Data.([]mod.AdminMod)); i++ {
+			result.Data.([]mod.AdminMod)[i].Password = ""
 		}
 	}
 	return result

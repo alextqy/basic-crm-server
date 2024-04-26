@@ -54,7 +54,7 @@ func SalesTargetNew(Token, TargetName string, ExpirationDate, CustomerID int64, 
 			} else if CheckPerm(t) == 2 && checkData.ManagerID != CheckID(t) {
 				result.Message = lang.PermissionDenied
 			} else {
-				data := mod.SalesTarget{
+				data := mod.SalesTargetMod{
 					TargetName:      TargetName,
 					ExpirationDate:  ExpirationDate,
 					CreationTime:    sysHelper.TimeStamp(),
@@ -151,7 +151,7 @@ func SalesTargetData(Token string, ID int64) mod.Result {
 		db := dal.ConnDB()
 		data := salesTargetDal.Data(db, ID, "")
 		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
-			result.Data = mod.Order{}
+			result.Data = mod.OrderMod{}
 		} else {
 			result.Data = data
 		}

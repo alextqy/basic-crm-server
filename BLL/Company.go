@@ -49,7 +49,7 @@ func CompanyNew(Token, CompanyName, Remark string, ID int64) mod.Result {
 				}
 			}
 		} else {
-			data := mod.Company{
+			data := mod.CompanyMod{
 				CompanyName:  CompanyName,
 				CreationTime: sysHelper.TimeStamp(),
 				Remark:       Remark,

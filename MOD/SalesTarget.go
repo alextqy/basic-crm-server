@@ -1,6 +1,6 @@
 package mod
 
-type SalesTarget struct {
+type SalesTargetMod struct {
 	ID              int64   `gorm:"column:ID;primarykey"`
 	TargetName      string  `gorm:"column:TargetName"`      // 名称
 	ExpirationDate  int64   `gorm:"column:ExpirationDate"`  // 截止日期

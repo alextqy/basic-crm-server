@@ -154,4 +154,6 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/sales/target/all", httpHelper.Middleware(api.SalesTargetAll))
 	mux.HandleFunc("/sales/target/data", httpHelper.Middleware(api.SalesTargetData))
 	mux.HandleFunc("/sales/target/del", httpHelper.Middleware(api.SalesTargetDel))
+
+	// Announcement ===================================================================
 }

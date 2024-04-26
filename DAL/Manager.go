@@ -30,27 +30,27 @@ func (o *ManagerDal) Count(db *gorm.DB, Stext string, Level int64, Status int64,
 	return Count
 }
 
-func (o *ManagerDal) Add(db *gorm.DB, Data mod.Manager, Outfit string) (int64, error) {
+func (o *ManagerDal) Add(db *gorm.DB, Data mod.ManagerMod, Outfit string) (int64, error) {
 	TableName := managerTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (o *ManagerDal) Update(db *gorm.DB, Data mod.Manager, Outfit string) error {
+func (o *ManagerDal) Update(db *gorm.DB, Data mod.ManagerMod, Outfit string) error {
 	TableName := managerTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (o *ManagerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Manager {
+func (o *ManagerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.ManagerMod {
 	TableName := managerTable + Outfit
-	Data := mod.Manager{}
+	Data := mod.ManagerMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (o *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.Manager) {
+func (o *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.ManagerMod) {
 	TableName := managerTable + Outfit
-	Data := []mod.Manager{}
+	Data := []mod.ManagerMod{}
 	engine := db.Table(TableName)
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
@@ -86,9 +86,9 @@ func (o *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.Manager {
+func (o *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.ManagerMod {
 	TableName := managerTable + Outfit
-	Data := []mod.Manager{}
+	Data := []mod.ManagerMod{}
 	engine := db.Table(TableName)
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
@@ -114,7 +114,7 @@ func (o *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Stat
 
 func (o *ManagerDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := managerTable + Outfit
-	Data := mod.Manager{}
+	Data := mod.ManagerMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -130,16 +130,16 @@ func (o *ManagerDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (o *ManagerDal) Check(db *gorm.DB, Account, Outfit string) mod.Manager {
+func (o *ManagerDal) Check(db *gorm.DB, Account, Outfit string) mod.ManagerMod {
 	TableName := managerTable + Outfit
-	Data := mod.Manager{}
+	Data := mod.ManagerMod{}
 	db.Table(TableName).Where("Account = ?", Account).First(&Data)
 	return Data
 }
 
-func (o *ManagerDal) Token(db *gorm.DB, Token, Outfit string) mod.Manager {
+func (o *ManagerDal) Token(db *gorm.DB, Token, Outfit string) mod.ManagerMod {
 	TableName := managerTable + Outfit
-	Data := mod.Manager{}
+	Data := mod.ManagerMod{}
 	db.Table(TableName).Where("Token = ?", Token).First(&Data)
 	return Data
 }

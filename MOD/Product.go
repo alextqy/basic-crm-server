@@ -1,6 +1,6 @@
 package mod
 
-type Product struct {
+type ProductMod struct {
 	ID           int64   `gorm:"column:ID;primarykey"`
 	ProductName  string  `gorm:"column:ProductName"`  // 名称
 	Price        float32 `gorm:"column:Price"`        // 价格

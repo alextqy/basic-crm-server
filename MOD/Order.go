@@ -1,6 +1,6 @@
 package mod
 
-type Order struct {
+type OrderMod struct {
 	ID           int64   `gorm:"column:ID;primarykey"`
 	OrderNo      string  `gorm:"column:OrderNo"`      // 订单号
 	ProductID    int64   `gorm:"column:ProductID"`    // 产品ID

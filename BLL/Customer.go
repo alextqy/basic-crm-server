@@ -49,7 +49,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 
 		var ManagerID int64
 		if CheckPerm(t) == 2 {
-			ManagerID = customerDal.Data(db, t.Data.(mod.Manager).ID, "").ID
+			ManagerID = customerDal.Data(db, t.Data.(mod.ManagerMod).ID, "").ID
 		} else {
 			ManagerID = 0
 		}
@@ -78,7 +78,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 				}
 			}
 		} else {
-			data := mod.Customer{
+			data := mod.CustomerMod{
 				Name:           Name,
 				Birthday:       Birthday,
 				Gender:         Gender,
@@ -178,7 +178,7 @@ func CustomerData(Token string, ID int64) mod.Result {
 		db := dal.ConnDB()
 		data := customerDal.Data(db, ID, "")
 		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
-			result.Data = mod.Customer{}
+			result.Data = mod.CustomerMod{}
 		} else {
 			result.Data = data
 		}

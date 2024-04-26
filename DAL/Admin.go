@@ -27,27 +27,27 @@ func (o *AdminDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, O
 	return Count
 }
 
-func (o *AdminDal) Add(db *gorm.DB, Data mod.Admin, Outfit string) (int64, error) {
+func (o *AdminDal) Add(db *gorm.DB, Data mod.AdminMod, Outfit string) (int64, error) {
 	TableName := adminTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (o *AdminDal) Update(db *gorm.DB, Data mod.Admin, Outfit string) error {
+func (o *AdminDal) Update(db *gorm.DB, Data mod.AdminMod, Outfit string) error {
 	TableName := adminTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (o *AdminDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Admin {
+func (o *AdminDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AdminMod {
 	TableName := adminTable + Outfit
-	Data := mod.Admin{}
+	Data := mod.AdminMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (o *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.Admin) {
+func (o *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.AdminMod) {
 	TableName := adminTable + Outfit
-	Data := []mod.Admin{}
+	Data := []mod.AdminMod{}
 	engine := db.Table(TableName)
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
@@ -80,9 +80,9 @@ func (o *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext st
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.Admin {
+func (o *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.AdminMod {
 	TableName := adminTable + Outfit
-	Data := []mod.Admin{}
+	Data := []mod.AdminMod{}
 	engine := db.Table(TableName)
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
@@ -105,7 +105,7 @@ func (o *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status
 
 func (o *AdminDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := adminTable + Outfit
-	Data := mod.Admin{}
+	Data := mod.AdminMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -121,16 +121,16 @@ func (o *AdminDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (o *AdminDal) Check(db *gorm.DB, Account, Outfit string) mod.Admin {
+func (o *AdminDal) Check(db *gorm.DB, Account, Outfit string) mod.AdminMod {
 	TableName := adminTable + Outfit
-	Data := mod.Admin{}
+	Data := mod.AdminMod{}
 	db.Table(TableName).Where("Account = ?", Account).First(&Data)
 	return Data
 }
 
-func (o *AdminDal) Token(db *gorm.DB, Token, Outfit string) mod.Admin {
+func (o *AdminDal) Token(db *gorm.DB, Token, Outfit string) mod.AdminMod {
 	TableName := adminTable + Outfit
-	Data := mod.Admin{}
+	Data := mod.AdminMod{}
 	db.Table(TableName).Where("Token = ?", Token).First(&Data)
 	return Data
 }

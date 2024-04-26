@@ -30,27 +30,27 @@ func (o *OrderDal) Count(db *gorm.DB, Stext string, ProductID, ManagerID, Status
 	return Count
 }
 
-func (o *OrderDal) Add(db *gorm.DB, Data mod.Order, Outfit string) (int64, error) {
+func (o *OrderDal) Add(db *gorm.DB, Data mod.OrderMod, Outfit string) (int64, error) {
 	TableName := orderTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (o *OrderDal) Update(db *gorm.DB, Data mod.Order, Outfit string) error {
+func (o *OrderDal) Update(db *gorm.DB, Data mod.OrderMod, Outfit string) error {
 	TableName := orderTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (o *OrderDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Order {
+func (o *OrderDal) Data(db *gorm.DB, ID int64, Outfit string) mod.OrderMod {
 	TableName := orderTable + Outfit
-	Data := mod.Order{}
+	Data := mod.OrderMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (o *OrderDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, ProductID, ManagerID, Status int64, Outfit string) (int, int, int, []mod.Order) {
+func (o *OrderDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, ProductID, ManagerID, Status int64, Outfit string) (int, int, int, []mod.OrderMod) {
 	TableName := orderTable + Outfit
-	Data := []mod.Order{}
+	Data := []mod.OrderMod{}
 	engine := db.Table(TableName)
 	if ProductID > 0 {
 		engine = engine.Where("ProductID = ?", ProductID)
@@ -86,9 +86,9 @@ func (o *OrderDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext st
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *OrderDal) All(db *gorm.DB, Order int, Stext string, ProductID, ManagerID, Status int64, Outfit string) []mod.Order {
+func (o *OrderDal) All(db *gorm.DB, Order int, Stext string, ProductID, ManagerID, Status int64, Outfit string) []mod.OrderMod {
 	TableName := orderTable + Outfit
-	Data := []mod.Order{}
+	Data := []mod.OrderMod{}
 	engine := db.Table(TableName)
 	if ProductID > 0 {
 		engine = engine.Where("ProductID = ?", ProductID)
@@ -114,7 +114,7 @@ func (o *OrderDal) All(db *gorm.DB, Order int, Stext string, ProductID, ManagerI
 
 func (o *OrderDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := orderTable + Outfit
-	Data := mod.Order{}
+	Data := mod.OrderMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -130,9 +130,9 @@ func (o *OrderDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (o *OrderDal) Check(db *gorm.DB, OrderNo, Outfit string) mod.Order {
+func (o *OrderDal) Check(db *gorm.DB, OrderNo, Outfit string) mod.OrderMod {
 	TableName := orderTable + Outfit
-	Data := mod.Order{}
+	Data := mod.OrderMod{}
 	db.Table(TableName).Where("OrderNo = ?", OrderNo).First(&Data)
 	return Data
 }

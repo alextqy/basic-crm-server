@@ -44,11 +44,11 @@ func CheckPerm(t mod.Result) int {
 func CheckID(t mod.Result) int64 {
 	var ID int64
 	if t.Message == "admin" {
-		ID = t.Data.(mod.Admin).ID
+		ID = t.Data.(mod.AdminMod).ID
 	} else if t.Message == "manager" {
-		ID = t.Data.(mod.Manager).ID
+		ID = t.Data.(mod.ManagerMod).ID
 	} else if t.Message == "afterService" {
-		ID = t.Data.(mod.AfterService).ID
+		ID = t.Data.(mod.AfterServiceMod).ID
 	} else {
 		ID = 0
 	}
@@ -58,11 +58,11 @@ func CheckID(t mod.Result) int64 {
 func CheckAccount(t mod.Result) string {
 	account := ""
 	if t.Message == "admin" {
-		account = t.Data.(mod.Admin).Account
+		account = t.Data.(mod.AdminMod).Account
 	} else if t.Message == "manager" {
-		account = t.Data.(mod.Manager).Account
+		account = t.Data.(mod.ManagerMod).Account
 	} else if t.Message == "afterService" {
-		account = t.Data.(mod.AfterService).Account
+		account = t.Data.(mod.AfterServiceMod).Account
 	} else {
 		account = ""
 	}

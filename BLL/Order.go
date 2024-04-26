@@ -66,7 +66,7 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 			if checkData.ID > 0 {
 				result.Message = lang.TheOrderNumberIsDuplicated
 			} else {
-				data := mod.Order{
+				data := mod.OrderMod{
 					OrderNo:      OrderNo,
 					ProductID:    ProductID,
 					ManagerID:    ManagerID,
@@ -165,7 +165,7 @@ func OrderData(Token string, ID int64) mod.Result {
 		db := dal.ConnDB()
 		data := orderDal.Data(db, ID, "")
 		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
-			result.Data = mod.Order{}
+			result.Data = mod.OrderMod{}
 		} else {
 			result.Data = data
 		}

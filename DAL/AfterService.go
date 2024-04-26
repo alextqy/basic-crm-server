@@ -27,27 +27,27 @@ func (o *AfterServiceDal) Count(db *gorm.DB, Stext string, Level int64, Status i
 	return Count
 }
 
-func (o *AfterServiceDal) Add(db *gorm.DB, Data mod.AfterService, Outfit string) (int64, error) {
+func (o *AfterServiceDal) Add(db *gorm.DB, Data mod.AfterServiceMod, Outfit string) (int64, error) {
 	TableName := AfterServiceTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (o *AfterServiceDal) Update(db *gorm.DB, Data mod.AfterService, Outfit string) error {
+func (o *AfterServiceDal) Update(db *gorm.DB, Data mod.AfterServiceMod, Outfit string) error {
 	TableName := AfterServiceTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (o *AfterServiceDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AfterService {
+func (o *AfterServiceDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AfterServiceMod {
 	TableName := AfterServiceTable + Outfit
-	Data := mod.AfterService{}
+	Data := mod.AfterServiceMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (o *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.AfterService) {
+func (o *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.AfterServiceMod) {
 	TableName := AfterServiceTable + Outfit
-	Data := []mod.AfterService{}
+	Data := []mod.AfterServiceMod{}
 	engine := db.Table(TableName)
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
@@ -80,9 +80,9 @@ func (o *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, S
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.AfterService {
+func (o *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.AfterServiceMod {
 	TableName := AfterServiceTable + Outfit
-	Data := []mod.AfterService{}
+	Data := []mod.AfterServiceMod{}
 	engine := db.Table(TableName)
 	if Level > 0 {
 		engine = engine.Where("Level = ?", Level)
@@ -105,7 +105,7 @@ func (o *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level int64,
 
 func (o *AfterServiceDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := AfterServiceTable + Outfit
-	Data := mod.AfterService{}
+	Data := mod.AfterServiceMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")
@@ -121,16 +121,16 @@ func (o *AfterServiceDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	return e
 }
 
-func (o *AfterServiceDal) Check(db *gorm.DB, Account, Outfit string) mod.AfterService {
+func (o *AfterServiceDal) Check(db *gorm.DB, Account, Outfit string) mod.AfterServiceMod {
 	TableName := AfterServiceTable + Outfit
-	Data := mod.AfterService{}
+	Data := mod.AfterServiceMod{}
 	db.Table(TableName).Where("Account = ?", Account).First(&Data)
 	return Data
 }
 
-func (o *AfterServiceDal) Token(db *gorm.DB, Token, Outfit string) mod.AfterService {
+func (o *AfterServiceDal) Token(db *gorm.DB, Token, Outfit string) mod.AfterServiceMod {
 	TableName := AfterServiceTable + Outfit
-	Data := mod.AfterService{}
+	Data := mod.AfterServiceMod{}
 	db.Table(TableName).Where("Token = ?", Token).First(&Data)
 	return Data
 }

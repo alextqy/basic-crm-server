@@ -1,6 +1,6 @@
 package mod
 
-type Customer struct {
+type CustomerMod struct {
 	ID             int64  `gorm:"column:ID;primarykey"`
 	Name           string `gorm:"column:Name"`           // 名称
 	Birthday       int64  `gorm:"column:Birthday"`       // 出生日期

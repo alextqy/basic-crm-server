@@ -240,8 +240,8 @@ func (f *FileHelper) WriteLog(fileName, content, directory string) (bool, string
 	return true, ""
 }
 
-func (f *FileHelper) CheckConf() mod.Conf {
-	var conf mod.Conf
+func (f *FileHelper) CheckConf() mod.ConfMod {
+	var conf mod.ConfMod
 	if !f.FileExist("./Conf.json") {
 		log.Panic("The system configuration failed")
 		os.Exit(0)

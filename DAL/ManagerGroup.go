@@ -21,27 +21,27 @@ func (o *ManagerGroupDal) Count(db *gorm.DB, Stext string, Outfit string) int64 
 	return Count
 }
 
-func (o *ManagerGroupDal) Add(db *gorm.DB, Data mod.ManagerGroup, Outfit string) (int64, error) {
+func (o *ManagerGroupDal) Add(db *gorm.DB, Data mod.ManagerGroupMod, Outfit string) (int64, error) {
 	TableName := managerGroupTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (o *ManagerGroupDal) Update(db *gorm.DB, Data mod.ManagerGroup, Outfit string) error {
+func (o *ManagerGroupDal) Update(db *gorm.DB, Data mod.ManagerGroupMod, Outfit string) error {
 	TableName := managerGroupTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (o *ManagerGroupDal) Data(db *gorm.DB, ID int64, Outfit string) mod.ManagerGroup {
+func (o *ManagerGroupDal) Data(db *gorm.DB, ID int64, Outfit string) mod.ManagerGroupMod {
 	TableName := managerGroupTable + Outfit
-	Data := mod.ManagerGroup{}
+	Data := mod.ManagerGroupMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (o *ManagerGroupDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.ManagerGroup) {
+func (o *ManagerGroupDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.ManagerGroupMod) {
 	TableName := managerGroupTable + Outfit
-	Data := []mod.ManagerGroup{}
+	Data := []mod.ManagerGroupMod{}
 	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.Where("GroupName LIKE ?", "%"+Stext+"%")
@@ -68,9 +68,9 @@ func (o *ManagerGroupDal) List(db *gorm.DB, Page int, PageSize int, Order int, S
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *ManagerGroupDal) All(db *gorm.DB, Order int, Stext string, Outfit string) []mod.ManagerGroup {
+func (o *ManagerGroupDal) All(db *gorm.DB, Order int, Stext string, Outfit string) []mod.ManagerGroupMod {
 	TableName := managerGroupTable + Outfit
-	Data := []mod.ManagerGroup{}
+	Data := []mod.ManagerGroupMod{}
 	engine := db.Table(TableName)
 	if Stext != "" {
 		engine = engine.Where("GroupName LIKE ?", "%"+Stext+"%")
@@ -87,7 +87,7 @@ func (o *ManagerGroupDal) All(db *gorm.DB, Order int, Stext string, Outfit strin
 
 func (o *ManagerGroupDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := managerGroupTable + Outfit
-	Data := mod.ManagerGroup{}
+	Data := mod.ManagerGroupMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

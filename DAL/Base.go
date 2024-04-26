@@ -13,6 +13,7 @@ import (
 
 var adminTable = "Admin"
 var AfterServiceTable = "AfterService"
+var AnnouncementTable = "Announcement"
 var companyTable = "Company"
 var customerTable = "Customer"
 var managerTable = "Manager"

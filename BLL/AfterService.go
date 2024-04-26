@@ -68,7 +68,7 @@ func AfterServiceNew(Token, Account, Password, Name, Remark string, ID int64) mo
 			} else if len(Password) < 6 {
 				result.Message = lang.ThePasswordIsTooShort
 			} else {
-				data := mod.AfterService{
+				data := mod.AfterServiceMod{
 					Account:      Account,
 					Password:     PwdMD5(Password),
 					Name:         Name,
@@ -118,8 +118,8 @@ func AfterServiceList(Token string, Page, PageSize, Order int, Stext string, Lev
 		db := dal.ConnDB()
 		result.State = true
 		result.Page, result.PageSize, result.TotalPage, result.Data = afterServiceDal.List(db, Page, PageSize, Order, Stext, Level, Status, "")
-		for i := 0; i < len(result.Data.([]mod.AfterService)); i++ {
-			result.Data.([]mod.AfterService)[i].Password = ""
+		for i := 0; i < len(result.Data.([]mod.AfterServiceMod)); i++ {
+			result.Data.([]mod.AfterServiceMod)[i].Password = ""
 		}
 	}
 	return result
@@ -144,8 +144,8 @@ func AfterServiceAll(Token string, Order int, Stext string, Level, Status int64)
 		db := dal.ConnDB()
 		result.State = true
 		result.Data = afterServiceDal.All(db, Order, Stext, Level, Status, "")
-		for i := 0; i < len(result.Data.([]mod.AfterService)); i++ {
-			result.Data.([]mod.AfterService)[i].Password = ""
+		for i := 0; i < len(result.Data.([]mod.AfterServiceMod)); i++ {
+			result.Data.([]mod.AfterServiceMod)[i].Password = ""
 		}
 	}
 	return result
@@ -313,7 +313,7 @@ func AfterServiceSignOut(Token string) mod.Result {
 		} else {
 			db := dal.ConnDB()
 			if r.Message == "afterService" {
-				userData := r.Data.(mod.AfterService)
+				userData := r.Data.(mod.AfterServiceMod)
 				if userData.ID == 0 {
 					result.Message = lang.TheAccountDoesNotExist
 				} else {
@@ -359,7 +359,7 @@ func AfterServiceUpdate(Token, Password, Name, Remark string) mod.Result {
 			return result
 		}
 
-		data := t.Data.(mod.AfterService)
+		data := t.Data.(mod.AfterServiceMod)
 		newPwd := ""
 		if Password == "" {
 			newPwd = data.Password

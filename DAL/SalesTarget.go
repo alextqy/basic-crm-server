@@ -24,27 +24,27 @@ func (o *SalesTargetDal) Count(db *gorm.DB, Stext string, CustomerID int64, Outf
 	return Count
 }
 
-func (o *SalesTargetDal) Add(db *gorm.DB, Data mod.SalesTarget, Outfit string) (int64, error) {
+func (o *SalesTargetDal) Add(db *gorm.DB, Data mod.SalesTargetMod, Outfit string) (int64, error) {
 	TableName := salesTargetTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
-func (o *SalesTargetDal) Update(db *gorm.DB, Data mod.SalesTarget, Outfit string) error {
+func (o *SalesTargetDal) Update(db *gorm.DB, Data mod.SalesTargetMod, Outfit string) error {
 	TableName := salesTargetTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
-func (o *SalesTargetDal) Data(db *gorm.DB, ID int64, Outfit string) mod.SalesTarget {
+func (o *SalesTargetDal) Data(db *gorm.DB, ID int64, Outfit string) mod.SalesTargetMod {
 	TableName := salesTargetTable + Outfit
-	Data := mod.SalesTarget{}
+	Data := mod.SalesTargetMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
-func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) (int, int, int, []mod.SalesTarget) {
+func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) (int, int, int, []mod.SalesTargetMod) {
 	TableName := salesTargetTable + Outfit
-	Data := []mod.SalesTarget{}
+	Data := []mod.SalesTargetMod{}
 	engine := db.Table(TableName)
 	if CustomerID > 0 {
 		engine = engine.Where("CustomerID = ?", CustomerID)
@@ -77,9 +77,9 @@ func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, St
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) []mod.SalesTarget {
+func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) []mod.SalesTargetMod {
 	TableName := salesTargetTable + Outfit
-	Data := []mod.SalesTarget{}
+	Data := []mod.SalesTargetMod{}
 	engine := db.Table(TableName)
 	if CustomerID > 0 {
 		engine = engine.Where("CustomerID = ?", CustomerID)
@@ -102,7 +102,7 @@ func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID in
 
 func (o *SalesTargetDal) Del(db *gorm.DB, ID string, Outfit string) error {
 	TableName := salesTargetTable + Outfit
-	Data := mod.SalesTarget{}
+	Data := mod.SalesTargetMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {
 		ids := strings.Split(ID, ",")

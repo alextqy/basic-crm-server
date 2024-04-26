@@ -45,7 +45,7 @@ func ProductNew(Token, ProductName string, Price, Cost float32, Remark string, I
 				}
 			}
 		} else {
-			data := mod.Product{
+			data := mod.ProductMod{
 				ProductName:  ProductName,
 				Price:        Price,
 				Cost:         Cost,

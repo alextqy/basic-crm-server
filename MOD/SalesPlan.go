@@ -1,6 +1,6 @@
 package mod
 
-type SalesPlan struct {
+type SalesPlanMod struct {
 	ID           int64   `gorm:"column:ID;primarykey"`
 	PlanName     string  `gorm:"column:PlanName"`     // 名称
 	TargetID     int64   `gorm:"column:TargetID"`     // 归属目标

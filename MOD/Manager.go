@@ -1,6 +1,6 @@
 package mod
 
-type Manager struct {
+type ManagerMod struct {
 	ID           int64  `gorm:"column:ID;primarykey"`
 	Account      string `gorm:"column:Account"`      // 账号
 	Password     string `gorm:"column:Password"`     // 密码

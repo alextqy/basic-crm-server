@@ -73,7 +73,7 @@ func ManagerNew(Token, Account, Password, Name, Remark string, GroupID, ID int64
 			} else if len(Password) < 6 {
 				result.Message = lang.ThePasswordIsTooShort
 			} else {
-				data := mod.Manager{
+				data := mod.ManagerMod{
 					Account:      Account,
 					Password:     PwdMD5(Password),
 					Name:         Name,
@@ -124,8 +124,8 @@ func ManagerList(Token string, Page, PageSize, Order int, Stext string, Level, S
 		db := dal.ConnDB()
 		result.State = true
 		result.Page, result.PageSize, result.TotalPage, result.Data = managerDal.List(db, Page, PageSize, Order, Stext, Level, Status, GroupID, "")
-		for i := 0; i < len(result.Data.([]mod.Manager)); i++ {
-			result.Data.([]mod.Manager)[i].Password = ""
+		for i := 0; i < len(result.Data.([]mod.ManagerMod)); i++ {
+			result.Data.([]mod.ManagerMod)[i].Password = ""
 		}
 	}
 	return result
@@ -150,8 +150,8 @@ func ManagerAll(Token string, Order int, Stext string, Level, Status, GroupID in
 		db := dal.ConnDB()
 		result.State = true
 		result.Data = managerDal.All(db, Order, Stext, Level, Status, GroupID, "")
-		for i := 0; i < len(result.Data.([]mod.Manager)); i++ {
-			result.Data.([]mod.Manager)[i].Password = ""
+		for i := 0; i < len(result.Data.([]mod.ManagerMod)); i++ {
+			result.Data.([]mod.ManagerMod)[i].Password = ""
 		}
 	}
 	return result
@@ -319,7 +319,7 @@ func ManagerSignOut(Token string) mod.Result {
 		} else {
 			db := dal.ConnDB()
 			if r.Message == "manager" {
-				userData := r.Data.(mod.Manager)
+				userData := r.Data.(mod.ManagerMod)
 				if userData.ID == 0 {
 					result.Message = lang.TheAccountDoesNotExist
 				} else {
@@ -373,7 +373,7 @@ func ManagerUpdate(Token, Password, Name, Remark string, GroupID int64) mod.Resu
 			return result
 		}
 
-		data := t.Data.(mod.Manager)
+		data := t.Data.(mod.ManagerMod)
 		newPwd := ""
 		if Password == "" {
 			newPwd = data.Password
