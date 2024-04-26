@@ -156,4 +156,9 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/sales/target/del", httpHelper.Middleware(api.SalesTargetDel))
 
 	// Announcement ===================================================================
+	mux.HandleFunc("/announcement/new", httpHelper.Middleware(api.AnnouncementNew))
+	mux.HandleFunc("/announcement/list", httpHelper.Middleware(api.AnnouncementList))
+	mux.HandleFunc("/announcement/all", httpHelper.Middleware(api.AnnouncementAll))
+	mux.HandleFunc("/announcement/data", httpHelper.Middleware(api.AnnouncementData))
+	mux.HandleFunc("/announcement/del", httpHelper.Middleware(api.AnnouncementDel))
 }

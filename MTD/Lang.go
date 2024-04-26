@@ -35,6 +35,9 @@ type Language struct {
 	IncorrectOrderPrice          string
 	TheOrderDataDoesNotExist     string
 	TheOrderNumberIsDuplicated   string
+	IncorrectTitle               string
+	IncorrectContent             string
+	AnnouncementDataDoesNotExist string
 }
 
 func SysLang() Language {
@@ -76,6 +79,9 @@ func SysLang() Language {
 		language.IncorrectOrderPrice = "订单价格错误"
 		language.TheOrderDataDoesNotExist = "订单数据不存在"
 		language.TheOrderNumberIsDuplicated = "订单编号重复"
+		language.IncorrectTitle = "标题错误"
+		language.IncorrectContent = "内容错误"
+		language.AnnouncementDataDoesNotExist = "公告数据不存在"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -111,6 +117,9 @@ func SysLang() Language {
 		language.IncorrectOrderPrice = "Incorrect order price"
 		language.TheOrderDataDoesNotExist = "The order data does not exist"
 		language.TheOrderNumberIsDuplicated = "The order number is duplicated"
+		language.IncorrectTitle = "Incorrect title"
+		language.IncorrectContent = "Incorrect content"
+		language.AnnouncementDataDoesNotExist = "Announcement data does not exist"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -146,6 +155,9 @@ func SysLang() Language {
 		language.IncorrectOrderPrice = ""
 		language.TheOrderDataDoesNotExist = ""
 		language.TheOrderNumberIsDuplicated = ""
+		language.IncorrectTitle = ""
+		language.IncorrectContent = ""
+		language.AnnouncementDataDoesNotExist = ""
 	}
 	return language
 }

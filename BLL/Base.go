@@ -18,6 +18,7 @@ var udpHelper = mtd.UdpHelper{}
 
 var adminDal = dal.AdminDal{}
 var afterServiceDal = dal.AfterServiceDal{}
+var announcementDal = dal.AnnouncementDal{}
 var companyDal = dal.CompanyDal{}
 var customerDal = dal.CustomerDal{}
 var managerDal = dal.ManagerDal{}
