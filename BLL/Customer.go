@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, CustomerInfo string, Priority, CompanyID, AfterServiceID, ID int64) mod.Result {
+func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, CustomerInfo string, Priority, CompanyID, AfterServiceID, Level, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -68,6 +68,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 				checkData.Priority = Priority
 				checkData.CompanyID = CompanyID
 				checkData.AfterServiceID = AfterServiceID
+				checkData.Level = Level
 				e := customerDal.Update(db, checkData, "")
 				if e != nil {
 					result.Message = e.Error()
@@ -90,6 +91,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 				CompanyID:      CompanyID,
 				ManagerID:      ManagerID,
 				AfterServiceID: AfterServiceID,
+				Level:          Level,
 			}
 			_, e := customerDal.Add(db, data, "")
 			if e != nil {
@@ -104,7 +106,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 	return result
 }
 
-func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender, Priority, CompanyID, ManagerID, AfterServiceID int64) mod.ResultList {
+func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Level int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -128,12 +130,12 @@ func CustomerList(Token string, Page, PageSize, Order int, Stext string, Gender,
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = customerDal.List(db, Page, PageSize, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = customerDal.List(db, Page, PageSize, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Level, "")
 	}
 	return result
 }
 
-func CustomerAll(Token string, Order int, Stext string, Gender, Priority, CompanyID, ManagerID, AfterServiceID int64) mod.Result {
+func CustomerAll(Token string, Order int, Stext string, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Level int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -154,7 +156,7 @@ func CustomerAll(Token string, Order int, Stext string, Gender, Priority, Compan
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = customerDal.All(db, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, "")
+		result.Data = customerDal.All(db, Order, Stext, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Level, "")
 	}
 	return result
 }

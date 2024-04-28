@@ -13,4 +13,5 @@ type CustomerMod struct {
 	CompanyID      int64  `gorm:"column:CompanyID"`      // 归属公司
 	ManagerID      int64  `gorm:"column:ManagerID"`      // 归属销售人员
 	AfterServiceID int64  `gorm:"column:AfterServiceID"` // 归属售后人员
+	Level          int64  `gorm:"column:Level"`          // 0无 1~5
 }
