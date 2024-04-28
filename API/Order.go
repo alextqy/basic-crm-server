@@ -10,10 +10,13 @@ func OrderNew(w http.ResponseWriter, r *http.Request) {
 	OrderNo := httpHelper.Post(r, "OrderNo")
 	ProductID := httpHelper.PostInt64(r, "ProductID")
 	ManagerID := httpHelper.PostInt64(r, "ManagerID")
+	CustomerID := httpHelper.PostInt64(r, "CustomerID")
+	DistributorID := httpHelper.PostInt64(r, "DistributorID")
 	OrderPrice := httpHelper.PostFloat32(r, "OrderPrice")
 	Remark := httpHelper.Post(r, "Remark")
+	Type := httpHelper.PostInt64(r, "Type")
 	ID := httpHelper.PostInt64(r, "ID")
-	httpHelper.HttpWrite(w, bll.OrderNew(Token, OrderNo, ProductID, ManagerID, OrderPrice, Remark, ID))
+	httpHelper.HttpWrite(w, bll.OrderNew(Token, OrderNo, ProductID, ManagerID, CustomerID, DistributorID, OrderPrice, Remark, Type, ID))
 }
 
 func OrderList(w http.ResponseWriter, r *http.Request) {
@@ -24,8 +27,11 @@ func OrderList(w http.ResponseWriter, r *http.Request) {
 	Stext := httpHelper.Post(r, "Stext")
 	ProductID := httpHelper.PostInt64(r, "ProductID")
 	ManagerID := httpHelper.PostInt64(r, "ManagerID")
+	CustomerID := httpHelper.PostInt64(r, "CustomerID")
+	DistributorID := httpHelper.PostInt64(r, "DistributorID")
+	Type := httpHelper.PostInt64(r, "Type")
 	Status := httpHelper.PostInt64(r, "Status")
-	httpHelper.HttpWrite(w, bll.OrderList(Token, Page, PageSize, Order, Stext, ProductID, ManagerID, Status))
+	httpHelper.HttpWrite(w, bll.OrderList(Token, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status))
 }
 
 func OrderAll(w http.ResponseWriter, r *http.Request) {
@@ -34,8 +40,11 @@ func OrderAll(w http.ResponseWriter, r *http.Request) {
 	Stext := httpHelper.Post(r, "Stext")
 	ProductID := httpHelper.PostInt64(r, "ProductID")
 	ManagerID := httpHelper.PostInt64(r, "ManagerID")
+	CustomerID := httpHelper.PostInt64(r, "CustomerID")
+	DistributorID := httpHelper.PostInt64(r, "DistributorID")
+	Type := httpHelper.PostInt64(r, "Type")
 	Status := httpHelper.PostInt64(r, "Status")
-	httpHelper.HttpWrite(w, bll.OrderAll(Token, Order, Stext, ProductID, ManagerID, Status))
+	httpHelper.HttpWrite(w, bll.OrderAll(Token, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status))
 }
 
 func OrderData(w http.ResponseWriter, r *http.Request) {

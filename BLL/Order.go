@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice float32, Remark string, ID int64) mod.Result {
+func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, DistributorID int64, OrderPrice float32, Remark string, Type, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -25,10 +25,14 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 		result.Message = lang.IncorrectOrderNo
 	} else if ProductID == 0 {
 		result.Message = lang.TheProductDataDoesNotExist
-	} else if ManagerID == 0 {
-		result.Message = lang.TheSalesManagerDoesNotExist
 	} else if OrderPrice == 0 {
 		result.Message = lang.IncorrectOrderPrice
+	} else if Type == 0 {
+		result.Message = lang.TypeError
+	} else if Type == 1 && CustomerID == 0 {
+		result.Message = lang.TypeError
+	} else if Type == 2 && DistributorID == 0 {
+		result.Message = lang.TypeError
 	} else {
 		db := dal.ConnDB()
 
@@ -38,10 +42,32 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 			return result
 		}
 
-		managerData := managerDal.Data(db, ManagerID, "")
-		if managerData.ID == 0 {
-			result.Message = lang.TheSalesManagerDoesNotExist
-			return result
+		if CheckPerm(t) == 2 {
+			ManagerID = CheckID(t)
+		} else if ManagerID > 0 {
+			checkData := managerDal.Data(db, ManagerID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.TheSalesManagerDoesNotExist
+				return result
+			}
+		} else {
+			ManagerID = 0
+		}
+
+		if CustomerID > 0 {
+			checkData := customerDal.Data(db, CustomerID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.CustomerDataDoesNotExist
+				return result
+			}
+		}
+
+		if DistributorID > 0 {
+			checkData := distributorDal.Data(db, DistributorID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.DistributorDataDoesNotExist
+				return result
+			}
 		}
 
 		if ID > 0 {
@@ -50,6 +76,8 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 				result.Message = lang.TheOrderDataDoesNotExist
 			} else {
 				checkData.ManagerID = ManagerID
+				checkData.CustomerID = CustomerID
+				checkData.DistributorID = DistributorID
 				checkData.OrderPrice = OrderPrice
 				checkData.Remark = Remark
 				e := orderDal.Update(db, checkData, "")
@@ -67,15 +95,18 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 				result.Message = lang.TheOrderNumberIsDuplicated
 			} else {
 				data := mod.OrderMod{
-					OrderNo:      OrderNo,
-					ProductID:    ProductID,
-					ManagerID:    ManagerID,
-					OrderPrice:   OrderPrice,
-					ProductPrice: productData.Price,
-					ProductCost:  productData.Cost,
-					Status:       1,
-					Remark:       Remark,
-					CreationTime: sysHelper.TimeStamp(),
+					OrderNo:       OrderNo,
+					ProductID:     ProductID,
+					ManagerID:     ManagerID,
+					CustomerID:    CustomerID,
+					DistributorID: DistributorID,
+					OrderPrice:    OrderPrice,
+					ProductPrice:  productData.Price,
+					ProductCost:   productData.Cost,
+					Status:        1,
+					Remark:        Remark,
+					CreationTime:  sysHelper.TimeStamp(),
+					Type:          Type,
 				}
 				_, e := orderDal.Add(db, data, "")
 				if e != nil {
@@ -91,7 +122,7 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID int64, OrderPrice floa
 	return result
 }
 
-func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID, ManagerID, Status int64) mod.ResultList {
+func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Type, Status int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -115,12 +146,12 @@ func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID,
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = orderDal.List(db, Page, PageSize, Order, Stext, ProductID, ManagerID, Status, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = orderDal.List(db, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status, "")
 	}
 	return result
 }
 
-func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, Status int64) mod.Result {
+func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Type, Status int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -141,7 +172,7 @@ func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, Statu
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, Status, "")
+		result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status, "")
 	}
 	return result
 }
