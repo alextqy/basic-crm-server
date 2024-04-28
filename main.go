@@ -72,7 +72,7 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/check/the/logs", httpHelper.Middleware(api.CheckTheLogs))
 	mux.HandleFunc("/check/env", httpHelper.Middleware(api.CheckEnv))
 
-	// admin ===================================================================
+	// Admin ===================================================================
 	mux.HandleFunc("/admin/sign/in", httpHelper.Middleware(api.AdminSignIn))
 	mux.HandleFunc("/admin/sign/out", httpHelper.Middleware(api.AdminSignOut))
 	mux.HandleFunc("/admin/new", httpHelper.Middleware(api.AdminNew))
@@ -82,7 +82,7 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/admin/del", httpHelper.Middleware(api.AdminDel))
 	mux.HandleFunc("/admin/status", httpHelper.Middleware(api.AdminStatus))
 
-	// afterService ===================================================================
+	// AfterService ===================================================================
 	mux.HandleFunc("/after/service/new", httpHelper.Middleware(api.AfterServiceNew))
 	mux.HandleFunc("/after/service/list", httpHelper.Middleware(api.AfterServiceList))
 	mux.HandleFunc("/after/service/all", httpHelper.Middleware(api.AfterServiceAll))
@@ -102,21 +102,28 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/announcement/del", httpHelper.Middleware(api.AnnouncementDel))
 	mux.HandleFunc("/announcement/display", httpHelper.Middleware(api.AnnouncementDisplay))
 
-	// company ===================================================================
+	// Company ===================================================================
 	mux.HandleFunc("/company/new", httpHelper.Middleware(api.CompanyNew))
 	mux.HandleFunc("/company/list", httpHelper.Middleware(api.CompanyList))
 	mux.HandleFunc("/company/all", httpHelper.Middleware(api.CompanyAll))
 	mux.HandleFunc("/company/data", httpHelper.Middleware(api.CompanyData))
 	mux.HandleFunc("/company/del", httpHelper.Middleware(api.CompanyDel))
 
-	// customer ===================================================================
+	// Customer ===================================================================
 	mux.HandleFunc("/customer/new", httpHelper.Middleware(api.CustomerNew))
 	mux.HandleFunc("/customer/list", httpHelper.Middleware(api.CustomerList))
 	mux.HandleFunc("/customer/all", httpHelper.Middleware(api.CustomerAll))
 	mux.HandleFunc("/customer/data", httpHelper.Middleware(api.CustomerData))
 	mux.HandleFunc("/customer/del", httpHelper.Middleware(api.CustomerDel))
 
-	// manager ===================================================================
+	// Distributor ===================================================================
+	mux.HandleFunc("/distributor/new", httpHelper.Middleware(api.DistributorNew))
+	mux.HandleFunc("/distributor/list", httpHelper.Middleware(api.DistributorList))
+	mux.HandleFunc("/distributor/all", httpHelper.Middleware(api.DistributorAll))
+	mux.HandleFunc("/distributor/data", httpHelper.Middleware(api.DistributorData))
+	mux.HandleFunc("/distributor/del", httpHelper.Middleware(api.DistributorDel))
+
+	// Manager ===================================================================
 	mux.HandleFunc("/manager/new", httpHelper.Middleware(api.ManagerNew))
 	mux.HandleFunc("/manager/list", httpHelper.Middleware(api.ManagerList))
 	mux.HandleFunc("/manager/all", httpHelper.Middleware(api.ManagerAll))

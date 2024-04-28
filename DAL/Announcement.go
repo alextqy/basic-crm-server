@@ -12,7 +12,7 @@ type AnnouncementDal struct{}
 
 func (o *AnnouncementDal) Count(db *gorm.DB, Stext string, AuthorID, Display int64, Outfit string) int64 {
 	var Count int64
-	TableName := AnnouncementTable + Outfit
+	TableName := announcementTable + Outfit
 	engine := db.Table(TableName)
 	if AuthorID > 0 {
 		engine = engine.Where("AuthorID = ?", AuthorID)
@@ -28,25 +28,25 @@ func (o *AnnouncementDal) Count(db *gorm.DB, Stext string, AuthorID, Display int
 }
 
 func (o *AnnouncementDal) Add(db *gorm.DB, Data mod.AnnouncementMod, Outfit string) (int64, error) {
-	TableName := AnnouncementTable + Outfit
+	TableName := announcementTable + Outfit
 	e := db.Table(TableName).Create(&Data).Error
 	return Data.ID, e
 }
 
 func (o *AnnouncementDal) Update(db *gorm.DB, Data mod.AnnouncementMod, Outfit string) error {
-	TableName := AnnouncementTable + Outfit
+	TableName := announcementTable + Outfit
 	return db.Table(TableName).Save(&Data).Error
 }
 
 func (o *AnnouncementDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AnnouncementMod {
-	TableName := AnnouncementTable + Outfit
+	TableName := announcementTable + Outfit
 	Data := mod.AnnouncementMod{}
 	db.Table(TableName).First(&Data, ID)
 	return Data
 }
 
 func (o *AnnouncementDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, AuthorID, Display int64, Outfit string) (int, int, int, []mod.AnnouncementMod) {
-	TableName := AnnouncementTable + Outfit
+	TableName := announcementTable + Outfit
 	Data := []mod.AnnouncementMod{}
 	engine := db.Table(TableName)
 	if AuthorID > 0 {
@@ -81,7 +81,7 @@ func (o *AnnouncementDal) List(db *gorm.DB, Page, PageSize, Order int, Stext str
 }
 
 func (o *AnnouncementDal) All(db *gorm.DB, Order int, Stext string, AuthorID, Display int64, Outfit string) []mod.AnnouncementMod {
-	TableName := AnnouncementTable + Outfit
+	TableName := announcementTable + Outfit
 	Data := []mod.AnnouncementMod{}
 	engine := db.Table(TableName)
 	if AuthorID > 0 {
@@ -104,7 +104,7 @@ func (o *AnnouncementDal) All(db *gorm.DB, Order int, Stext string, AuthorID, Di
 }
 
 func (o *AnnouncementDal) Del(db *gorm.DB, ID string, Outfit string) error {
-	TableName := AnnouncementTable + Outfit
+	TableName := announcementTable + Outfit
 	Data := mod.AnnouncementMod{}
 	var e error
 	if sysHelper.StringContains(ID, ",") {

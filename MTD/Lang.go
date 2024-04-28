@@ -38,6 +38,7 @@ type Language struct {
 	IncorrectTitle               string
 	IncorrectContent             string
 	AnnouncementDataDoesNotExist string
+	DistributorDataDoesNotExist  string
 }
 
 func SysLang() Language {
@@ -82,6 +83,7 @@ func SysLang() Language {
 		language.IncorrectTitle = "标题错误"
 		language.IncorrectContent = "内容错误"
 		language.AnnouncementDataDoesNotExist = "公告数据不存在"
+		language.DistributorDataDoesNotExist = "渠道商数据不存在"
 	} else if checkConf.Lang == "en" {
 		language.IncorrectAccount = "Incorrect account"
 		language.IncorrectPassword = "Incorrect password"
@@ -120,6 +122,7 @@ func SysLang() Language {
 		language.IncorrectTitle = "Incorrect title"
 		language.IncorrectContent = "Incorrect content"
 		language.AnnouncementDataDoesNotExist = "Announcement data does not exist"
+		language.DistributorDataDoesNotExist = "Distributor data does not exist"
 	} else {
 		language.IncorrectAccount = ""
 		language.IncorrectPassword = ""
@@ -158,6 +161,7 @@ func SysLang() Language {
 		language.IncorrectTitle = ""
 		language.IncorrectContent = ""
 		language.AnnouncementDataDoesNotExist = ""
+		language.DistributorDataDoesNotExist = ""
 	}
 	return language
 }

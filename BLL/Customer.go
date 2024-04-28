@@ -49,7 +49,7 @@ func CustomerNew(Token, Name string, Birthday, Gender int64, Email, Tel, Custome
 
 		var ManagerID int64
 		if CheckPerm(t) == 2 {
-			ManagerID = customerDal.Data(db, t.Data.(mod.ManagerMod).ID, "").ID
+			ManagerID = CheckID(t)
 		} else {
 			ManagerID = 0
 		}

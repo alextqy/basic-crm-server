@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func AnnouncementNew(Token, Title, Content string, ID int64) mod.Result {
+func DistributorNew(Token, Name, Email, Tel, DistributorInfo string, CompanyID, ManagerID, AfterServiceID, Level, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -21,20 +21,50 @@ func AnnouncementNew(Token, Title, Content string, ID int64) mod.Result {
 		result.Message = lang.PermissionDenied
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
-	} else if Title == "" {
-		result.Message = lang.IncorrectTitle
-	} else if Content == "" {
-		result.Message = lang.IncorrectContent
+	} else if Name == "" {
+		result.Message = lang.IncorrectName
+	} else if Tel == "" {
+		result.Message = lang.IncorrectPhoneNumber
 	} else {
 		db := dal.ConnDB()
-		if ID > 0 {
-			checkData := announcementDal.Data(db, ID, "")
+
+		if CompanyID > 0 {
+			checkData := companyDal.Data(db, CompanyID, "")
 			if checkData.ID == 0 {
-				result.Message = lang.AnnouncementDataDoesNotExist
+				result.Message = lang.CompanyDataDoesNotExist
+				return result
+			}
+		}
+
+		if ManagerID > 0 {
+			checkData := managerDal.Data(db, ManagerID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.TheSalesManagerDoesNotExist
+				return result
+			}
+		}
+
+		if AfterServiceID > 0 {
+			checkData := afterServiceDal.Data(db, AfterServiceID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.AfterSalesPersonnelDoNot
+			}
+		}
+
+		if ID > 0 {
+			checkData := distributorDal.Data(db, ID, "")
+			if checkData.ID == 0 {
+				result.Message = lang.DistributorDataDoesNotExist
 			} else {
-				checkData.Title = Title
-				checkData.Content = Content
-				e := announcementDal.Update(db, checkData, "")
+				checkData.Name = Name
+				checkData.Email = Email
+				checkData.Tel = Tel
+				checkData.DistributorInfo = DistributorInfo
+				checkData.CompanyID = CompanyID
+				checkData.ManagerID = ManagerID
+				checkData.AfterServiceID = AfterServiceID
+				checkData.Level = Level
+				e := distributorDal.Update(db, checkData, "")
 				if e != nil {
 					result.Message = e.Error()
 				} else {
@@ -44,14 +74,18 @@ func AnnouncementNew(Token, Title, Content string, ID int64) mod.Result {
 				}
 			}
 		} else {
-			data := mod.AnnouncementMod{
-				Title:        Title,
-				Content:      Content,
-				AuthorID:     CheckID(t),
-				Display:      1,
-				CreationTime: sysHelper.TimeStamp(),
+			data := mod.DistributorMod{
+				Name:            Name,
+				Email:           Email,
+				Tel:             Tel,
+				DistributorInfo: DistributorInfo,
+				CreationTime:    sysHelper.TimeStamp(),
+				CompanyID:       CompanyID,
+				ManagerID:       ManagerID,
+				AfterServiceID:  AfterServiceID,
+				Level:           Level,
 			}
-			_, e := announcementDal.Add(db, data, "")
+			_, e := distributorDal.Add(db, data, "")
 			if e != nil {
 				result.Message = e.Error()
 			} else {
@@ -64,7 +98,7 @@ func AnnouncementNew(Token, Title, Content string, ID int64) mod.Result {
 	return result
 }
 
-func AnnouncementList(Token string, Page, PageSize, Order int, Stext string, AuthorID, Display int64) mod.ResultList {
+func DistributorList(Token string, Page, PageSize, Order int, Stext string, CompanyID, ManagerID, AfterServiceID, Level int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -83,14 +117,43 @@ func AnnouncementList(Token string, Page, PageSize, Order int, Stext string, Aut
 	} else if CheckID(t) == 0 {
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
+		if CheckPerm(t) == 2 {
+			ManagerID = CheckID(t)
+		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = announcementDal.List(db, Page, PageSize, Order, Stext, AuthorID, Display, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = distributorDal.List(db, Page, PageSize, Order, Stext, CompanyID, ManagerID, AfterServiceID, Level, "")
 	}
 	return result
 }
 
-func AnnouncementAll(Token string, Order int, Stext string, AuthorID, Display int64) mod.Result {
+func DistributorAll(Token string, Order int, Stext string, CompanyID, ManagerID, AfterServiceID, Level int64) mod.Result {
+	result := mod.Result{
+		State:   false,
+		Message: "",
+		Code:    200,
+		Data:    nil,
+	}
+
+	t := DeToken(Token)
+	if !t.State {
+		result.Message = t.Message
+	} else if CheckPerm(t) > 1 {
+		result.Message = lang.PermissionDenied
+	} else if CheckID(t) == 0 {
+		result.Message = lang.TheAccountDoesNotExist
+	} else {
+		if CheckPerm(t) == 2 {
+			ManagerID = CheckID(t)
+		}
+		db := dal.ConnDB()
+		result.State = true
+		result.Data = distributorDal.All(db, Order, Stext, CompanyID, ManagerID, AfterServiceID, Level, "")
+	}
+	return result
+}
+
+func DistributorData(Token string, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -107,36 +170,18 @@ func AnnouncementAll(Token string, Order int, Stext string, AuthorID, Display in
 		result.Message = lang.TheAccountDoesNotExist
 	} else {
 		db := dal.ConnDB()
+		data := distributorDal.Data(db, ID, "")
+		if CheckPerm(t) == 2 && data.ManagerID != CheckID(t) {
+			result.Data = mod.DistributorMod{}
+		} else {
+			result.Data = data
+		}
 		result.State = true
-		result.Data = announcementDal.All(db, Order, Stext, AuthorID, Display, "")
 	}
 	return result
 }
 
-func AnnouncementData(Token string, ID int64) mod.Result {
-	result := mod.Result{
-		State:   false,
-		Message: "",
-		Code:    200,
-		Data:    nil,
-	}
-
-	t := DeToken(Token)
-	if !t.State {
-		result.Message = t.Message
-	} else if CheckPerm(t) > 1 {
-		result.Message = lang.PermissionDenied
-	} else if CheckID(t) == 0 {
-		result.Message = lang.TheAccountDoesNotExist
-	} else {
-		db := dal.ConnDB()
-		result.State = true
-		result.Data = announcementDal.Data(db, ID, "")
-	}
-	return result
-}
-
-func AnnouncementDel(Token, ID string) mod.Result {
+func DistributorDel(Token, ID string) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -154,57 +199,23 @@ func AnnouncementDel(Token, ID string) mod.Result {
 	} else {
 		db := dal.ConnDB()
 		_, _, ID64 := sysHelper.StringToInt64(ID)
-		checkData := announcementDal.Data(db, ID64, "")
+		checkData := distributorDal.Data(db, ID64, "")
 		if checkData.ID == 0 {
-			result.Message = lang.AnnouncementDataDoesNotExist
+			result.Message = lang.DistributorDataDoesNotExist
 		} else {
-			e := announcementDal.Del(db, ID, "")
+			if CheckPerm(t) == 2 {
+				if checkData.ManagerID != CheckID(t) {
+					result.Message = lang.PermissionDenied
+					return result
+				}
+			}
+			e := distributorDal.Del(db, ID, "")
 			if e != nil {
 				result.Message = e.Error()
 			} else {
 				jData, _ := json.Marshal(checkData)
 				go fileHelper.WriteLog(CheckAccount(t), "Remove data: "+string(jData), t.Message)
 				result.State = true
-			}
-		}
-	}
-	return result
-}
-
-func AnnouncementDisplay(Token string, ID int64) mod.Result {
-	result := mod.Result{
-		State:   false,
-		Message: "",
-		Code:    200,
-		Data:    nil,
-	}
-
-	t := DeToken(Token)
-	if !t.State {
-		result.Message = t.Message
-	} else if CheckPerm(t) > 1 {
-		result.Message = lang.PermissionDenied
-	} else if CheckID(t) == 0 {
-		result.Message = lang.TheAccountDoesNotExist
-	} else {
-		db := dal.ConnDB()
-		checkData := announcementDal.Data(db, ID, "")
-		if checkData.ID == 0 {
-			result.Message = lang.AnnouncementDataDoesNotExist
-		} else {
-			if checkData.Display == 1 {
-				checkData.Display = 2
-			} else {
-				checkData.Display = 1
-			}
-
-			e := announcementDal.Update(db, checkData, "")
-			if e != nil {
-				result.Message = e.Error()
-			} else {
-				result.State = true
-				jData, _ := json.Marshal(checkData)
-				go fileHelper.WriteLog(CheckAccount(t), "Modify the data: "+string(jData), t.Message)
 			}
 		}
 	}

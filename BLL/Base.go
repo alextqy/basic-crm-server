@@ -21,6 +21,7 @@ var afterServiceDal = dal.AfterServiceDal{}
 var announcementDal = dal.AnnouncementDal{}
 var companyDal = dal.CompanyDal{}
 var customerDal = dal.CustomerDal{}
+var distributorDal = dal.DistributorDal{}
 var managerDal = dal.ManagerDal{}
 var managerGroupDal = dal.ManagerGroupDal{}
 var orderDal = dal.OrderDal{}

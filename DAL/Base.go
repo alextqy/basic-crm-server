@@ -12,10 +12,11 @@ import (
 )
 
 var adminTable = "Admin"
-var AfterServiceTable = "AfterService"
-var AnnouncementTable = "Announcement"
+var afterServiceTable = "AfterService"
+var announcementTable = "Announcement"
 var companyTable = "Company"
 var customerTable = "Customer"
+var distributorTable = "Distributor"
 var managerTable = "Manager"
 var managerGroupTable = "ManagerGroup"
 var orderTable = "Order"
