@@ -10,7 +10,7 @@ import (
 
 type AfterServiceDal struct{}
 
-func (o *AfterServiceDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, Outfit string) int64 {
+func (o *AfterServiceDal) Count(db *gorm.DB, Stext string, Level, Status int64, Outfit string) int64 {
 	var Count int64
 	TableName := AfterServiceTable + Outfit
 	engine := db.Table(TableName)
@@ -45,7 +45,7 @@ func (o *AfterServiceDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AfterSe
 	return Data
 }
 
-func (o *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.AfterServiceMod) {
+func (o *AfterServiceDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Level, Status int64, Outfit string) (int, int, int, []mod.AfterServiceMod) {
 	TableName := AfterServiceTable + Outfit
 	Data := []mod.AfterServiceMod{}
 	engine := db.Table(TableName)
@@ -80,7 +80,7 @@ func (o *AfterServiceDal) List(db *gorm.DB, Page int, PageSize int, Order int, S
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.AfterServiceMod {
+func (o *AfterServiceDal) All(db *gorm.DB, Order int, Stext string, Level, Status int64, Outfit string) []mod.AfterServiceMod {
 	TableName := AfterServiceTable + Outfit
 	Data := []mod.AfterServiceMod{}
 	engine := db.Table(TableName)

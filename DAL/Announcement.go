@@ -45,7 +45,7 @@ func (o *AnnouncementDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Announc
 	return Data
 }
 
-func (o *AnnouncementDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, AuthorID, Display int64, Outfit string) (int, int, int, []mod.AnnouncementMod) {
+func (o *AnnouncementDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, AuthorID, Display int64, Outfit string) (int, int, int, []mod.AnnouncementMod) {
 	TableName := AnnouncementTable + Outfit
 	Data := []mod.AnnouncementMod{}
 	engine := db.Table(TableName)

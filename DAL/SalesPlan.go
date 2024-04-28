@@ -10,7 +10,7 @@ import (
 
 type SalesPlanDal struct{}
 
-func (o *SalesPlanDal) Count(db *gorm.DB, Stext string, TargetID int64, Status int64, Outfit string) int64 {
+func (o *SalesPlanDal) Count(db *gorm.DB, Stext string, TargetID, Status int64, Outfit string) int64 {
 	var Count int64
 	TableName := salesPlanTable + Outfit
 	engine := db.Table(TableName)
@@ -45,7 +45,7 @@ func (o *SalesPlanDal) Data(db *gorm.DB, ID int64, Outfit string) mod.SalesPlanM
 	return Data
 }
 
-func (o *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, TargetID int64, Status int64, ManagerID int64, Outfit string) (int, int, int, []mod.SalesPlanMod) {
+func (o *SalesPlanDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, TargetID, Status, ManagerID int64, Outfit string) (int, int, int, []mod.SalesPlanMod) {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlanMod{}
 	engine := db.Table(TableName)
@@ -83,7 +83,7 @@ func (o *SalesPlanDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stex
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID int64, Status int64, ManagerID int64, Outfit string) []mod.SalesPlanMod {
+func (o *SalesPlanDal) All(db *gorm.DB, Order int, Stext string, TargetID, Status, ManagerID int64, Outfit string) []mod.SalesPlanMod {
 	TableName := salesPlanTable + Outfit
 	Data := []mod.SalesPlanMod{}
 	engine := db.Table(TableName)

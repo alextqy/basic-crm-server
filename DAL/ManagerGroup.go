@@ -10,7 +10,7 @@ import (
 
 type ManagerGroupDal struct{}
 
-func (o *ManagerGroupDal) Count(db *gorm.DB, Stext string, Outfit string) int64 {
+func (o *ManagerGroupDal) Count(db *gorm.DB, Stext, Outfit string) int64 {
 	var Count int64
 	TableName := managerGroupTable + Outfit
 	engine := db.Table(TableName)
@@ -39,7 +39,7 @@ func (o *ManagerGroupDal) Data(db *gorm.DB, ID int64, Outfit string) mod.Manager
 	return Data
 }
 
-func (o *ManagerGroupDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.ManagerGroupMod) {
+func (o *ManagerGroupDal) List(db *gorm.DB, Page, PageSize, Order int, Stext, Outfit string) (int, int, int, []mod.ManagerGroupMod) {
 	TableName := managerGroupTable + Outfit
 	Data := []mod.ManagerGroupMod{}
 	engine := db.Table(TableName)
@@ -68,7 +68,7 @@ func (o *ManagerGroupDal) List(db *gorm.DB, Page int, PageSize int, Order int, S
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *ManagerGroupDal) All(db *gorm.DB, Order int, Stext string, Outfit string) []mod.ManagerGroupMod {
+func (o *ManagerGroupDal) All(db *gorm.DB, Order int, Stext, Outfit string) []mod.ManagerGroupMod {
 	TableName := managerGroupTable + Outfit
 	Data := []mod.ManagerGroupMod{}
 	engine := db.Table(TableName)
@@ -85,7 +85,7 @@ func (o *ManagerGroupDal) All(db *gorm.DB, Order int, Stext string, Outfit strin
 	return Data
 }
 
-func (o *ManagerGroupDal) Del(db *gorm.DB, ID string, Outfit string) error {
+func (o *ManagerGroupDal) Del(db *gorm.DB, ID, Outfit string) error {
 	TableName := managerGroupTable + Outfit
 	Data := mod.ManagerGroupMod{}
 	var e error

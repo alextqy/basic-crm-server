@@ -42,7 +42,7 @@ func (o *SalesTargetDal) Data(db *gorm.DB, ID int64, Outfit string) mod.SalesTar
 	return Data
 }
 
-func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) (int, int, int, []mod.SalesTargetMod) {
+func (o *SalesTargetDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, CustomerID, ManagerID int64, Outfit string) (int, int, int, []mod.SalesTargetMod) {
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTargetMod{}
 	engine := db.Table(TableName)
@@ -77,7 +77,7 @@ func (o *SalesTargetDal) List(db *gorm.DB, Page int, PageSize int, Order int, St
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID int64, ManagerID int64, Outfit string) []mod.SalesTargetMod {
+func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID, ManagerID int64, Outfit string) []mod.SalesTargetMod {
 	TableName := salesTargetTable + Outfit
 	Data := []mod.SalesTargetMod{}
 	engine := db.Table(TableName)
@@ -100,7 +100,7 @@ func (o *SalesTargetDal) All(db *gorm.DB, Order int, Stext string, CustomerID in
 	return Data
 }
 
-func (o *SalesTargetDal) Del(db *gorm.DB, ID string, Outfit string) error {
+func (o *SalesTargetDal) Del(db *gorm.DB, ID, Outfit string) error {
 	TableName := salesTargetTable + Outfit
 	Data := mod.SalesTargetMod{}
 	var e error

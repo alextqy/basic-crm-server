@@ -39,7 +39,7 @@ func (o *CompanyDal) Data(db *gorm.DB, ID int64, Outfit string) mod.CompanyMod {
 	return Data
 }
 
-func (o *CompanyDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Outfit string) (int, int, int, []mod.CompanyMod) {
+func (o *CompanyDal) List(db *gorm.DB, Page, PageSize, Order int, Stext, Outfit string) (int, int, int, []mod.CompanyMod) {
 	TableName := companyTable + Outfit
 	Data := []mod.CompanyMod{}
 	engine := db.Table(TableName)

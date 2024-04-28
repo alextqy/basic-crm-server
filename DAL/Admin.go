@@ -10,7 +10,7 @@ import (
 
 type AdminDal struct{}
 
-func (o *AdminDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, Outfit string) int64 {
+func (o *AdminDal) Count(db *gorm.DB, Stext string, Level, Status int64, Outfit string) int64 {
 	var Count int64
 	TableName := adminTable + Outfit
 	engine := db.Table(TableName)
@@ -45,7 +45,7 @@ func (o *AdminDal) Data(db *gorm.DB, ID int64, Outfit string) mod.AdminMod {
 	return Data
 }
 
-func (o *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, Outfit string) (int, int, int, []mod.AdminMod) {
+func (o *AdminDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Level, Status int64, Outfit string) (int, int, int, []mod.AdminMod) {
 	TableName := adminTable + Outfit
 	Data := []mod.AdminMod{}
 	engine := db.Table(TableName)
@@ -80,7 +80,7 @@ func (o *AdminDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext st
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *AdminDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, Outfit string) []mod.AdminMod {
+func (o *AdminDal) All(db *gorm.DB, Order int, Stext string, Level, Status int64, Outfit string) []mod.AdminMod {
 	TableName := adminTable + Outfit
 	Data := []mod.AdminMod{}
 	engine := db.Table(TableName)

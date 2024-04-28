@@ -42,7 +42,7 @@ func (o *ProductDal) Data(db *gorm.DB, ID int64, Outfit string) mod.ProductMod {
 	return Data
 }
 
-func (o *ProductDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Status int64, Outfit string) (int, int, int, []mod.ProductMod) {
+func (o *ProductDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Status int64, Outfit string) (int, int, int, []mod.ProductMod) {
 	TableName := productTable + Outfit
 	Data := []mod.ProductMod{}
 	engine := db.Table(TableName)

@@ -10,7 +10,7 @@ import (
 
 type CustomerDal struct{}
 
-func (o *CustomerDal) Count(db *gorm.DB, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Level int64, Outfit string) int64 {
+func (o *CustomerDal) Count(db *gorm.DB, Stext string, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Level int64, Outfit string) int64 {
 	var Count int64
 	TableName := customerTable + Outfit
 	engine := db.Table(TableName)
@@ -57,7 +57,7 @@ func (o *CustomerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.CustomerMod
 	return Data
 }
 
-func (o *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Level int64, Outfit string) (int, int, int, []mod.CustomerMod) {
+func (o *CustomerDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Level int64, Outfit string) (int, int, int, []mod.CustomerMod) {
 	TableName := customerTable + Outfit
 	Data := []mod.CustomerMod{}
 	engine := db.Table(TableName)
@@ -104,7 +104,7 @@ func (o *CustomerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender int64, Priority int64, CompanyID int64, ManagerID int64, AfterServiceID int64, Level int64, Outfit string) []mod.CustomerMod {
+func (o *CustomerDal) All(db *gorm.DB, Order int, Stext string, Gender, Priority, CompanyID, ManagerID, AfterServiceID, Level int64, Outfit string) []mod.CustomerMod {
 	TableName := customerTable + Outfit
 	Data := []mod.CustomerMod{}
 	engine := db.Table(TableName)

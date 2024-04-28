@@ -10,7 +10,7 @@ import (
 
 type ManagerDal struct{}
 
-func (o *ManagerDal) Count(db *gorm.DB, Stext string, Level int64, Status int64, GroupID int64, Outfit string) int64 {
+func (o *ManagerDal) Count(db *gorm.DB, Stext string, Level, Status, GroupID int64, Outfit string) int64 {
 	var Count int64
 	TableName := managerTable + Outfit
 	engine := db.Table(TableName)
@@ -48,7 +48,7 @@ func (o *ManagerDal) Data(db *gorm.DB, ID int64, Outfit string) mod.ManagerMod {
 	return Data
 }
 
-func (o *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) (int, int, int, []mod.ManagerMod) {
+func (o *ManagerDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Level, Status, GroupID int64, Outfit string) (int, int, int, []mod.ManagerMod) {
 	TableName := managerTable + Outfit
 	Data := []mod.ManagerMod{}
 	engine := db.Table(TableName)
@@ -86,7 +86,7 @@ func (o *ManagerDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext 
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level int64, Status int64, GroupID int64, Outfit string) []mod.ManagerMod {
+func (o *ManagerDal) All(db *gorm.DB, Order int, Stext string, Level, Status, GroupID int64, Outfit string) []mod.ManagerMod {
 	TableName := managerTable + Outfit
 	Data := []mod.ManagerMod{}
 	engine := db.Table(TableName)

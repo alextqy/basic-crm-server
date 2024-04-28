@@ -48,7 +48,7 @@ func (o *OrderDal) Data(db *gorm.DB, ID int64, Outfit string) mod.OrderMod {
 	return Data
 }
 
-func (o *OrderDal) List(db *gorm.DB, Page int, PageSize int, Order int, Stext string, ProductID, ManagerID, Status int64, Outfit string) (int, int, int, []mod.OrderMod) {
+func (o *OrderDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, ProductID, ManagerID, Status int64, Outfit string) (int, int, int, []mod.OrderMod) {
 	TableName := orderTable + Outfit
 	Data := []mod.OrderMod{}
 	engine := db.Table(TableName)
