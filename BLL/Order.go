@@ -34,6 +34,13 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, Distribut
 	} else if Type == 2 && DistributorID == 0 {
 		result.Message = lang.TypeError
 	} else {
+		if Type == 1 {
+			DistributorID = 0
+		}
+		if Type == 2 {
+			CustomerID = 0
+		}
+
 		db := dal.ConnDB()
 
 		productData := productDal.Data(db, ProductID, "")
