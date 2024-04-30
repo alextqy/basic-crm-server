@@ -2,8 +2,6 @@ module basic-crm-server
 
 go 1.22.1
 
-require xorm.io/xorm v1.3.9
-
 require (
 	github.com/google/subcommands v1.2.0 // indirect
 	github.com/google/wire v0.6.0 // indirect
@@ -17,11 +15,9 @@ require (
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.17.0 // indirect
-	xorm.io/core v0.7.2-0.20190928055935-90aeac8d08eb // indirect
 )
 
 require (
-	github.com/go-xorm/xorm v0.7.9
 	github.com/goccy/go-json v0.8.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -33,5 +29,4 @@ require (
 	gorm.io/driver/postgres v1.5.7
 	gorm.io/driver/sqlite v1.5.5
 	gorm.io/gorm v1.25.8
-	xorm.io/builder v0.3.11-0.20220531020008-1bd24a7dc978 // indirect
 )
