@@ -15,8 +15,10 @@ func OrderNew(w http.ResponseWriter, r *http.Request) {
 	OrderPrice := httpHelper.PostFloat32(r, "OrderPrice")
 	Remark := httpHelper.Post(r, "Remark")
 	Type := httpHelper.PostInt64(r, "Type")
+	Payment := httpHelper.PostInt64(r, "Payment")
+	Review := httpHelper.PostInt64(r, "Review")
 	ID := httpHelper.PostInt64(r, "ID")
-	httpHelper.HttpWrite(w, bll.OrderNew(Token, OrderNo, ProductID, ManagerID, CustomerID, DistributorID, OrderPrice, Remark, Type, ID))
+	httpHelper.HttpWrite(w, bll.OrderNew(Token, OrderNo, ProductID, ManagerID, CustomerID, DistributorID, OrderPrice, Remark, Type, Payment, Review, ID))
 }
 
 func OrderList(w http.ResponseWriter, r *http.Request) {
@@ -29,9 +31,11 @@ func OrderList(w http.ResponseWriter, r *http.Request) {
 	ManagerID := httpHelper.PostInt64(r, "ManagerID")
 	CustomerID := httpHelper.PostInt64(r, "CustomerID")
 	DistributorID := httpHelper.PostInt64(r, "DistributorID")
-	Type := httpHelper.PostInt64(r, "Type")
 	Status := httpHelper.PostInt64(r, "Status")
-	httpHelper.HttpWrite(w, bll.OrderList(Token, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status))
+	Type := httpHelper.PostInt64(r, "Type")
+	Payment := httpHelper.PostInt64(r, "Payment")
+	Review := httpHelper.PostInt64(r, "Review")
+	httpHelper.HttpWrite(w, bll.OrderList(Token, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review))
 }
 
 func OrderAll(w http.ResponseWriter, r *http.Request) {
@@ -42,9 +46,11 @@ func OrderAll(w http.ResponseWriter, r *http.Request) {
 	ManagerID := httpHelper.PostInt64(r, "ManagerID")
 	CustomerID := httpHelper.PostInt64(r, "CustomerID")
 	DistributorID := httpHelper.PostInt64(r, "DistributorID")
-	Type := httpHelper.PostInt64(r, "Type")
 	Status := httpHelper.PostInt64(r, "Status")
-	httpHelper.HttpWrite(w, bll.OrderAll(Token, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status))
+	Type := httpHelper.PostInt64(r, "Type")
+	Payment := httpHelper.PostInt64(r, "Payment")
+	Review := httpHelper.PostInt64(r, "Review")
+	httpHelper.HttpWrite(w, bll.OrderAll(Token, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review))
 }
 
 func OrderData(w http.ResponseWriter, r *http.Request) {

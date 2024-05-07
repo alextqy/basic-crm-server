@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, DistributorID int64, OrderPrice float32, Remark string, Type, ID int64) mod.Result {
+func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, DistributorID int64, OrderPrice float32, Remark string, Type, Payment, Review, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -87,6 +87,8 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, Distribut
 				checkData.DistributorID = DistributorID
 				checkData.OrderPrice = OrderPrice
 				checkData.Remark = Remark
+				checkData.Payment = Payment
+				checkData.Review = Review
 				e := orderDal.Update(db, checkData, "")
 				if e != nil {
 					result.Message = e.Error()
@@ -114,6 +116,8 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, Distribut
 					Remark:        Remark,
 					CreationTime:  sysHelper.TimeStamp(),
 					Type:          Type,
+					Payment:       Payment,
+					Review:        Review,
 				}
 				_, e := orderDal.Add(db, data, "")
 				if e != nil {
@@ -129,7 +133,7 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, Distribut
 	return result
 }
 
-func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Type, Status int64) mod.ResultList {
+func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -153,12 +157,12 @@ func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID,
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = orderDal.List(db, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = orderDal.List(db, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review, "")
 	}
 	return result
 }
 
-func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Type, Status int64) mod.Result {
+func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -179,7 +183,7 @@ func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, Custo
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Type, Status, "")
+		result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review, "")
 	}
 	return result
 }

@@ -10,7 +10,7 @@ import (
 
 type OrderDal struct{}
 
-func (o *OrderDal) Count(db *gorm.DB, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Type, Status int64, Outfit string) int64 {
+func (o *OrderDal) Count(db *gorm.DB, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review int64, Outfit string) int64 {
 	var Count int64
 	TableName := orderTable + Outfit
 	engine := db.Table(TableName)
@@ -26,11 +26,17 @@ func (o *OrderDal) Count(db *gorm.DB, Stext string, ProductID, ManagerID, Custom
 	if DistributorID > 0 {
 		engine = engine.Where("DistributorID = ?", DistributorID)
 	}
+	if Status > 0 {
+		engine = engine.Where("Status = ?", Status)
+	}
 	if Type > 0 {
 		engine = engine.Where("Type = ?", Type)
 	}
-	if Status > 0 {
-		engine = engine.Where("Status = ?", Status)
+	if Payment > 0 {
+		engine = engine.Where("Payment = ?", Payment)
+	}
+	if Review > 0 {
+		engine = engine.Where("Review = ?", Review)
 	}
 	if Stext != "" {
 		engine = engine.Where("OrderNo LIKE ?", "%"+Stext+"%")
@@ -57,7 +63,7 @@ func (o *OrderDal) Data(db *gorm.DB, ID int64, Outfit string) mod.OrderMod {
 	return Data
 }
 
-func (o *OrderDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Type, Status int64, Outfit string) (int, int, int, []mod.OrderMod) {
+func (o *OrderDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review int64, Outfit string) (int, int, int, []mod.OrderMod) {
 	TableName := orderTable + Outfit
 	Data := []mod.OrderMod{}
 	engine := db.Table(TableName)
@@ -73,11 +79,17 @@ func (o *OrderDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Pr
 	if DistributorID > 0 {
 		engine = engine.Where("DistributorID = ?", DistributorID)
 	}
+	if Status > 0 {
+		engine = engine.Where("Status = ?", Status)
+	}
 	if Type > 0 {
 		engine = engine.Where("Type = ?", Type)
 	}
-	if Status > 0 {
-		engine = engine.Where("Status = ?", Status)
+	if Payment > 0 {
+		engine = engine.Where("Payment = ?", Payment)
+	}
+	if Review > 0 {
+		engine = engine.Where("Review = ?", Review)
 	}
 	if Stext != "" {
 		engine = engine.Where("OrderNo LIKE ?", "%"+Stext+"%")
@@ -96,7 +108,7 @@ func (o *OrderDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Pr
 	}
 	engine.Order("ID " + OrderBy).Limit(int(PageSize)).Offset(int((Page - 1) * PageSize)).Find(&Data)
 
-	Count := o.Count(db, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Outfit)
+	Count := o.Count(db, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review, Outfit)
 	TotalPage := int(math.Ceil(float64(Count) / float64(PageSize)))
 	if TotalPage > 0 && Page > TotalPage {
 		Page = TotalPage
@@ -104,7 +116,7 @@ func (o *OrderDal) List(db *gorm.DB, Page, PageSize, Order int, Stext string, Pr
 	return Page, PageSize, TotalPage, Data
 }
 
-func (o *OrderDal) All(db *gorm.DB, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Type, Status int64, Outfit string) []mod.OrderMod {
+func (o *OrderDal) All(db *gorm.DB, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review int64, Outfit string) []mod.OrderMod {
 	TableName := orderTable + Outfit
 	Data := []mod.OrderMod{}
 	engine := db.Table(TableName)
@@ -120,11 +132,17 @@ func (o *OrderDal) All(db *gorm.DB, Order int, Stext string, ProductID, ManagerI
 	if DistributorID > 0 {
 		engine = engine.Where("DistributorID = ?", DistributorID)
 	}
+	if Status > 0 {
+		engine = engine.Where("Status = ?", Status)
+	}
 	if Type > 0 {
 		engine = engine.Where("Type = ?", Type)
 	}
-	if Status > 0 {
-		engine = engine.Where("Status = ?", Status)
+	if Payment > 0 {
+		engine = engine.Where("Payment = ?", Payment)
+	}
+	if Review > 0 {
+		engine = engine.Where("Review = ?", Review)
 	}
 	if Stext != "" {
 		engine = engine.Where("OrderNo LIKE ?", "%"+Stext+"%")
