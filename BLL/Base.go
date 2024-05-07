@@ -28,6 +28,7 @@ var orderDal = dal.OrderDal{}
 var productDal = dal.ProductDal{}
 var salesPlanDal = dal.SalesPlanDal{}
 var salesTargetDal = dal.SalesTargetDal{}
+var supplierDal = dal.SupplierDal{}
 
 func CheckPerm(t mod.Result) int {
 	var p int

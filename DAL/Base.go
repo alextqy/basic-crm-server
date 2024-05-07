@@ -23,6 +23,7 @@ var orderTable = "Order"
 var productTable = "Product"
 var salesPlanTable = "SalesPlan"
 var salesTargetTable = "SalesTarget"
+var supplierTable = "Supplier"
 
 var cacheHelper = mtd.CacheHelper{}
 var fileHelper = mtd.FileHelper{}

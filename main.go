@@ -169,4 +169,11 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/sales/target/all", httpHelper.Middleware(api.SalesTargetAll))
 	mux.HandleFunc("/sales/target/data", httpHelper.Middleware(api.SalesTargetData))
 	mux.HandleFunc("/sales/target/del", httpHelper.Middleware(api.SalesTargetDel))
+
+	// Supplier ===================================================================
+	mux.HandleFunc("/supplier/new", httpHelper.Middleware(api.SupplierNew))
+	mux.HandleFunc("/supplier/list", httpHelper.Middleware(api.SupplierList))
+	mux.HandleFunc("/supplier/all", httpHelper.Middleware(api.SupplierAll))
+	mux.HandleFunc("/supplier/data", httpHelper.Middleware(api.SupplierData))
+	mux.HandleFunc("/supplier/del", httpHelper.Middleware(api.SupplierDel))
 }
