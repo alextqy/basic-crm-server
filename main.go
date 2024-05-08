@@ -116,6 +116,14 @@ func routes(mux *http.ServeMux) {
 	mux.HandleFunc("/customer/data", httpHelper.Middleware(api.CustomerData))
 	mux.HandleFunc("/customer/del", httpHelper.Middleware(api.CustomerDel))
 
+	// CustomerQA ===================================================================
+	mux.HandleFunc("/customer/qa/new", httpHelper.Middleware(api.CustomerQANew))
+	mux.HandleFunc("/customer/qa/list", httpHelper.Middleware(api.CustomerQAList))
+	mux.HandleFunc("/customer/qa/all", httpHelper.Middleware(api.CustomerQAAll))
+	mux.HandleFunc("/customer/qa/data", httpHelper.Middleware(api.CustomerQAData))
+	mux.HandleFunc("/customer/qa/del", httpHelper.Middleware(api.CustomerQADel))
+	mux.HandleFunc("/customer/qa/display", httpHelper.Middleware(api.CustomerQADisplay))
+
 	// Distributor ===================================================================
 	mux.HandleFunc("/distributor/new", httpHelper.Middleware(api.DistributorNew))
 	mux.HandleFunc("/distributor/list", httpHelper.Middleware(api.DistributorList))
