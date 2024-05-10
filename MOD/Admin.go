@@ -1,5 +1,6 @@
 package mod
 
+// 管理员
 type AdminMod struct {
 	ID           int64  `gorm:"column:ID;primarykey"`
 	Account      string `gorm:"column:Account"`      // 账号

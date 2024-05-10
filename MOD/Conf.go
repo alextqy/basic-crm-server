@@ -1,5 +1,6 @@
 package mod
 
+// 系统配置
 type ConfMod struct {
 	DbHost  string `json:"db_host"`  // 数据库地址
 	DbPort  string `json:"db_port"`  // 数据库接口

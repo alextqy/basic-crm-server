@@ -1,5 +1,6 @@
 package mod
 
+// 产品
 type ProductMod struct {
 	ID           int64   `gorm:"column:ID;primarykey"`
 	ProductName  string  `gorm:"column:ProductName"`  // 名称

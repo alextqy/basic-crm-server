@@ -1,5 +1,6 @@
 package mod
 
+// 销售目标
 type SalesTargetMod struct {
 	ID              int64   `gorm:"column:ID;primarykey"`
 	TargetName      string  `gorm:"column:TargetName"`      // 名称

@@ -1,5 +1,6 @@
 package mod
 
+// 公告
 type AnnouncementMod struct {
 	ID           int64  `gorm:"column:ID;primarykey"`
 	Title        string `gorm:"column:Title"`        // 标题

@@ -1,5 +1,6 @@
 package mod
 
+// 客服问答
 type CustomerQAMod struct {
 	ID           int64  `gorm:"column:ID;primarykey"`
 	Title        string `gorm:"column:Title"`        // 标题

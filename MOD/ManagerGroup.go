@@ -1,5 +1,6 @@
 package mod
 
+// 销售团队
 type ManagerGroupMod struct {
 	ID           int64  `gorm:"column:ID;primarykey"`
 	GroupName    string `gorm:"column:GroupName"`    // 名称

@@ -1,5 +1,6 @@
 package mod
 
+// 公司
 type CompanyMod struct {
 	ID           int64  `gorm:"column:ID;primarykey"`
 	CompanyName  string `gorm:"column:CompanyName"`  // 名称

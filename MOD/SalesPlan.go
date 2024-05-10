@@ -1,5 +1,6 @@
 package mod
 
+// 销售计划
 type SalesPlanMod struct {
 	ID           int64   `gorm:"column:ID;primarykey"`
 	PlanName     string  `gorm:"column:PlanName"`     // 名称
