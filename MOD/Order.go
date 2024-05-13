@@ -14,7 +14,7 @@ type OrderMod struct {
 	Status        int64   `gorm:"column:Status"`        // 状态 1正常 2作废
 	Remark        string  `gorm:"column:Remark"`        // 备注
 	CreationTime  int64   `gorm:"column:CreationTime"`  // 创建时间
-	Type          int64   `gorm:"column:Type"`          // 订单类型 1客户 2渠道商
+	OrderType     int64   `gorm:"column:OrderType"`     // 订单类型 1客户 2渠道商
 	Payment       int64   `gorm:"column:Payment"`       // 付款状态 1未支付 2已支付
 	Review        int64   `gorm:"column:Review"`        // 合同审核状态 1未审核 2已审核
 }

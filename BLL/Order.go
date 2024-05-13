@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, DistributorID int64, OrderPrice float32, Remark string, Type, Payment, Review, ID int64) mod.Result {
+func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, DistributorID int64, OrderPrice float32, Remark string, OrderType, Payment, Review, ID int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -27,17 +27,17 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, Distribut
 		result.Message = lang.TheProductDataDoesNotExist
 	} else if OrderPrice == 0 {
 		result.Message = lang.IncorrectOrderPrice
-	} else if Type == 0 {
+	} else if OrderType == 0 {
 		result.Message = lang.TypeError
-	} else if Type == 1 && CustomerID == 0 {
+	} else if OrderType == 1 && CustomerID == 0 {
 		result.Message = lang.TypeError
-	} else if Type == 2 && DistributorID == 0 {
+	} else if OrderType == 2 && DistributorID == 0 {
 		result.Message = lang.TypeError
 	} else {
-		if Type == 1 {
+		if OrderType == 1 {
 			DistributorID = 0
 		}
-		if Type == 2 {
+		if OrderType == 2 {
 			CustomerID = 0
 		}
 
@@ -115,7 +115,7 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, Distribut
 					Status:        1,
 					Remark:        Remark,
 					CreationTime:  sysHelper.TimeStamp(),
-					Type:          Type,
+					OrderType:     OrderType,
 					Payment:       Payment,
 					Review:        Review,
 				}
@@ -133,7 +133,7 @@ func OrderNew(Token, OrderNo string, ProductID, ManagerID, CustomerID, Distribut
 	return result
 }
 
-func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review int64) mod.ResultList {
+func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, OrderType, Payment, Review int64) mod.ResultList {
 	result := mod.ResultList{
 		State:     false,
 		Code:      200,
@@ -157,12 +157,12 @@ func OrderList(Token string, Page, PageSize, Order int, Stext string, ProductID,
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Page, result.PageSize, result.TotalPage, result.Data = orderDal.List(db, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review, "")
+		result.Page, result.PageSize, result.TotalPage, result.Data = orderDal.List(db, Page, PageSize, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, OrderType, Payment, Review, "")
 	}
 	return result
 }
 
-func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review int64) mod.Result {
+func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, CustomerID, DistributorID, Status, OrderType, Payment, Review int64) mod.Result {
 	result := mod.Result{
 		State:   false,
 		Message: "",
@@ -183,7 +183,7 @@ func OrderAll(Token string, Order int, Stext string, ProductID, ManagerID, Custo
 		}
 		db := dal.ConnDB()
 		result.State = true
-		result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, Type, Payment, Review, "")
+		result.Data = orderDal.All(db, Order, Stext, ProductID, ManagerID, CustomerID, DistributorID, Status, OrderType, Payment, Review, "")
 	}
 	return result
 }
