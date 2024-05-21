@@ -9,6 +9,7 @@ type Language struct {
 	The16bitKeyIsNotSet          string
 	IncorrectName                string
 	TheAccountIsTooShort         string
+	IncorrectAccountFormat       string
 	ThePasswordIsTooShort        string
 	TheAccountAlreadyExists      string
 	NoData                       string
@@ -56,6 +57,7 @@ func SysLang() Language {
 		language.The16bitKeyIsNotSet = "未设置16位密钥"
 		language.IncorrectName = "名称错误"
 		language.TheAccountIsTooShort = "账号长度不够"
+		language.IncorrectAccountFormat = "账号格式错误"
 		language.ThePasswordIsTooShort = "密码长度不够"
 		language.TheAccountAlreadyExists = "账号已存在"
 		language.NoData = "数据不存在"
@@ -97,6 +99,7 @@ func SysLang() Language {
 		language.The16bitKeyIsNotSet = "The 16-bit key is not set"
 		language.IncorrectName = "Incorrect name"
 		language.TheAccountIsTooShort = "The account is too short"
+		language.IncorrectAccountFormat = "Incorrect account format"
 		language.ThePasswordIsTooShort = "The password is too short"
 		language.TheAccountAlreadyExists = "The account already exists"
 		language.NoData = "No data"
@@ -138,6 +141,7 @@ func SysLang() Language {
 		language.The16bitKeyIsNotSet = ""
 		language.IncorrectName = ""
 		language.TheAccountIsTooShort = ""
+		language.IncorrectAccountFormat = ""
 		language.ThePasswordIsTooShort = ""
 		language.TheAccountAlreadyExists = ""
 		language.NoData = ""

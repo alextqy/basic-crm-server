@@ -146,6 +146,8 @@ func AdminNew(Token, Account, Password, Name, Remark string, ID int64) mod.Resul
 				result.Message = lang.IncorrectAccount
 			} else if len(Account) < 6 {
 				result.Message = lang.TheAccountIsTooShort
+			} else if !sysHelper.RegEnNum(Account) {
+				result.Message = lang.IncorrectAccountFormat
 			} else if Password == "" {
 				result.Message = lang.IncorrectPassword
 			} else if len(Password) < 6 {
