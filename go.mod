@@ -8,9 +8,6 @@ require (
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.17.0 // indirect
-)
-
-require (
 	github.com/mattn/go-sqlite3 v1.14.22
 	gorm.io/driver/sqlite v1.5.5
 	gorm.io/gorm v1.25.8
